@@ -3,12 +3,16 @@ import './App.css'
 
 const API_URL = 'http://127.0.0.1:8000/api'
 
-function App() {
-  const [message, setMessage] = useState('')
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState(null)
+interface ApiResponse {
+  message: string
+}
 
-  const fetchHello = async () => {
+function App() {
+  const [message, setMessage] = useState<string>('')
+  const [loading, setLoading] = useState<boolean>(false)
+  const [error, setError] = useState<string | null>(null)
+
+  const fetchHello = async (): Promise<void> => {
     setLoading(true)
     setError(null)
     try {
@@ -16,10 +20,11 @@ function App() {
       if (!response.ok) {
         throw new Error('Failed to fetch from API')
       }
-      const data = await response.json()
+      const data: ApiResponse = await response.json()
       setMessage(data.message)
     } catch (err) {
-      setError(err.message)
+      const errorMessage = err instanceof Error ? err.message : 'An unknown error occurred'
+      setError(errorMessage)
       setMessage('')
     } finally {
       setLoading(false)
