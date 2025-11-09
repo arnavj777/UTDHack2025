@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from './ui/card';
 import { Button } from './ui/button';
+import { Textarea } from './ui/textarea';
 import { Sparkles, Loader2, Trash2, Image as ImageIcon, X } from 'lucide-react';
 import { geminiChatService } from '../services/researchService';
 import { ApiError } from '../services/api';
@@ -10,6 +11,8 @@ export function ResearchChatbot() {
   const [images, setImages] = useState<string[]>([]); // Base64 encoded images
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const [prompt, setPrompt] = useState('');
+  const [responseText, setResponseText] = useState('');
   const [overallScore, setOverallScore] = useState<number | undefined>();
   const [sentimentScore, setSentimentScore] = useState<number | undefined>();
   const [trendScore, setTrendScore] = useState<number | undefined>();
@@ -139,10 +142,40 @@ export function ResearchChatbot() {
   const handleClear = () => {
     setError('');
     setImages([]);
+    setPrompt('');
+    setResponseText('');
     setOverallScore(undefined);
     setSentimentScore(undefined);
     setTrendScore(undefined);
     setKeywords([]);
+  };
+
+  const handleAsk = async () => {
+    if (!prompt.trim() || isLoading) return;
+
+    setIsLoading(true);
+    setError('');
+    setResponseText('');
+
+    try {
+      const response = await geminiChatService.sendMessage(prompt, [], images);
+
+      // Update response text and scores
+      setResponseText(response.message || '');
+      setOverallScore(response.overall_score ?? 50.0);
+      setSentimentScore(response.sentiment_score ?? 50.0);
+      setTrendScore(response.trend_score ?? 50.0);
+      setKeywords(response.keywords || []);
+    } catch (err) {
+      if (err instanceof ApiError) {
+        setError(err.message);
+      } else {
+        setError('Failed to get response. Please try again.');
+      }
+      console.error('Chat error:', err);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -169,6 +202,51 @@ export function ResearchChatbot() {
         keywords={keywords}
         isLoading={isLoading}
       />
+
+      {/* Text Prompt */}
+      <Card className="flex flex-col">
+        <CardHeader className="border-b">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
+              <Sparkles className="w-5 h-5 text-white" />
+            </div>
+            <div>
+              <CardTitle>Ask the Research Assistant</CardTitle>
+              <CardDescription>
+                Enter a question or prompt about your research. You can also attach images.
+              </CardDescription>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent className="flex flex-col p-6 gap-4">
+          <Textarea
+            value={prompt}
+            onChange={(e) => setPrompt(e.target.value)}
+            placeholder="Ask anything about your research… e.g., 'Summarize key themes in recent user interviews about onboarding.'"
+            className="min-h-28"
+          />
+          <div className="flex gap-3 justify-end">
+            <Button onClick={handleAsk} disabled={isLoading || !prompt.trim()} className="px-6">
+              {isLoading ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                  Thinking...
+                </>
+              ) : (
+                <>
+                  <Sparkles className="w-4 h-4 mr-2" />
+                  Ask
+                </>
+              )}
+            </Button>
+          </div>
+          {responseText && (
+            <div className="whitespace-pre-wrap text-sm bg-slate-50 border rounded-md p-4">
+              {responseText}
+            </div>
+          )}
+        </CardContent>
+      </Card>
 
       {/* Image Upload Interface */}
       <Card className="flex flex-col">

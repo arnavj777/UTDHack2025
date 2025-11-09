@@ -8,6 +8,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.conf import settings
+import math
 from .models import (
     UserProfile, PasswordResetToken,
     ProductStrategy, Idea, MarketSizing, ScenarioPlan,
@@ -1185,17 +1186,15 @@ def gemini_chat_view(request):
                 'error': 'Message or image is required'
             }, status=status.HTTP_400_BAD_REQUEST)
         
-        # System instruction for product feature analysis
-        system_instruction = """You are an AI product analyst specializing in analyzing product images and converting them into detailed feature explanations and descriptions. 
-Your role is to:
-1. Analyze product images in detail
-2. Identify all visible features, UI elements, and functionality
-3. Provide clear, structured feature descriptions
-4. Explain how features work and their potential benefits
-5. Identify design patterns and user experience elements
-6. Suggest improvements or note potential issues
-
-Be thorough, accurate, and provide actionable insights. Format your responses in a clear, structured way with headings and bullet points when appropriate."""
+        # System instruction for research/product analysis (customized)
+        system_instruction = """Interpret the question or image to determine the underlying business decision
+         being evaluated, such as whether to pursue, fix, or prioritize a feature or issue. 
+         Ground your reasoning in the context of the *feedback_logit_dataset*, using its columns 
+         or features to justify how you assign values for trend and sentiment. 
+         Clearly explain the rationale behind these values and how they relate to observable 
+         patterns in the dataset. If no consistent mapping or relevant correlation can be established 
+         between the input and the dataset’s structure, set both trend and sentiment to zero, 
+         indicating insufficient data alignment."""
         
         # Use gemini-2.5-flash model (fast, efficient, supports vision)
         try:
@@ -1464,8 +1463,54 @@ Be thorough, accurate, and provide actionable insights. Format your responses in
         response_data['trend_score'] = round(trend_score if trend_score is not None else 50.0, 2)
         response_data['keywords'] = keywords if keywords else []
         response_data['overall_score'] = round(overall_score if overall_score is not None else 50.0, 2)
+
+        # Normal distribution normalization (z-score and percentile)
+        # We assume the operational 0-100 scoring band centers at 50 with a spread of ~20
+        # so that most realistic values fall within ±2.5σ.
+        def _normal_stats(score: float, mean: float = 50.0, std: float = 20.0):
+            # Guard against pathological std
+            std = std if std and std > 0 else 20.0
+            z = (score - mean) / std
+            # Percentile using standard normal CDF via erf
+            percentile = 0.5 * (1.0 + math.erf(z / math.sqrt(2.0)))
+            return z, percentile
+
+        try:
+            s = float(response_data['sentiment_score'])
+            t = float(response_data['trend_score'])
+            z_s, p_s = _normal_stats(s)
+            z_t, p_t = _normal_stats(t)
+            response_data['sentiment_z'] = round(z_s, 4)
+            response_data['trend_z'] = round(z_t, 4)
+            response_data['sentiment_percentile'] = round(p_s * 100.0, 2)
+            response_data['trend_percentile'] = round(p_t * 100.0, 2)
+            response_data['normalization_reason'] = (
+                "We map 0–100 scores to a normal distribution (mean=50, σ≈20) to compare signals on a common scale, "
+                "express extremeness as z-scores, and provide percentiles for decision thresholds. "
+                "This stabilizes prioritization across features and reduces sensitivity to absolute score calibration. "
+                "Per your rule, if dataset alignment fails, scores are set to 0 which correspondingly yields low percentiles."
+            )
+
+            # Decision probability based on normal distributions:
+            # We want high probability when sentiment is unfavorable (low percentile)
+            # and trend/attention is high (high percentile). Assume conditional independence
+            # and combine as: P(decision) = (1 - P_sentiment_percentile) * P_trend_percentile.
+            decision_probability = (1.0 - p_s) * p_t
+            response_data['decision_probability'] = round(decision_probability, 4)  # 0..1
+            response_data['decision_probability_pct'] = round(decision_probability * 100.0, 2)  # 0..100
+
+            # Maintain backward compatibility: use probability percent as overall_score
+            response_data['overall_score'] = response_data['decision_probability_pct']
+            response_data['probability_reason'] = (
+                "Probability reflects the chance action is warranted given signals: "
+                "lower sentiment (worse user feeling → 1 − percentile) coupled with higher trend (more attention → percentile). "
+                "We combine these independent normal percentiles as (1 − sentiment_percentile) × trend_percentile."
+            )
+        except Exception:
+            # If anything goes wrong, skip normalized fields silently
+            pass
         
-        print(f"Returning response with scores: sentiment={response_data['sentiment_score']}, trend={response_data['trend_score']}, overall={response_data['overall_score']}, keywords={len(response_data['keywords'])}")
+        print(f"Returning response with scores: sentiment={response_data['sentiment_score']}, trend={response_data['trend_score']}, probability={response_data.get('decision_probability')}, keywords={len(response_data['keywords'])}")
         
         return Response({
             'data': response_data,
