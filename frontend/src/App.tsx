@@ -1,76 +1,87 @@
-import { useState, useEffect } from 'react'
-import './App.css'
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { LandingPage } from './components/LandingPage';
+import { PricingPage } from './components/PricingPage';
+import { LoginPage } from './components/LoginPage';
+import { SignupPage } from './components/SignupPage';
+import { OnboardingWizard } from './components/OnboardingWizard';
+import { DashboardLayout } from './components/DashboardLayout';
+import { Dashboard } from './components/Dashboard';
+import { ProductStrategyHub } from './components/ProductStrategyHub';
+import { IdeaRepository } from './components/IdeaRepository';
+import { MarketSizingSimulator } from './components/MarketSizingSimulator';
+import { ScenarioPlanning } from './components/ScenarioPlanning';
+import { Roadmap } from './components/Roadmap';
+import { BacklogManagement } from './components/BacklogManagement';
+import { PRDBuilder } from './components/PRDBuilder';
+import { SprintPlanning } from './components/SprintPlanning';
+import { CustomerFeedbackHub } from './components/CustomerFeedbackHub';
+import { CompetitorIntelligence } from './components/CompetitorIntelligence';
+import { PersonaManager } from './components/PersonaManager';
+import { ResearchVault } from './components/ResearchVault';
+import { WireframeGenerator } from './components/WireframeGenerator';
+import { GTMStrategyBoard } from './components/GTMStrategyBoard';
+import { ContentAutomationStudio } from './components/ContentAutomationStudio';
+import { LaunchReadinessChecklist } from './components/LaunchReadinessChecklist';
+import { MetricsDashboard } from './components/MetricsDashboard';
+import { AIInsightsNarratives } from './components/AIInsightsNarratives';
+import { ExperimentResultsViewer } from './components/ExperimentResultsViewer';
+import { AIAgentControlCenter } from './components/AIAgentControlCenter';
+import { WorkflowAutomationBuilder } from './components/WorkflowAutomationBuilder';
+import { PMDailyBriefing } from './components/PMDailyBriefing';
 
-const API_URL = 'http://127.0.0.1:8000/api'
-
-interface ApiResponse {
-  message: string
-}
-
-function App() {
-  const [message, setMessage] = useState<string>('')
-  const [loading, setLoading] = useState<boolean>(false)
-  const [error, setError] = useState<string | null>(null)
-
-  const fetchHello = async (): Promise<void> => {
-    setLoading(true)
-    setError(null)
-    try {
-      const response = await fetch(`${API_URL}/hello/`)
-      if (!response.ok) {
-        throw new Error('Failed to fetch from API')
-      }
-      const data: ApiResponse = await response.json()
-      setMessage(data.message)
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'An unknown error occurred'
-      setError(errorMessage)
-      setMessage('')
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  useEffect(() => {
-    fetchHello()
-  }, [])
-
+export default function App() {
   return (
-    <div className="app">
-      <div className="container">
-        <h1>Django + React App</h1>
-        <p className="subtitle">Full-stack application setup</p>
+    <Router>
+      <Routes>
+        {/* Public routes */}
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/pricing" element={<PricingPage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup" element={<SignupPage />} />
+        <Route path="/onboarding" element={<OnboardingWizard />} />
         
-        <div className="card">
-          <button onClick={fetchHello} disabled={loading}>
-            {loading ? 'Loading...' : 'Call Django API'}
-          </button>
+        {/* Protected workspace routes */}
+        <Route path="/workspace" element={<DashboardLayout />}>
+          <Route index element={<Navigate to="/workspace/dashboard" replace />} />
+          <Route path="dashboard" element={<Dashboard />} />
           
-          {error && (
-            <div className="error">
-              <p>Error: {error}</p>
-              <p className="hint">Make sure Django server is running on port 8000</p>
-            </div>
-          )}
+          {/* Strategy & Ideation */}
+          <Route path="strategy" element={<ProductStrategyHub />} />
+          <Route path="ideas" element={<IdeaRepository />} />
+          <Route path="market-sizing" element={<MarketSizingSimulator />} />
+          <Route path="scenario-planning" element={<ScenarioPlanning />} />
           
-          {message && (
-            <div className="success">
-              <p className="message">{message}</p>
-            </div>
-          )}
-        </div>
-
-        <div className="info">
-          <h2>Getting Started</h2>
-          <ul>
-            <li>Backend: Django REST Framework running on <code>http://127.0.0.1:8000</code></li>
-            <li>Frontend: React with Vite running on <code>http://localhost:5173</code></li>
-            <li>CORS is configured to allow communication between frontend and backend</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  )
+          {/* Requirements & Development */}
+          <Route path="roadmap" element={<Roadmap />} />
+          <Route path="backlog" element={<BacklogManagement />} />
+          <Route path="prd" element={<PRDBuilder />} />
+          <Route path="sprint-planning" element={<SprintPlanning />} />
+          
+          {/* Design & Prototyping */}
+          <Route path="wireframe-generator" element={<WireframeGenerator />} />
+          
+          {/* Go-to-Market */}
+          <Route path="gtm-strategy" element={<GTMStrategyBoard />} />
+          <Route path="content-automation" element={<ContentAutomationStudio />} />
+          <Route path="launch-checklist" element={<LaunchReadinessChecklist />} />
+          
+          {/* Analytics & Insights */}
+          <Route path="metrics" element={<MetricsDashboard />} />
+          <Route path="ai-insights" element={<AIInsightsNarratives />} />
+          <Route path="experiments" element={<ExperimentResultsViewer />} />
+          
+          {/* Automation & Agents */}
+          <Route path="ai-agent" element={<AIAgentControlCenter />} />
+          <Route path="workflow-automation" element={<WorkflowAutomationBuilder />} />
+          <Route path="daily-briefing" element={<PMDailyBriefing />} />
+          
+          {/* Research & Intelligence */}
+          <Route path="feedback" element={<CustomerFeedbackHub />} />
+          <Route path="competitors" element={<CompetitorIntelligence />} />
+          <Route path="personas" element={<PersonaManager />} />
+          <Route path="research" element={<ResearchVault />} />
+        </Route>
+      </Routes>
+    </Router>
+  );
 }
-
-export default App
