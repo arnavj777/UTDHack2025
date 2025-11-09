@@ -274,10 +274,10 @@ export function IdeaRepository() {
               <div className="flex gap-4">
                 {/* Vote Section */}
                 <div className="flex flex-col items-center gap-1 min-w-16">
-                  <Button variant="outline" size="sm" className="w-full">
+                  <Button variant="outline" size="sm" type="button" className="w-full">
                     <ThumbsUp className="w-4 h-4" />
                   </Button>
-                  <span className="font-mono">{idea.votes}</span>
+                  <span className="font-mono">{idea.impact_score || 0}</span>
                 </div>
 
                 {/* Content */}
@@ -286,14 +286,14 @@ export function IdeaRepository() {
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-1">
                         <h4>{idea.title}</h4>
-                        {idea.source === 'AI Suggestion' && (
+                        {idea.data?.source === 'AI Suggestion' && (
                           <Badge variant="secondary" className="gap-1">
                             <Sparkles className="w-3 h-3" />
                             AI
                           </Badge>
                         )}
                       </div>
-                      <p className="text-slate-600 mb-3">{idea.description}</p>
+                      <p className="text-slate-600 mb-3">{idea.description || 'No description'}</p>
                     </div>
                   </div>
 

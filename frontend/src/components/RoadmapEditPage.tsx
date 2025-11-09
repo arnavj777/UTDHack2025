@@ -21,7 +21,9 @@ export function RoadmapEditPage() {
     status: 'active',
     start_date: '',
     end_date: '',
+    data: {}
   });
+  const [dataJson, setDataJson] = useState('{\n  "quarters": [],\n  "timelineView": [],\n  "dependencies": []\n}');
 
   useEffect(() => {
     const loadRoadmap = async () => {
@@ -35,7 +37,10 @@ export function RoadmapEditPage() {
           status: roadmap.status || 'active',
           start_date: roadmap.start_date ? roadmap.start_date.split('T')[0] : '',
           end_date: roadmap.end_date ? roadmap.end_date.split('T')[0] : '',
+          data: roadmap.data || {}
         });
+        // Set JSON data
+        setDataJson(JSON.stringify(roadmap.data || { quarters: [], timelineView: [], dependencies: [] }, null, 2));
       } catch (err) {
         if (err instanceof ApiError) {
           setError(err.message);
@@ -56,7 +61,24 @@ export function RoadmapEditPage() {
     setLoading(true);
 
     try {
-      await roadmapService.update(parseInt(id), formData);
+      // Parse JSON data
+      let parsedData = {};
+      if (dataJson.trim()) {
+        try {
+          parsedData = JSON.parse(dataJson);
+        } catch (parseError) {
+          setError('Invalid JSON in roadmap data. Please check the format.');
+          setLoading(false);
+          return;
+        }
+      }
+
+      const submitData = {
+        ...formData,
+        data: parsedData
+      };
+
+      await roadmapService.update(parseInt(id), submitData);
       navigate('/workspace/roadmap');
     } catch (err) {
       if (err instanceof ApiError) {
@@ -143,6 +165,20 @@ export function RoadmapEditPage() {
                 onChange={(e) => setFormData({ ...formData, end_date: e.target.value })}
               />
             </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="data">Roadmap Data (JSON)</Label>
+            <Textarea
+              id="data"
+              value={dataJson}
+              onChange={(e) => setDataJson(e.target.value)}
+              className="min-h-48 font-mono text-sm"
+              placeholder='{"quarters": [], "timelineView": [], "dependencies": []}'
+            />
+            <p className="text-xs text-slate-500">
+              Optional: Add roadmap structure as JSON. Include quarters, timelineView, and dependencies arrays.
+            </p>
           </div>
 
           {error && (

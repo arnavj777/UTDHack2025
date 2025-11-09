@@ -19,7 +19,13 @@ export function RoadmapCreatePage() {
     status: 'active',
     start_date: '',
     end_date: '',
+    data: {
+      quarters: [],
+      timelineView: [],
+      dependencies: []
+    }
   });
+  const [dataJson, setDataJson] = useState('{\n  "quarters": [],\n  "timelineView": [],\n  "dependencies": []\n}');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,7 +33,24 @@ export function RoadmapCreatePage() {
     setLoading(true);
 
     try {
-      await roadmapService.create(formData);
+      // Parse JSON data
+      let parsedData = {};
+      if (dataJson.trim()) {
+        try {
+          parsedData = JSON.parse(dataJson);
+        } catch (parseError) {
+          setError('Invalid JSON in roadmap data. Please check the format.');
+          setLoading(false);
+          return;
+        }
+      }
+
+      const submitData = {
+        ...formData,
+        data: parsedData
+      };
+
+      await roadmapService.create(submitData);
       navigate('/workspace/roadmap');
     } catch (err) {
       if (err instanceof ApiError) {
@@ -104,6 +127,20 @@ export function RoadmapCreatePage() {
                 onChange={(e) => setFormData({ ...formData, end_date: e.target.value })}
               />
             </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="data">Roadmap Data (JSON)</Label>
+            <Textarea
+              id="data"
+              value={dataJson}
+              onChange={(e) => setDataJson(e.target.value)}
+              className="min-h-48 font-mono text-sm"
+              placeholder='{"quarters": [], "timelineView": [], "dependencies": []}'
+            />
+            <p className="text-xs text-slate-500">
+              Optional: Add roadmap structure as JSON. Include quarters, timelineView, and dependencies arrays.
+            </p>
           </div>
 
           {error && (

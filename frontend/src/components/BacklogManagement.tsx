@@ -270,19 +270,19 @@ export function BacklogManagement() {
       <div className="grid md:grid-cols-4 gap-4">
         <Card className="p-4">
           <div className="text-slate-600 mb-1">Total Stories</div>
-          <div className="text-2xl">{stories.length}</div>
+          <div className="text-2xl">{backlogItems.length}</div>
         </Card>
         <Card className="p-4">
           <div className="text-slate-600 mb-1">Story Points</div>
-          <div className="text-2xl">{stories.reduce((sum, s) => sum + s.points, 0)}</div>
+          <div className="text-2xl">{backlogItems.reduce((sum, s) => sum + (s.story_points || 0), 0)}</div>
         </Card>
         <Card className="p-4">
           <div className="text-slate-600 mb-1">In Sprint</div>
-          <div className="text-2xl">{stories.filter(s => s.sprint).length}</div>
+          <div className="text-2xl">{backlogItems.filter(s => s.data?.sprint).length}</div>
         </Card>
         <Card className="p-4">
           <div className="text-slate-600 mb-1">Ready</div>
-          <div className="text-2xl">{stories.filter(s => s.status === 'Ready').length}</div>
+          <div className="text-2xl">{backlogItems.filter(s => s.status === 'Ready' || s.status === 'ready').length}</div>
         </Card>
       </div>
 
@@ -307,66 +307,72 @@ export function BacklogManagement() {
               </tr>
             </thead>
             <tbody>
-              {stories.map((story, index) => (
-                <tr key={index} className="border-b last:border-0 hover:bg-slate-50">
-                  <td className="p-3">
-                    <Checkbox />
-                  </td>
-                  <td className="p-3">
-                    <span className="font-mono text-blue-600">{story.id}</span>
-                  </td>
-                  <td className="p-3">
-                    <div>
-                      <p className="mb-1">{story.title}</p>
-                      <div className="flex gap-1">
-                        {story.labels.map((label, labelIndex) => (
-                          <Badge key={labelIndex} variant="outline">
-                            {label}
-                          </Badge>
-                        ))}
+              {backlogItems.length > 0 ? (
+                backlogItems.map((item) => (
+                  <tr key={item.id} className="border-b last:border-0 hover:bg-slate-50">
+                    <td className="p-3">
+                      <Checkbox />
+                    </td>
+                    <td className="p-3">
+                      <span className="font-mono text-blue-600">US-{item.id}</span>
+                    </td>
+                    <td className="p-3">
+                      <div>
+                        <p className="mb-1">{item.title}</p>
+                        <div className="flex gap-1">
+                          {item.data?.labels && Array.isArray(item.data.labels) && item.data.labels.map((label: string, labelIndex: number) => (
+                            <Badge key={labelIndex} variant="outline">
+                              {label}
+                            </Badge>
+                          ))}
+                        </div>
                       </div>
-                    </div>
-                  </td>
-                  <td className="p-3 text-slate-600">{story.epic}</td>
-                  <td className="p-3">
-                    <Badge variant={getPriorityColor(story.priority)}>
-                      {story.priority}
-                    </Badge>
-                  </td>
-                  <td className="p-3 font-mono">{story.points}</td>
-                  <td className="p-3">
-                    <Badge variant={story.status === 'In Progress' ? 'default' : 'secondary'}>
-                      {story.status}
-                    </Badge>
-                  </td>
-                  <td className="p-3 text-slate-600">
-                    {story.assignee || <span className="text-slate-400">Unassigned</span>}
-                  </td>
-                  <td className="p-3 text-slate-600">
-                    {story.sprint || <span className="text-slate-400">-</span>}
-                  </td>
-                  <td className="p-3">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="sm">
-                          <MoreVertical className="w-4 h-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuItem>View Details</DropdownMenuItem>
-                        <DropdownMenuItem>Edit</DropdownMenuItem>
-                        <DropdownMenuItem>Add to Sprint</DropdownMenuItem>
-                        <DropdownMenuItem className="gap-2">
-                          <Sparkles className="w-4 h-4" />
-                          Generate Acceptance Criteria
-                        </DropdownMenuItem>
-                        <DropdownMenuItem>Duplicate</DropdownMenuItem>
-                        <DropdownMenuItem className="text-red-600">Delete</DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
+                    </td>
+                    <td className="p-3 text-slate-600">{item.data?.epic || '-'}</td>
+                    <td className="p-3">
+                      <Badge variant={getPriorityColor(item.priority || 'Medium')}>
+                        {item.priority || 'Medium'}
+                      </Badge>
+                    </td>
+                    <td className="p-3 font-mono">{item.story_points || 0}</td>
+                    <td className="p-3">
+                      <Badge variant={item.status === 'In Progress' || item.status === 'in-progress' ? 'default' : 'secondary'}>
+                        {item.status || 'Backlog'}
+                      </Badge>
+                    </td>
+                    <td className="p-3 text-slate-600">
+                      {item.data?.assignee || <span className="text-slate-400">Unassigned</span>}
+                    </td>
+                    <td className="p-3 text-slate-600">
+                      {item.data?.sprint || <span className="text-slate-400">-</span>}
+                    </td>
+                    <td className="p-3">
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" size="sm" type="button">
+                            <MoreVertical className="w-4 h-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem onClick={() => navigate(`/workspace/backlog/edit/${item.id}`)}>Edit</DropdownMenuItem>
+                          <DropdownMenuItem>Add to Sprint</DropdownMenuItem>
+                          <DropdownMenuItem className="gap-2">
+                            <Sparkles className="w-4 h-4" />
+                            Generate Acceptance Criteria
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => handleDelete(item.id)} className="text-red-600">Delete</DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={10} className="p-6 text-center text-slate-500">
+                    No backlog items found. Create your first backlog item!
                   </td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </table>
         </div>
