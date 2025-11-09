@@ -4,7 +4,11 @@ import './App.css'
 const API_URL = 'http://127.0.0.1:8000/api'
 
 interface ApiResponse {
-  message: string
+  data?: {
+    message: string
+    status: string
+  }
+  message?: string
 }
 
 function App() {
@@ -21,7 +25,8 @@ function App() {
         throw new Error('Failed to fetch from API')
       }
       const data: ApiResponse = await response.json()
-      setMessage(data.message)
+      // Handle new API response format: {data: {message, status}}
+      setMessage(data.data?.message || data.message || 'No message received')
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'An unknown error occurred'
       setError(errorMessage)
@@ -64,7 +69,7 @@ function App() {
           <h2>Getting Started</h2>
           <ul>
             <li>Backend: Django REST Framework running on <code>http://127.0.0.1:8000</code></li>
-            <li>Frontend: React with Vite running on <code>http://localhost:5173</code></li>
+            <li>Frontend: React with Vite running on <code>http://localhost:3000</code></li>
             <li>CORS is configured to allow communication between frontend and backend</li>
           </ul>
         </div>
