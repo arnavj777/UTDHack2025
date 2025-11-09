@@ -1360,6 +1360,7 @@ Be thorough, accurate, and provide actionable insights. Format your responses in
             from api.services.keyword_extractor import get_keyword_extractor
             from api.services.sentiment_model import get_sentiment_model_service
             from api.services.trends_service import get_trends_service
+            from api.services.trends_service import estimate_trend_score_from_text
             from django.conf import settings
             
             # Extract keywords from chatbot response
@@ -1409,13 +1410,17 @@ Be thorough, accurate, and provide actionable insights. Format your responses in
                         trend_score = trends_service.get_average_trend_score(keywords)
                         print(f"Trend score: {trend_score}")
                     else:
-                        print("Trends service not available (SERPAPI_KEY not set?)")
-                        trend_score = 50.0  # Default neutral score
+                        print("Trends service not available (SERPAPI_KEY not set?) - using heuristic fallback")
+                        trend_score = estimate_trend_score_from_text(response_text, keywords)
                 except Exception as e:
                     print(f"Error fetching trends: {e}")
                     import traceback
                     traceback.print_exc()
-                    trend_score = 50.0  # Default neutral score
+                    # Use heuristic fallback if API call fails
+                    try:
+                        trend_score = estimate_trend_score_from_text(response_text, keywords)
+                    except Exception:
+                        trend_score = 50.0  # Default neutral score
             else:
                 print("No keywords extracted, skipping trend analysis")
                 trend_score = 50.0  # Default when no keywords

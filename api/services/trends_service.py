@@ -199,3 +199,45 @@ def get_trends_service():
             return None
     return _trends_service
 
+
+# -----------------------------
+# Fallback trend estimation
+# -----------------------------
+
+def estimate_trend_score_from_text(text: Optional[str], keywords: Optional[List[str]] = None) -> float:
+    """
+    Lightweight, dependency-free trend estimator used when SERPAPI is unavailable.
+    Heuristic similar in spirit to the sentiment fallback:
+      - Counts up-trend vs down-trend indicators in text
+      - Maps ratio to 20–80 range
+      - Adds a small boost for number of distinct keywords mentioned (breadth)
+    """
+    if not text and not keywords:
+        return 50.0
+
+    text_lower = (text or "").lower()
+
+    up_terms = [
+        'new', 'trending', 'rising', 'growing', 'increasing', 'surging',
+        'popular', 'viral', 'hot', 'buzz', 'spike', 'demand', 'adoption',
+        'launch', 'released', 'update', 'breakout', 'momentum'
+    ]
+    down_terms = [
+        'decline', 'decreasing', 'dropping', 'falling', 'downtrend',
+        'obsolete', 'legacy', 'outdated', 'stagnant', 'unpopular', 'saturated'
+    ]
+
+    up_count = sum(1 for k in up_terms if k in text_lower)
+    down_count = sum(1 for k in down_terms if k in text_lower)
+
+    if up_count == 0 and down_count == 0:
+        base = 50.0
+    else:
+        ratio = up_count / (up_count + down_count)
+        base = 20 + (ratio * 60)  # 20–80 scale similar to sentiment fallback
+
+    # Breadth boost based on distinct keywords mentioned (0–10 points)
+    kw_count = len(set((keywords or [])[:10]))
+    boost = min(10.0, kw_count)  # simple cap
+
+    return float(max(0.0, min(100.0, base + boost)))
