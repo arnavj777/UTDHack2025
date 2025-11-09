@@ -7,45 +7,20 @@ import { Sparkles } from 'lucide-react';
 import { Separator } from './ui/separator';
 import { Checkbox } from './ui/checkbox';
 import { useState } from 'react';
-import { useAuth } from '../contexts/AuthContext';
-import { ApiError } from '../services/api';
 
 export function SignupPage() {
   const navigate = useNavigate();
-  const { signup } = useAuth();
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
     password: '',
     agreeToTerms: false
   });
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
 
-  const handleSignup = async (e: React.FormEvent) => {
+  const handleSignup = (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (!formData.agreeToTerms) {
-      setError('Please agree to the Terms of Service and Privacy Policy');
-      return;
-    }
-
-    setError('');
-    setLoading(true);
-
-    try {
-      await signup(formData.email, formData.password, formData.fullName);
-      // Redirect to onboarding after signup
-      navigate('/onboarding');
-    } catch (err) {
-      if (err instanceof ApiError) {
-        setError(err.message);
-      } else {
-        setError('Signup failed. Please try again.');
-      }
-    } finally {
-      setLoading(false);
-    }
+    // Mock signup - go to onboarding
+    navigate('/onboarding');
   };
 
   return (
@@ -113,14 +88,8 @@ export function SignupPage() {
             </label>
           </div>
 
-          {error && (
-            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
-              {error}
-            </div>
-          )}
-
-          <Button type="submit" className="w-full" disabled={loading}>
-            {loading ? 'Creating account...' : 'Create Account'}
+          <Button type="submit" className="w-full">
+            Create Account
           </Button>
         </form>
 

@@ -6,16 +6,47 @@ import { Card } from './ui/card';
 import { Sparkles } from 'lucide-react';
 import { Separator } from './ui/separator';
 import { useState } from 'react';
+import { useAuth } from '../contexts/AuthContext';
+import { ApiError } from '../services/api';
 
 export function LoginPage() {
   const navigate = useNavigate();
+  const { login } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Mock login - go to workspace
-    navigate('/workspace/dashboard');
+    setError('');
+    setLoading(true);
+
+    try {
+      const response = await login(email, password);
+      // Redirect based on onboarding status
+      // If user has completed onboarding, go to dashboard
+      // Otherwise, go to onboarding (but they might have partial data)
+      if (response.user.onboarding_completed) {
+        navigate('/workspace/dashboard');
+      } else {
+        // Check if they have any onboarding data
+        if (response.user.onboarding_data && Object.keys(response.user.onboarding_data).length > 0) {
+          // They have partial data, still go to onboarding to complete it
+          navigate('/onboarding');
+        } else {
+          navigate('/onboarding');
+        }
+      }
+    } catch (err) {
+      if (err instanceof ApiError) {
+        setError(err.message);
+      } else {
+        setError('Login failed. Please try again.');
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -62,8 +93,14 @@ export function LoginPage() {
             />
           </div>
 
-          <Button type="submit" className="w-full">
-            Sign In
+          {error && (
+            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
+              {error}
+            </div>
+          )}
+
+          <Button type="submit" className="w-full" disabled={loading}>
+            {loading ? 'Signing in...' : 'Sign In'}
           </Button>
         </form>
 
