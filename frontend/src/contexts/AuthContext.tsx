@@ -1,15 +1,16 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { User, authService } from '../services/auth';
 
 interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
   loading: boolean;
-  login: (email: string, password: string) => Promise<void>;
+  login: (email: string, password: string) => Promise<{ user: User; message: string }>;
   signup: (email: string, password: string, fullName: string) => Promise<void>;
   logout: () => Promise<void>;
   updatePreferences: (preferences: Record<string, any>) => Promise<void>;
   completeOnboarding: (onboardingData: Record<string, any>) => Promise<void>;
+  setUser: (user: User | null) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -38,8 +39,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const login = async (email: string, password: string) => {
     try {
       const response = await authService.login({ email, password });
-      setUser(response.user);
-      return response;
+      // Response should always have user property based on AuthResponse type
+      if (response && response.user) {
+        setUser(response.user);
+        return response;
+      }
+      throw new Error('Invalid login response format');
     } catch (error) {
       throw error;
     }
@@ -94,6 +99,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         logout,
         updatePreferences,
         completeOnboarding,
+        setUser,
       }}
     >
       {children}

@@ -36,7 +36,13 @@ export const authService = {
         '/auth/login/',
         credentials
       );
-      return response;
+      // Response is already extracted by api.post, so it's {user: User, message: string}
+      // Make sure the format is correct
+      if (response && response.user) {
+        return response;
+      }
+      // If response doesn't have user, it might be in a different format
+      throw new Error('Invalid login response format');
     } catch (error) {
       if (error instanceof ApiError) {
         throw error;
@@ -78,7 +84,15 @@ export const authService = {
   async getCurrentUser(): Promise<User | null> {
     try {
       const response = await api.get<{ user: User }>('/auth/user/');
-      return response.user;
+      // Response is already extracted by api.get, so it's {user: User}
+      if (response && response.user) {
+        return response.user;
+      }
+      // If response is the user object directly (shouldn't happen but handle it)
+      if (response && 'id' in response && 'email' in response) {
+        return response as User;
+      }
+      return null;
     } catch (error) {
       if (error instanceof ApiError && error.statusCode === 401) {
         // Not authenticated
@@ -116,6 +130,21 @@ export const authService = {
         throw error;
       }
       throw new Error('Failed to complete onboarding');
+    }
+  },
+
+  // Get OAuth login URL
+  async getOAuthLoginUrl(provider: 'google' | 'github'): Promise<string> {
+    try {
+      const response = await api.get<{ url: string; provider: string }>(
+        `/auth/oauth/login-url/?provider=${provider}`
+      );
+      return response.url;
+    } catch (error) {
+      if (error instanceof ApiError) {
+        throw error;
+      }
+      throw new Error('Failed to get OAuth URL');
     }
   },
 };

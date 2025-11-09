@@ -39,11 +39,35 @@ def signup_view(request):
                 'error': 'Email and password are required'
             }, status=status.HTTP_400_BAD_REQUEST)
         
-        # Check if user already exists
-        if User.objects.filter(email=email).exists():
-            return Response({
-                'error': 'A user with this email already exists'
-            }, status=status.HTTP_400_BAD_REQUEST)
+        # Check if user already exists (handle duplicates)
+        existing_users = User.objects.filter(email=email)
+        if existing_users.exists():
+            # If user exists, try to authenticate them instead
+            user = existing_users.first()
+            # Check if password matches
+            if user.check_password(password):
+                # Log them in (specify backend to avoid multiple backend error)
+                login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+                profile, created = UserProfile.objects.get_or_create(user=user)
+                return Response({
+                    'data': {
+                        'user': {
+                            'id': user.id,
+                            'email': user.email,
+                            'username': user.username,
+                            'first_name': user.first_name,
+                            'last_name': user.last_name,
+                            'preferences': profile.preferences,
+                            'onboarding_completed': profile.onboarding_completed,
+                            'onboarding_data': profile.onboarding_data
+                        },
+                        'message': 'Login successful'
+                    }
+                }, status=status.HTTP_200_OK)
+            else:
+                return Response({
+                    'error': 'A user with this email already exists'
+                }, status=status.HTTP_400_BAD_REQUEST)
         
         # Split full name into first and last name
         name_parts = full_name.split(' ', 1)
@@ -70,8 +94,8 @@ def signup_view(request):
         # Create user profile
         profile = UserProfile.objects.create(user=user)
         
-        # Log the user in
-        login(request, user)
+        # Log the user in (specify backend to avoid multiple backend error)
+        login(request, user, backend='django.contrib.auth.backends.ModelBackend')
         
         return Response({
             'data': {
@@ -108,10 +132,16 @@ def login_view(request):
                 'error': 'Email and password are required'
             }, status=status.HTTP_400_BAD_REQUEST)
         
-        # Find user by email
+        # Find user by email (handle duplicates by getting the first one)
         try:
-            user = User.objects.get(email=email)
-        except User.DoesNotExist:
+            users = User.objects.filter(email=email)
+            if not users.exists():
+                return Response({
+                    'error': 'Invalid email or password'
+                }, status=status.HTTP_401_UNAUTHORIZED)
+            # If multiple users exist, get the first one (or most recent)
+            user = users.order_by('-id').first()
+        except Exception as e:
             return Response({
                 'error': 'Invalid email or password'
             }, status=status.HTTP_401_UNAUTHORIZED)
@@ -124,8 +154,8 @@ def login_view(request):
                 'error': 'Invalid email or password'
             }, status=status.HTTP_401_UNAUTHORIZED)
         
-        # Log the user in
-        login(request, user)
+        # Log the user in (specify backend to avoid multiple backend error)
+        login(request, user, backend='django.contrib.auth.backends.ModelBackend')
         
         # Get or create user profile
         profile, created = UserProfile.objects.get_or_create(user=user)
@@ -423,6 +453,72 @@ def reset_password_view(request):
         return Response({
             'data': {
                 'message': 'Password has been reset successfully. You can now log in with your new password.'
+            }
+        }, status=status.HTTP_200_OK)
+        
+    except Exception as e:
+        return Response({
+            'error': str(e)
+        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def oauth_login_url_view(request):
+    """
+    Get OAuth login URLs for Google and GitHub
+    """
+    try:
+        provider = request.GET.get('provider')
+        
+        if provider not in ['google', 'github']:
+            return Response({
+                'error': 'Invalid provider. Use "google" or "github"'
+            }, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Build OAuth URL
+        base_url = request.build_absolute_uri('/').rstrip('/')
+        oauth_url = f"{base_url}/accounts/{provider}/login/"
+        
+        return Response({
+            'data': {
+                'url': oauth_url,
+                'provider': provider
+            }
+        }, status=status.HTTP_200_OK)
+        
+    except Exception as e:
+        return Response({
+            'error': str(e)
+        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def oauth_callback_view(request):
+    """
+    Handle OAuth callback and return user data
+    """
+    try:
+        if not request.user.is_authenticated:
+            return Response({
+                'error': 'Authentication failed'
+            }, status=status.HTTP_401_UNAUTHORIZED)
+        
+        user = request.user
+        profile, created = UserProfile.objects.get_or_create(user=user)
+        
+        return Response({
+            'data': {
+                'user': {
+                    'id': user.id,
+                    'email': user.email,
+                    'username': user.username,
+                    'first_name': user.first_name,
+                    'last_name': user.last_name,
+                    'preferences': profile.preferences,
+                    'onboarding_completed': profile.onboarding_completed,
+                    'onboarding_data': profile.onboarding_data
+                },
+                'message': 'OAuth login successful'
             }
         }, status=status.HTTP_200_OK)
         

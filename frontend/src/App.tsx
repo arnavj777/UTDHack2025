@@ -31,6 +31,7 @@ import { PMDailyBriefing } from './components/PMDailyBriefing';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { ForgotPasswordPage } from './components/ForgotPasswordPage';
 import { ResetPasswordPage } from './components/ResetPasswordPage';
+import { OAuthCallback } from './components/OAuthCallback';
 
 export default function App() {
   return (
@@ -43,6 +44,7 @@ export default function App() {
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/reset-password" element={<ResetPasswordPage />} />
+        <Route path="/oauth/callback" element={<OAuthCallback />} />
         <Route path="/onboarding" element={<ProtectedRoute><OnboardingWizard /></ProtectedRoute>} />
         
         {/* Protected workspace routes */}

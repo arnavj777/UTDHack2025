@@ -1,4 +1,4 @@
-import { Outlet, Link, useLocation } from 'react-router-dom';
+import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import { Button } from './ui/button';
 import { 
   Sparkles, LayoutDashboard, Target, Lightbulb, TrendingUp, Maximize2,
@@ -11,9 +11,23 @@ import { Input } from './ui/input';
 import { Avatar, AvatarFallback } from './ui/avatar';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from './ui/dropdown-menu';
 import { cn } from './ui/utils';
+import { useAuth } from '../contexts/AuthContext';
 
 export function DashboardLayout() {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { logout, user } = useAuth();
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      navigate('/login', { replace: true });
+    } catch (error) {
+      console.error('Logout failed:', error);
+      // Still navigate to login even if logout request fails
+      navigate('/login', { replace: true });
+    }
+  };
 
   const navigation = [
     { name: 'Dashboard', path: '/workspace/dashboard', icon: LayoutDashboard },
@@ -193,16 +207,22 @@ export function DashboardLayout() {
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="gap-2">
                     <Avatar className="w-8 h-8">
-                      <AvatarFallback>JD</AvatarFallback>
+                      <AvatarFallback>
+                        {user?.first_name?.[0] || user?.email?.[0] || 'U'}
+                      </AvatarFallback>
                     </Avatar>
-                    <span className="hidden md:inline">John Doe</span>
+                    <span className="hidden md:inline">
+                      {user?.first_name && user?.last_name 
+                        ? `${user.first_name} ${user.last_name}` 
+                        : user?.email || 'User'}
+                    </span>
                     <ChevronDown className="w-4 h-4" />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-56">
                   <div className="px-2 py-1.5">
-                    <p>John Doe</p>
-                    <p className="text-slate-500 text-sm">john@company.com</p>
+                    <p>{user?.first_name && user?.last_name ? `${user.first_name} ${user.last_name}` : user?.email || 'User'}</p>
+                    <p className="text-slate-500 text-sm">{user?.email || 'No email'}</p>
                   </div>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem>
@@ -214,12 +234,10 @@ export function DashboardLayout() {
                     Team Management
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
-                  <Link to="/login">
-                    <DropdownMenuItem>
-                      <LogOut className="w-4 h-4 mr-2" />
-                      Sign Out
-                    </DropdownMenuItem>
-                  </Link>
+                  <DropdownMenuItem onClick={handleLogout}>
+                    <LogOut className="w-4 h-4 mr-2" />
+                    Sign Out
+                  </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>

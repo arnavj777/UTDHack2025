@@ -14,5 +14,8 @@ urlpatterns = [
     path('auth/forgot-password/', views.forgot_password_view, name='forgot_password'),
     path('auth/validate-reset-token/', views.validate_reset_token_view, name='validate_reset_token'),
     path('auth/reset-password/', views.reset_password_view, name='reset_password'),
+    # OAuth endpoints
+    path('auth/oauth/login-url/', views.oauth_login_url_view, name='oauth_login_url'),
+    path('auth/oauth/callback/', views.oauth_callback_view, name='oauth_callback'),
 ]
 
