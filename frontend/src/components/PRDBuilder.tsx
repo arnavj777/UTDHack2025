@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { Card } from './ui/card';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
@@ -5,10 +6,295 @@ import { Input } from './ui/input';
 import { Textarea } from './ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
-import { Sparkles, Plus, Save, Download, MessageSquare, Clock, CheckCircle, AlertCircle } from 'lucide-react';
+import { Sparkles, Plus, Save, Download, MessageSquare, Clock, CheckCircle, AlertCircle, Trash2, X } from 'lucide-react';
 import { Separator } from './ui/separator';
 
+interface PRD {
+  id?: number;
+  feature_name: string;
+  owner: string;
+  status: string;
+  target_release: string;
+  problem_statement: string;
+  customer_pain_points: string[];
+  supporting_data: string[];
+  goals: Array<{ goal: string; keyResults: string }>;
+  key_results: string;
+  functional_requirements: Array<{ id: string; title: string; priority: string; status: string }>;
+  metrics: Array<{ metric: string; target: string; current: string; measurement: string }>;
+}
+
+const API_BASE_URL = '/api/prds';
+
 export function PRDBuilder() {
+  const [prds, setPrds] = useState<PRD[]>([]);
+  const [currentPrdId, setCurrentPrdId] = useState<number | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
+
+  // PRD form state
+  const [featureName, setFeatureName] = useState('');
+  const [owner, setOwner] = useState('');
+  const [status, setStatus] = useState('draft');
+  const [targetRelease, setTargetRelease] = useState('');
+  const [problemStatement, setProblemStatement] = useState('');
+  const [customerPainPoints, setCustomerPainPoints] = useState<string[]>(['']);
+  const [supportingData, setSupportingData] = useState<string[]>(['']);
+  const [goals, setGoals] = useState<Array<{ goal: string; keyResults: string }>>([{ goal: '', keyResults: '' }]);
+  const [keyResults, setKeyResults] = useState('');
+  const [functionalRequirements, setFunctionalRequirements] = useState<Array<{ id: string; title: string; priority: string; status: string }>>([
+    { id: 'REQ-1', title: '', priority: 'High', status: 'Draft' }
+  ]);
+  const [metrics, setMetrics] = useState<Array<{ metric: string; target: string; current: string; measurement: string }>>([
+    { metric: '', target: '', current: '', measurement: '' }
+  ]);
+
+  // Load all PRDs on mount
+  useEffect(() => {
+    loadPRDs();
+  }, []);
+
+  // Load PRD data when currentPrdId changes
+  useEffect(() => {
+    if (currentPrdId) {
+      loadPRD(currentPrdId);
+    }
+    // Don't reset form when currentPrdId becomes null - let user continue editing
+  }, [currentPrdId]);
+
+  const loadPRDs = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch(API_BASE_URL + '/');
+      if (!response.ok) throw new Error('Failed to load PRDs');
+      const data = await response.json();
+      setPrds(data);
+      // Don't auto-select first PRD - let user choose or create new
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to load PRDs');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const loadPRD = async (id: number) => {
+    try {
+      setLoading(true);
+      const response = await fetch(`${API_BASE_URL}/${id}/`);
+      if (!response.ok) throw new Error('Failed to load PRD');
+      const data = await response.json();
+      populateForm(data);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to load PRD');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const populateForm = (prd: PRD) => {
+    setFeatureName(prd.feature_name || '');
+    setOwner(prd.owner || '');
+    setStatus(prd.status || 'draft');
+    // Format date for HTML date input (YYYY-MM-DD)
+    if (prd.target_release) {
+      const date = new Date(prd.target_release);
+      setTargetRelease(date.toISOString().split('T')[0]);
+    } else {
+      setTargetRelease('');
+    }
+    setProblemStatement(prd.problem_statement || '');
+    setCustomerPainPoints(prd.customer_pain_points && prd.customer_pain_points.length > 0 ? prd.customer_pain_points : ['']);
+    setSupportingData(prd.supporting_data && prd.supporting_data.length > 0 ? prd.supporting_data : ['']);
+    setGoals(prd.goals && prd.goals.length > 0 ? prd.goals : [{ goal: '', keyResults: '' }]);
+    setKeyResults(prd.key_results || '');
+    setFunctionalRequirements(prd.functional_requirements && prd.functional_requirements.length > 0 ? prd.functional_requirements : [{ id: 'REQ-1', title: '', priority: 'High', status: 'Draft' }]);
+    setMetrics(prd.metrics && prd.metrics.length > 0 ? prd.metrics : [{ metric: '', target: '', current: '', measurement: '' }]);
+  };
+
+  const resetForm = () => {
+    setFeatureName('');
+    setOwner('');
+    setStatus('draft');
+    setTargetRelease('');
+    setProblemStatement('');
+    setCustomerPainPoints(['']);
+    setSupportingData(['']);
+    setGoals([{ goal: '', keyResults: '' }]);
+    setKeyResults('');
+    setFunctionalRequirements([{ id: 'REQ-1', title: '', priority: 'High', status: 'Draft' }]);
+    setMetrics([{ metric: '', target: '', current: '', measurement: '' }]);
+  };
+
+  const savePRD = async () => {
+    try {
+      setSaving(true);
+      setError(null);
+      setSuccess(null);
+
+      const prdData: any = {
+        feature_name: featureName,
+        owner: owner,
+        status: status,
+        target_release: targetRelease || null,
+        problem_statement: problemStatement,
+        customer_pain_points: customerPainPoints.filter(p => p.trim() !== ''),
+        supporting_data: supportingData.filter(s => s.trim() !== ''),
+        goals: goals.filter(g => g.goal.trim() !== ''),
+        key_results: keyResults,
+        functional_requirements: functionalRequirements.filter(r => r.title.trim() !== ''),
+        metrics: metrics.filter(m => m.metric.trim() !== ''),
+      };
+      
+      // Remove null target_release if empty
+      if (!targetRelease) {
+        prdData.target_release = null;
+      }
+
+      const url = currentPrdId ? `${API_BASE_URL}/${currentPrdId}/` : API_BASE_URL + '/';
+      const method = currentPrdId ? 'PUT' : 'POST';
+
+      const response = await fetch(url, {
+        method,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(prdData),
+      });
+
+      if (!response.ok) throw new Error('Failed to save PRD');
+      
+      const savedPrd = await response.json();
+      setSuccess('PRD saved successfully!');
+      
+      if (!currentPrdId) {
+        setCurrentPrdId(savedPrd.id);
+      }
+      
+      await loadPRDs();
+      
+      setTimeout(() => setSuccess(null), 3000);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to save PRD');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const createNewPRD = () => {
+    setCurrentPrdId(null);
+    resetForm();
+    setSuccess(null);
+    setError(null);
+  };
+
+  const deletePRD = async (id: number) => {
+    if (!confirm('Are you sure you want to delete this PRD?')) return;
+    
+    try {
+      const response = await fetch(`${API_BASE_URL}/${id}/`, {
+        method: 'DELETE',
+      });
+      if (!response.ok) throw new Error('Failed to delete PRD');
+      await loadPRDs();
+      if (currentPrdId === id) {
+        setCurrentPrdId(null);
+        resetForm();
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to delete PRD');
+    }
+  };
+
+  // Pain Points handlers
+  const addPainPoint = () => {
+    setCustomerPainPoints([...customerPainPoints, '']);
+  };
+
+  const removePainPoint = (index: number) => {
+    if (customerPainPoints.length > 1) {
+      setCustomerPainPoints(customerPainPoints.filter((_, i) => i !== index));
+    }
+  };
+
+  const updatePainPoint = (index: number, value: string) => {
+    const updated = [...customerPainPoints];
+    updated[index] = value;
+    setCustomerPainPoints(updated);
+  };
+
+  // Supporting Data handlers
+  const addSupportingData = () => {
+    setSupportingData([...supportingData, '']);
+  };
+
+  const removeSupportingData = (index: number) => {
+    if (supportingData.length > 1) {
+      setSupportingData(supportingData.filter((_, i) => i !== index));
+    }
+  };
+
+  const updateSupportingData = (index: number, value: string) => {
+    const updated = [...supportingData];
+    updated[index] = value;
+    setSupportingData(updated);
+  };
+
+  // Goals handlers
+  const addGoal = () => {
+    setGoals([...goals, { goal: '', keyResults: '' }]);
+  };
+
+  const removeGoal = (index: number) => {
+    if (goals.length > 1) {
+      setGoals(goals.filter((_, i) => i !== index));
+    }
+  };
+
+  const updateGoal = (index: number, field: 'goal' | 'keyResults', value: string) => {
+    const updated = [...goals];
+    updated[index] = { ...updated[index], [field]: value };
+    setGoals(updated);
+  };
+
+  // Requirements handlers
+  const addRequirement = () => {
+    const newId = `REQ-${functionalRequirements.length + 1}`;
+    setFunctionalRequirements([...functionalRequirements, { id: newId, title: '', priority: 'High', status: 'Draft' }]);
+  };
+
+  const removeRequirement = (index: number) => {
+    if (functionalRequirements.length > 1) {
+      setFunctionalRequirements(functionalRequirements.filter((_, i) => i !== index));
+    }
+  };
+
+  const updateRequirement = (index: number, field: string, value: string) => {
+    const updated = [...functionalRequirements];
+    updated[index] = { ...updated[index], [field]: value };
+    setFunctionalRequirements(updated);
+  };
+
+  // Metrics handlers
+  const addMetric = () => {
+    setMetrics([...metrics, { metric: '', target: '', current: '', measurement: '' }]);
+  };
+
+  const removeMetric = (index: number) => {
+    if (metrics.length > 1) {
+      setMetrics(metrics.filter((_, i) => i !== index));
+    }
+  };
+
+  const updateMetric = (index: number, field: string, value: string) => {
+    const updated = [...metrics];
+    updated[index] = { ...updated[index], [field]: value };
+    setMetrics(updated);
+  };
+
+  const currentPRD = prds.find(p => p.id === currentPrdId);
+
   return (
     <div className="space-y-6 max-w-7xl">
       {/* Header */}
@@ -26,12 +312,79 @@ export function PRDBuilder() {
             <Sparkles className="w-4 h-4" />
             AI Fill Sections
           </Button>
-          <Button className="gap-2">
+          <Button className="gap-2" onClick={savePRD} disabled={saving}>
             <Save className="w-4 h-4" />
-            Save Draft
+            {saving ? 'Saving...' : 'Save Draft'}
           </Button>
         </div>
       </div>
+
+      {/* PRD Selection */}
+      <Card className="p-4">
+        <div className="flex items-center gap-4">
+          <div className="flex-1">
+            <label className="text-sm text-slate-600 mb-2 block">Select PRD</label>
+            <Select value={currentPrdId?.toString() || 'new'} onValueChange={(value) => {
+              if (value === 'new') {
+                createNewPRD();
+              } else {
+                setCurrentPrdId(parseInt(value));
+              }
+            }}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select a PRD or create new" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="new">
+                  <span className="flex items-center gap-2">
+                    <Plus className="w-4 h-4" />
+                    Create New PRD
+                  </span>
+                </SelectItem>
+                {prds.map((prd) => (
+                  <SelectItem key={prd.id} value={prd.id?.toString() || ''}>
+                    {prd.feature_name || `PRD #${prd.id}`}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <Button variant="outline" onClick={createNewPRD} className="mt-6">
+            <Plus className="w-4 h-4 mr-2" />
+            New PRD
+          </Button>
+          {currentPrdId && (
+            <Button variant="outline" onClick={() => deletePRD(currentPrdId)} className="mt-6 text-red-600">
+              <Trash2 className="w-4 h-4 mr-2" />
+              Delete
+            </Button>
+          )}
+        </div>
+      </Card>
+
+      {/* Success/Error Messages */}
+      {success && (
+        <Card className="p-4 bg-green-50 border-green-200">
+          <div className="flex items-center gap-2 text-green-800">
+            <CheckCircle className="w-5 h-5" />
+            <span>{success}</span>
+          </div>
+        </Card>
+      )}
+      {error && (
+        <Card className="p-4 bg-red-50 border-red-200">
+          <div className="flex items-center gap-2 text-red-800">
+            <AlertCircle className="w-5 h-5" />
+            <span>{error}</span>
+          </div>
+        </Card>
+      )}
+
+      {loading && !currentPrdId && prds.length === 0 && (
+        <Card className="p-6">
+          <div className="text-center text-slate-600">Loading PRDs...</div>
+        </Card>
+      )}
 
       <div className="grid lg:grid-cols-3 gap-6">
         {/* Main Editor */}
@@ -43,29 +396,26 @@ export function PRDBuilder() {
                 <label className="text-slate-600">Feature Name</label>
                 <Input 
                   placeholder="e.g., Biometric Authentication" 
-                  defaultValue="Biometric Authentication"
+                  value={featureName}
+                  onChange={(e) => setFeatureName(e.target.value)}
                   className="text-xl"
+                  disabled={false}
                 />
               </div>
 
               <div className="grid md:grid-cols-3 gap-4">
                 <div className="space-y-2">
                   <label className="text-slate-600">Owner</label>
-                  <Select defaultValue="john">
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="john">John Doe</SelectItem>
-                      <SelectItem value="sarah">Sarah Chen</SelectItem>
-                      <SelectItem value="michael">Michael Torres</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <Input
+                    placeholder="Owner name"
+                    value={owner}
+                    onChange={(e) => setOwner(e.target.value)}
+                  />
                 </div>
 
                 <div className="space-y-2">
                   <label className="text-slate-600">Status</label>
-                  <Select defaultValue="draft">
+                  <Select value={status} onValueChange={setStatus}>
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
@@ -79,7 +429,11 @@ export function PRDBuilder() {
 
                 <div className="space-y-2">
                   <label className="text-slate-600">Target Release</label>
-                  <Input type="date" defaultValue="2026-01-15" />
+                  <Input 
+                    type="date" 
+                    value={targetRelease}
+                    onChange={(e) => setTargetRelease(e.target.value)}
+                  />
                 </div>
               </div>
             </div>
@@ -108,35 +462,73 @@ export function PRDBuilder() {
                 <Textarea 
                   className="min-h-32 mb-4"
                   placeholder="What problem are we solving?"
-                  defaultValue="Users are frustrated with slow and insecure password-based login. Industry data shows that 67% of users prefer biometric authentication for mobile banking apps, and our customer feedback indicates this is a top requested feature."
+                  value={problemStatement}
+                  onChange={(e) => setProblemStatement(e.target.value)}
                 />
 
                 <Separator className="my-4" />
 
-                <h4 className="mb-3">Customer Pain Points</h4>
-                <ul className="space-y-2 mb-4">
-                  {[
-                    'Typing passwords on mobile is error-prone and time-consuming',
-                    'Users forget passwords and require frequent resets',
-                    'Security concerns about password storage and reuse',
-                    'Competitors offer biometric auth - we\'re falling behind'
-                  ].map((point, index) => (
-                    <li key={index} className="flex items-start gap-2">
-                      <div className="w-1.5 h-1.5 bg-slate-400 rounded-full mt-2" />
-                      <span>{point}</span>
-                    </li>
+                <div className="flex items-center justify-between mb-3">
+                  <h4>Customer Pain Points</h4>
+                  <Button variant="outline" size="sm" onClick={addPainPoint} className="gap-2">
+                    <Plus className="w-4 h-4" />
+                    Add
+                  </Button>
+                </div>
+                <div className="space-y-2 mb-4">
+                  {customerPainPoints.map((point, index) => (
+                    <div key={index} className="flex items-center gap-2">
+                      <div className="w-1.5 h-1.5 bg-slate-400 rounded-full mt-2 shrink-0" />
+                      <Input
+                        value={point}
+                        onChange={(e) => updatePainPoint(index, e.target.value)}
+                        placeholder="Enter pain point"
+                        className="flex-1"
+                      />
+                      {customerPainPoints.length > 1 && (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => removePainPoint(index)}
+                          className="text-red-600 hover:text-red-700"
+                        >
+                          <X className="w-4 h-4" />
+                        </Button>
+                      )}
+                    </div>
                   ))}
-                </ul>
+                </div>
 
-                <h4 className="mb-3">Supporting Data</h4>
-                <Card className="p-4 bg-slate-50">
-                  <ul className="space-y-2">
-                    <li>• 234 customer feedback mentions requesting biometric auth</li>
-                    <li>• 42% of login attempts fail due to incorrect passwords</li>
-                    <li>• Password reset flow has 35% drop-off rate</li>
-                    <li>• 5 of top 10 banking apps have biometric auth</li>
-                  </ul>
-                </Card>
+                <div className="flex items-center justify-between mb-3">
+                  <h4>Supporting Data</h4>
+                  <Button variant="outline" size="sm" onClick={addSupportingData} className="gap-2">
+                    <Plus className="w-4 h-4" />
+                    Add
+                  </Button>
+                </div>
+                <div className="space-y-2">
+                  {supportingData.map((data, index) => (
+                    <div key={index} className="flex items-center gap-2">
+                      <span className="text-slate-600">•</span>
+                      <Input
+                        value={data}
+                        onChange={(e) => updateSupportingData(index, e.target.value)}
+                        placeholder="Enter supporting data point"
+                        className="flex-1"
+                      />
+                      {supportingData.length > 1 && (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => removeSupportingData(index)}
+                          className="text-red-600 hover:text-red-700"
+                        >
+                          <X className="w-4 h-4" />
+                        </Button>
+                      )}
+                    </div>
+                  ))}
+                </div>
               </Card>
             </TabsContent>
 
@@ -150,20 +542,41 @@ export function PRDBuilder() {
                   </Button>
                 </div>
 
-                <h4 className="mb-3">Primary Goals</h4>
+                <div className="flex items-center justify-between mb-3">
+                  <h4>Primary Goals</h4>
+                  <Button variant="outline" size="sm" onClick={addGoal} className="gap-2">
+                    <Plus className="w-4 h-4" />
+                    Add Goal
+                  </Button>
+                </div>
                 <div className="space-y-3 mb-6">
-                  {[
-                    { goal: 'Reduce login time by 70%', metric: 'Avg 2s vs 7s with password' },
-                    { goal: 'Increase login success rate to 95%', metric: 'From current 58%' },
-                    { goal: 'Improve user satisfaction (NPS)', metric: 'Target +15 points' }
-                  ].map((item, index) => (
+                  {goals.map((item, index) => (
                     <Card key={index} className="p-4">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <div className="mb-1">{item.goal}</div>
-                          <div className="text-slate-500">{item.metric}</div>
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between gap-2">
+                          <Input
+                            value={item.goal}
+                            onChange={(e) => updateGoal(index, 'goal', e.target.value)}
+                            placeholder="Enter goal"
+                            className="flex-1"
+                          />
+                          {goals.length > 1 && (
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => removeGoal(index)}
+                              className="text-red-600 hover:text-red-700 shrink-0"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
+                          )}
                         </div>
-                        <CheckCircle className="w-5 h-5 text-green-600" />
+                        <Input
+                          value={item.keyResults}
+                          onChange={(e) => updateGoal(index, 'keyResults', e.target.value)}
+                          placeholder="Enter key results/metric"
+                          className="text-slate-500"
+                        />
                       </div>
                     </Card>
                   ))}
@@ -172,7 +585,9 @@ export function PRDBuilder() {
                 <h4 className="mb-3">Key Results</h4>
                 <Textarea 
                   className="min-h-24"
-                  defaultValue="- 80% of eligible users enable biometric auth within first month&#10;- Login failures drop from 42% to <5%&#10;- Password reset requests decrease by 60%&#10;- App store reviews mention improved login experience"
+                  placeholder="Enter key results"
+                  value={keyResults}
+                  onChange={(e) => setKeyResults(e.target.value)}
                 />
               </Card>
             </TabsContent>
@@ -181,60 +596,62 @@ export function PRDBuilder() {
               <Card className="p-6">
                 <div className="flex items-center justify-between mb-4">
                   <h3>Functional Requirements</h3>
-                  <Button variant="outline" size="sm" className="gap-2">
+                  <Button variant="outline" size="sm" className="gap-2" onClick={addRequirement}>
                     <Plus className="w-4 h-4" />
                     Add Requirement
                   </Button>
                 </div>
 
                 <div className="space-y-3">
-                  {[
-                    {
-                      id: 'REQ-1',
-                      title: 'Support Face ID on iOS devices',
-                      priority: 'High',
-                      status: 'Approved'
-                    },
-                    {
-                      id: 'REQ-2',
-                      title: 'Support fingerprint auth on Android devices',
-                      priority: 'High',
-                      status: 'Approved'
-                    },
-                    {
-                      id: 'REQ-3',
-                      title: 'Fallback to password if biometric fails',
-                      priority: 'High',
-                      status: 'Approved'
-                    },
-                    {
-                      id: 'REQ-4',
-                      title: 'Allow users to enable/disable biometric in settings',
-                      priority: 'Medium',
-                      status: 'In Review'
-                    },
-                    {
-                      id: 'REQ-5',
-                      title: 'Re-authenticate for sensitive transactions',
-                      priority: 'High',
-                      status: 'Approved'
-                    }
-                  ].map((req, index) => (
+                  {functionalRequirements.map((req, index) => (
                     <Card key={index} className="p-4">
-                      <div className="flex items-center justify-between">
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2 mb-1">
-                            <span className="font-mono text-blue-600">{req.id}</span>
-                            <span>{req.title}</span>
-                          </div>
+                      <div className="space-y-2">
+                        <div className="flex items-center gap-2">
+                          <span className="font-mono text-blue-600 shrink-0">{req.id}</span>
+                          <Input
+                            value={req.title}
+                            onChange={(e) => updateRequirement(index, 'title', e.target.value)}
+                            placeholder="Enter requirement title"
+                            className="flex-1"
+                          />
+                          {functionalRequirements.length > 1 && (
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => removeRequirement(index)}
+                              className="text-red-600 hover:text-red-700 shrink-0"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
+                          )}
                         </div>
                         <div className="flex items-center gap-2">
-                          <Badge variant={req.priority === 'High' ? 'destructive' : 'secondary'}>
-                            {req.priority}
-                          </Badge>
-                          <Badge variant={req.status === 'Approved' ? 'default' : 'outline'}>
-                            {req.status}
-                          </Badge>
+                          <Select
+                            value={req.priority}
+                            onValueChange={(value) => updateRequirement(index, 'priority', value)}
+                          >
+                            <SelectTrigger className="w-32">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="High">High</SelectItem>
+                              <SelectItem value="Medium">Medium</SelectItem>
+                              <SelectItem value="Low">Low</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <Select
+                            value={req.status}
+                            onValueChange={(value) => updateRequirement(index, 'status', value)}
+                          >
+                            <SelectTrigger className="w-32">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="Draft">Draft</SelectItem>
+                              <SelectItem value="In Review">In Review</SelectItem>
+                              <SelectItem value="Approved">Approved</SelectItem>
+                            </SelectContent>
+                          </Select>
                         </div>
                       </div>
                     </Card>
@@ -290,33 +707,61 @@ export function PRDBuilder() {
 
             <TabsContent value="metrics">
               <Card className="p-6">
-                <h3 className="mb-4">Success Metrics</h3>
+                <div className="flex items-center justify-between mb-4">
+                  <h3>Success Metrics</h3>
+                  <Button variant="outline" size="sm" onClick={addMetric} className="gap-2">
+                    <Plus className="w-4 h-4" />
+                    Add Metric
+                  </Button>
+                </div>
 
                 <div className="space-y-4">
-                  {[
-                    { metric: 'Biometric Adoption Rate', target: '80%', current: '-', measurement: 'Weekly' },
-                    { metric: 'Login Success Rate', target: '95%', current: '58%', measurement: 'Daily' },
-                    { metric: 'Avg Login Time', target: '2s', current: '7s', measurement: 'Real-time' },
-                    { metric: 'Password Reset Requests', target: '-60%', current: 'Baseline', measurement: 'Weekly' },
-                    { metric: 'User Satisfaction (NPS)', target: '+15', current: '72', measurement: 'Monthly' }
-                  ].map((item, index) => (
+                  {metrics.map((item, index) => (
                     <Card key={index} className="p-4">
-                      <div className="grid md:grid-cols-4 gap-4">
-                        <div>
-                          <div className="text-slate-600 mb-1">Metric</div>
-                          <div>{item.metric}</div>
+                      <div className="space-y-2">
+                        <div className="flex items-center gap-2">
+                          <Input
+                            value={item.metric}
+                            onChange={(e) => updateMetric(index, 'metric', e.target.value)}
+                            placeholder="Metric name"
+                            className="flex-1"
+                          />
+                          {metrics.length > 1 && (
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => removeMetric(index)}
+                              className="text-red-600 hover:text-red-700 shrink-0"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
+                          )}
                         </div>
-                        <div>
-                          <div className="text-slate-600 mb-1">Target</div>
-                          <div className="text-green-600">{item.target}</div>
-                        </div>
-                        <div>
-                          <div className="text-slate-600 mb-1">Current</div>
-                          <div>{item.current}</div>
-                        </div>
-                        <div>
-                          <div className="text-slate-600 mb-1">Measurement</div>
-                          <div>{item.measurement}</div>
+                        <div className="grid md:grid-cols-3 gap-4">
+                          <div>
+                            <div className="text-slate-600 mb-1 text-sm">Target</div>
+                            <Input
+                              value={item.target}
+                              onChange={(e) => updateMetric(index, 'target', e.target.value)}
+                              placeholder="Target value"
+                            />
+                          </div>
+                          <div>
+                            <div className="text-slate-600 mb-1 text-sm">Current</div>
+                            <Input
+                              value={item.current}
+                              onChange={(e) => updateMetric(index, 'current', e.target.value)}
+                              placeholder="Current value"
+                            />
+                          </div>
+                          <div>
+                            <div className="text-slate-600 mb-1 text-sm">Measurement</div>
+                            <Input
+                              value={item.measurement}
+                              onChange={(e) => updateMetric(index, 'measurement', e.target.value)}
+                              placeholder="e.g., Weekly"
+                            />
+                          </div>
                         </div>
                       </div>
                     </Card>
@@ -463,14 +908,13 @@ export function PRDBuilder() {
               <h4>Version History</h4>
             </div>
             <div className="space-y-2 text-slate-600">
-              <div>v1.3 - Current Draft</div>
-              <div>v1.2 - Nov 5, 2025</div>
-              <div>v1.1 - Nov 1, 2025</div>
-              <div>v1.0 - Oct 28, 2025</div>
+              {currentPRD && (
+                <>
+                  <div>Last Updated: {new Date(currentPRD.updated_at || '').toLocaleDateString()}</div>
+                  <div>Created: {new Date(currentPRD.created_at || '').toLocaleDateString()}</div>
+                </>
+              )}
             </div>
-            <Button variant="ghost" size="sm" className="w-full mt-4">
-              View All Versions
-            </Button>
           </Card>
         </div>
       </div>
