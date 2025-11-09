@@ -49,14 +49,13 @@ export function LoginPage() {
           <div className="space-y-2">
             <div className="flex justify-between">
               <Label htmlFor="password">Password</Label>
-              <Link to="/forgot-password" className="text-blue-600 hover:underline text-sm">
+              <Link to="/forgot-password" className="text-blue-600 hover:underline">
                 Forgot?
               </Link>
             </div>
             <Input 
               id="password" 
               type="password"
-              placeholder="Enter your password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
@@ -109,4 +108,3 @@ export function LoginPage() {
     </div>
   );
 }
-

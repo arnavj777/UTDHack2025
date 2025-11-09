@@ -92,7 +92,7 @@ export function LandingPage() {
             <Sparkles className="w-4 h-4 text-blue-600" />
             <span className="text-blue-900">AI-Powered Product Management</span>
           </div>
-          <h1 className="text-5xl md:text-6xl font-bold text-slate-900 max-w-4xl mx-auto mb-6">
+          <h1 className="max-w-4xl mx-auto mb-6">
             Ship Better Products Faster with AI
           </h1>
           <p className="max-w-2xl mx-auto text-slate-600 mb-8">
@@ -351,4 +351,3 @@ export function LandingPage() {
     </div>
   );
 }
-
