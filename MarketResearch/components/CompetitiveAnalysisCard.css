@@ -1,0 +1,258 @@
+.competitive-analysis-card .card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.competitive-analysis-card .card-icon {
+  font-size: 28px;
+}
+
+.competitive-analysis-card h2 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+  color: #1A1A1A;
+}
+
+.competitive-analysis-card .card-content {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.competitive-analysis-card .analysis-section {
+  border-bottom: 1px solid #E0E0E0;
+  padding-bottom: 20px;
+}
+
+.competitive-analysis-card .analysis-section:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.competitive-analysis-card h3 {
+  margin: 0 0 16px 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #1A1A1A;
+}
+
+.competitive-analysis-card h4 {
+  margin: 0 0 8px 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: #1A1A1A;
+}
+
+.competitive-analysis-card .competitors-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.competitive-analysis-card .competitor-item {
+  background: #FAFAFA;
+  padding: 16px;
+  border-radius: 8px;
+  border-left: 4px solid #4A90E2;
+}
+
+.competitive-analysis-card .competitor-item.indirect {
+  border-left-color: #9C27B0;
+}
+
+.competitive-analysis-card .competitor-description {
+  margin: 8px 0;
+  color: #666666;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.competitive-analysis-card .market-position {
+  display: inline-block;
+  background: #E3F2FD;
+  color: #1976D2;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.competitive-analysis-card .market-share-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.competitive-analysis-card .share-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  background: #FAFAFA;
+  border-radius: 6px;
+}
+
+.competitive-analysis-card .competitor-name {
+  font-weight: 500;
+  color: #1A1A1A;
+}
+
+.competitive-analysis-card .share-value {
+  font-weight: 600;
+  color: #4A90E2;
+  font-size: 16px;
+}
+
+.competitive-analysis-card .swot-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.competitive-analysis-card .swot-quadrant {
+  padding: 16px;
+  border-radius: 8px;
+  border: 2px solid;
+}
+
+.competitive-analysis-card .swot-quadrant.strengths {
+  background: #E8F5E9;
+  border-color: #4CAF50;
+}
+
+.competitive-analysis-card .swot-quadrant.weaknesses {
+  background: #FFF3E0;
+  border-color: #FF9800;
+}
+
+.competitive-analysis-card .swot-quadrant.opportunities {
+  background: #E3F2FD;
+  border-color: #2196F3;
+}
+
+.competitive-analysis-card .swot-quadrant.threats {
+  background: #FFEBEE;
+  border-color: #F44336;
+}
+
+.competitive-analysis-card .swot-quadrant h4 {
+  margin: 0 0 12px 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.competitive-analysis-card .swot-quadrant.strengths h4 {
+  color: #2E7D32;
+}
+
+.competitive-analysis-card .swot-quadrant.weaknesses h4 {
+  color: #F57C00;
+}
+
+.competitive-analysis-card .swot-quadrant.opportunities h4 {
+  color: #1976D2;
+}
+
+.competitive-analysis-card .swot-quadrant.threats h4 {
+  color: #C62828;
+}
+
+.competitive-analysis-card .swot-quadrant ul {
+  margin: 0;
+  padding-left: 20px;
+  color: #1A1A1A;
+}
+
+.competitive-analysis-card .swot-quadrant li {
+  margin-bottom: 6px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.competitive-analysis-card .comparison-content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.competitive-analysis-card .comparison-item h4 {
+  margin: 0 0 8px 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: #666666;
+}
+
+.competitive-analysis-card .comparison-item ul {
+  margin: 0;
+  padding-left: 20px;
+  color: #1A1A1A;
+}
+
+.competitive-analysis-card .comparison-item li {
+  margin-bottom: 6px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* Mobile (< 768px) */
+@media (max-width: 767px) {
+  .competitive-analysis-card .card-header {
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  
+  .competitive-analysis-card .card-icon {
+    font-size: 24px;
+  }
+  
+  .competitive-analysis-card h2 {
+    font-size: 20px;
+  }
+  
+  .competitive-analysis-card h3 {
+    font-size: 16px;
+    margin-bottom: 12px;
+  }
+  
+  .competitive-analysis-card h4 {
+    font-size: 14px;
+  }
+  
+  .competitive-analysis-card .card-content {
+    gap: 16px;
+  }
+  
+  .competitive-analysis-card .analysis-section {
+    padding-bottom: 16px;
+  }
+  
+  .competitive-analysis-card .swot-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  
+  .competitive-analysis-card .swot-quadrant {
+    padding: 12px;
+  }
+  
+  .competitive-analysis-card .competitor-item {
+    padding: 12px;
+  }
+  
+  .competitive-analysis-card .share-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    padding: 10px;
+  }
+}
+
+/* Tablet (768px - 1024px) */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .competitive-analysis-card .swot-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

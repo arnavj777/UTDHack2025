@@ -1,0 +1,145 @@
+.research-generator {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 48px 24px;
+  text-align: center;
+}
+
+.research-generator__header {
+  margin-bottom: 32px;
+}
+
+.research-generator__title {
+  font-size: 32px;
+  font-weight: 700;
+  color: #1A1A1A;
+  margin: 0 0 16px 0;
+  line-height: 1.2;
+}
+
+.research-generator__description {
+  font-size: 16px;
+  color: #666666;
+  margin: 0;
+  line-height: 1.5;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.research-generator__form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-width: 600px;
+  margin: 0 auto 32px;
+}
+
+.research-generator__input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  text-align: left;
+}
+
+.research-generator__label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1A1A1A;
+  margin: 0;
+}
+
+.research-generator__input {
+  width: 100%;
+  padding: 14px 16px;
+  font-size: 16px;
+  font-family: inherit;
+  color: #1A1A1A;
+  background: #FFFFFF;
+  border: 2px solid #E0E0E0;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+.research-generator__input:hover:not(:disabled) {
+  border-color: #B0B0B0;
+}
+
+.research-generator__input:focus {
+  outline: none;
+  border-color: #2563EB;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.research-generator__input:disabled {
+  background: #F5F5F5;
+  color: #999999;
+  cursor: not-allowed;
+}
+
+.research-generator__input::placeholder {
+  color: #999999;
+}
+
+.research-generator__button {
+  width: 100%;
+  padding: 16px 32px;
+  font-size: 18px;
+}
+
+.research-generator__loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 48px 24px;
+  background: #FAFAFA;
+  border-radius: 12px;
+  border: 1px solid #E0E0E0;
+}
+
+.research-generator__loading-text {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1A1A1A;
+  margin: 0;
+}
+
+.research-generator__loading-subtext {
+  font-size: 14px;
+  color: #666666;
+  margin: 0;
+}
+
+.research-generator__error {
+  margin-top: 24px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .research-generator {
+    padding: 32px 16px;
+  }
+
+  .research-generator__title {
+    font-size: 24px;
+  }
+
+  .research-generator__description {
+    font-size: 14px;
+  }
+
+  .research-generator__button {
+    min-width: 200px;
+    padding: 14px 24px;
+    font-size: 16px;
+  }
+
+  .research-generator__loading {
+    padding: 32px 16px;
+  }
+
+  .research-generator__loading-text {
+    font-size: 16px;
+  }
+}

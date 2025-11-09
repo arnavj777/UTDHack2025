@@ -1,0 +1,304 @@
+/* ============================================
+   Responsive Utilities
+   Market Research Tool - Mobile Optimization
+   ============================================ */
+
+/* ============================================
+   Breakpoint Reference
+   Mobile: < 768px
+   Tablet: 768px - 1024px
+   Desktop: >= 1024px
+   ============================================ */
+
+/* ============================================
+   Prevent Horizontal Scrolling
+   ============================================ */
+
+html,
+body {
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+
+* {
+  max-width: 100%;
+}
+
+/* ============================================
+   Touch-Friendly Interactive Elements
+   ============================================ */
+
+/* Ensure all clickable elements meet minimum touch target size */
+a,
+button,
+input[type="button"],
+input[type="submit"],
+input[type="reset"],
+[role="button"],
+[tabindex="0"] {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+/* Mobile: Larger touch targets */
+@media (max-width: 767px) {
+  a,
+  button,
+  input[type="button"],
+  input[type="submit"],
+  input[type="reset"],
+  [role="button"],
+  [tabindex="0"] {
+    min-height: 48px;
+  }
+}
+
+/* ============================================
+   Text Readability & Contrast
+   ============================================ */
+
+/* Ensure sufficient line height for readability */
+body {
+  line-height: 1.6;
+}
+
+/* Mobile: Slightly larger line height for better readability */
+@media (max-width: 767px) {
+  body {
+    line-height: 1.65;
+  }
+  
+  p,
+  li {
+    line-height: 1.7;
+  }
+}
+
+/* Ensure text doesn't get too wide on large screens */
+p,
+li {
+  max-width: 75ch;
+}
+
+/* ============================================
+   Responsive Images & Media
+   ============================================ */
+
+img,
+video,
+iframe,
+svg {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* ============================================
+   Responsive Tables
+   ============================================ */
+
+table {
+  width: 100%;
+  overflow-x: auto;
+  display: block;
+}
+
+@media (max-width: 767px) {
+  table {
+    font-size: 14px;
+  }
+}
+
+/* ============================================
+   Responsive Spacing
+   ============================================ */
+
+/* Mobile: Reduce spacing */
+@media (max-width: 767px) {
+  .spacing-reduce-mobile {
+    padding: calc(var(--spacing-md) * 0.75);
+    margin: calc(var(--spacing-md) * 0.75);
+  }
+}
+
+/* ============================================
+   Hide/Show Elements by Breakpoint
+   ============================================ */
+
+/* Hide on mobile */
+@media (max-width: 767px) {
+  .hide-mobile {
+    display: none !important;
+  }
+}
+
+/* Hide on tablet */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .hide-tablet {
+    display: none !important;
+  }
+}
+
+/* Hide on desktop */
+@media (min-width: 1024px) {
+  .hide-desktop {
+    display: none !important;
+  }
+}
+
+/* Show only on mobile */
+.show-mobile {
+  display: none !important;
+}
+
+@media (max-width: 767px) {
+  .show-mobile {
+    display: block !important;
+  }
+}
+
+/* ============================================
+   Responsive Grid Utilities
+   ============================================ */
+
+.responsive-grid {
+  display: grid;
+  gap: var(--spacing-md);
+}
+
+/* Mobile: Single column */
+@media (max-width: 767px) {
+  .responsive-grid {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-sm);
+  }
+}
+
+/* Tablet: Two columns */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .responsive-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Desktop: Three columns */
+@media (min-width: 1024px) {
+  .responsive-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* ============================================
+   Responsive Flex Utilities
+   ============================================ */
+
+.responsive-flex {
+  display: flex;
+  gap: var(--spacing-md);
+  flex-wrap: wrap;
+}
+
+@media (max-width: 767px) {
+  .responsive-flex {
+    flex-direction: column;
+    gap: var(--spacing-sm);
+  }
+}
+
+/* ============================================
+   Focus Visible Enhancements
+   ============================================ */
+
+/* Enhanced focus indicators for accessibility */
+*:focus-visible {
+  outline: 3px solid var(--color-accent-primary);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* Mobile: Larger focus indicators */
+@media (max-width: 767px) {
+  *:focus-visible {
+    outline-width: 4px;
+    outline-offset: 3px;
+  }
+}
+
+/* ============================================
+   Scrollable Containers
+   ============================================ */
+
+.scrollable-x {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.scrollable-y {
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ============================================
+   Safe Area Insets (for notched devices)
+   ============================================ */
+
+@supports (padding: env(safe-area-inset-left)) {
+  body {
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+}
+
+/* ============================================
+   Reduced Motion Support
+   ============================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ============================================
+   High Contrast Mode Support
+   ============================================ */
+
+@media (prefers-contrast: high) {
+  * {
+    border-color: currentColor !important;
+  }
+  
+  button,
+  a {
+    outline: 2px solid currentColor;
+  }
+}
+
+/* ============================================
+   Print Optimization
+   ============================================ */
+
+@media print {
+  /* Hide interactive elements */
+  button,
+  .hide-print {
+    display: none !important;
+  }
+  
+  /* Optimize spacing for print */
+  body {
+    font-size: 12pt;
+    line-height: 1.5;
+  }
+  
+  /* Prevent page breaks inside elements */
+  .card,
+  .section {
+    page-break-inside: avoid;
+  }
+}

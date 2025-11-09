@@ -1,0 +1,122 @@
+/* ============================================
+   Design System Variables
+   White-themed Market Research Tool
+   ============================================ */
+
+/* ============================================
+   Color Palette
+   ============================================ */
+
+:root {
+  /* Primary Colors */
+  --color-bg-primary: #FFFFFF;
+  --color-bg-secondary: #FAFAFA;
+  --color-text-primary: #1A1A1A;
+  --color-text-secondary: #666666;
+  
+  /* Accent Colors */
+  --color-accent-primary: #4A90E2;
+  --color-accent-primary-hover: #357ABD;
+  --color-success: #4CAF50;
+  --color-warning: #FF9800;
+  --color-error: #F44336;
+  
+  /* Border Colors */
+  --color-border-light: #E0E0E0;
+  --color-border-medium: #BDBDBD;
+  
+  /* Shadow Colors */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+/* ============================================
+   Typography System
+   ============================================ */
+
+:root {
+  /* Font Families */
+  --font-primary: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --font-monospace: 'Fira Code', 'Courier New', monospace;
+  
+  /* Font Sizes */
+  --font-size-h1: 2rem;        /* 32px */
+  --font-size-h2: 1.5rem;      /* 24px */
+  --font-size-h3: 1.25rem;     /* 20px */
+  --font-size-body: 1rem;      /* 16px */
+  --font-size-small: 0.875rem; /* 14px */
+  --font-size-caption: 0.75rem; /* 12px */
+  
+  /* Font Weights */
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  
+  /* Line Heights */
+  --line-height-tight: 1.2;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.75;
+}
+
+/* ============================================
+   Spacing System (8px grid)
+   ============================================ */
+
+:root {
+  --spacing-xs: 0.25rem;   /* 4px */
+  --spacing-sm: 0.5rem;    /* 8px */
+  --spacing-md: 1rem;      /* 16px */
+  --spacing-lg: 1.5rem;    /* 24px */
+  --spacing-xl: 2rem;      /* 32px */
+  --spacing-2xl: 3rem;     /* 48px */
+  --spacing-3xl: 4rem;     /* 64px */
+}
+
+/* ============================================
+   Border Radius
+   ============================================ */
+
+:root {
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-full: 9999px;
+}
+
+/* ============================================
+   Transitions
+   ============================================ */
+
+:root {
+  --transition-fast: 0.15s ease;
+  --transition-base: 0.2s ease;
+  --transition-slow: 0.3s ease;
+}
+
+/* ============================================
+   Z-Index Scale
+   ============================================ */
+
+:root {
+  --z-base: 0;
+  --z-dropdown: 100;
+  --z-sticky: 200;
+  --z-fixed: 300;
+  --z-modal-backdrop: 400;
+  --z-modal: 500;
+  --z-popover: 600;
+  --z-tooltip: 700;
+}
+
+/* ============================================
+   Breakpoints (for reference in media queries)
+   ============================================ */
+
+:root {
+  --breakpoint-mobile: 768px;
+  --breakpoint-tablet: 1024px;
+  --breakpoint-desktop: 1280px;
+}

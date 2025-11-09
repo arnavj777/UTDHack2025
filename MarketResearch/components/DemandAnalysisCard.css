@@ -1,0 +1,301 @@
+.demand-analysis-card .card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.demand-analysis-card .card-icon {
+  font-size: 28px;
+}
+
+.demand-analysis-card h2 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+  color: #1A1A1A;
+}
+
+.demand-analysis-card .card-content {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.demand-analysis-card .demand-section {
+  border-bottom: 1px solid #E0E0E0;
+  padding-bottom: 20px;
+}
+
+.demand-analysis-card .demand-section:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.demand-analysis-card h3 {
+  margin: 0 0 16px 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #1A1A1A;
+}
+
+.demand-analysis-card h4 {
+  margin: 0 0 8px 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: #1A1A1A;
+}
+
+/* Historical Demand */
+.demand-analysis-card .historical-demand {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.demand-analysis-card .demand-subsection {
+  background: #FAFAFA;
+  padding: 16px;
+  border-radius: 8px;
+}
+
+.demand-analysis-card .trends-list,
+.demand-analysis-card .seasonal-list {
+  margin: 0;
+  padding-left: 20px;
+  color: #1A1A1A;
+}
+
+.demand-analysis-card .trends-list li,
+.demand-analysis-card .seasonal-list li {
+  margin-bottom: 6px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* Adoption Curve */
+.demand-analysis-card .adoption-curve {
+  background: #F3F8FF;
+  padding: 16px;
+  border-radius: 8px;
+  border-left: 4px solid #4A90E2;
+}
+
+.demand-analysis-card .adoption-stage {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.demand-analysis-card .stage-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #666666;
+}
+
+.demand-analysis-card .stage-value {
+  font-size: 16px;
+  font-weight: 700;
+  color: #4A90E2;
+  text-transform: capitalize;
+}
+
+.demand-analysis-card .adoption-description {
+  margin: 0;
+  color: #666666;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* Market Readiness */
+.demand-analysis-card .market-readiness {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.demand-analysis-card .readiness-score {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #FAFAFA;
+  padding: 16px;
+  border-radius: 8px;
+}
+
+.demand-analysis-card .score-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #666666;
+}
+
+.demand-analysis-card .score-value {
+  font-size: 24px;
+  font-weight: 700;
+  padding: 8px 16px;
+  border-radius: 8px;
+  background: #FFFFFF;
+  border: 2px solid #E0E0E0;
+}
+
+.demand-analysis-card .score-value.high {
+  color: #2E7D32;
+  border-color: #4CAF50;
+  background: #E8F5E9;
+}
+
+.demand-analysis-card .score-value.medium {
+  color: #F57C00;
+  border-color: #FF9800;
+  background: #FFF3E0;
+}
+
+.demand-analysis-card .score-value.low {
+  color: #C62828;
+  border-color: #F44336;
+  background: #FFEBEE;
+}
+
+.demand-analysis-card .readiness-indicator {
+  display: inline-block;
+  padding: 6px 14px;
+  border-radius: 16px;
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.demand-analysis-card .readiness-indicator.high {
+  background: #4CAF50;
+  color: #FFFFFF;
+}
+
+.demand-analysis-card .readiness-indicator.medium {
+  background: #FF9800;
+  color: #FFFFFF;
+}
+
+.demand-analysis-card .readiness-indicator.low {
+  background: #F44336;
+  color: #FFFFFF;
+}
+
+.demand-analysis-card .readiness-factors {
+  background: #FAFAFA;
+  padding: 16px;
+  border-radius: 8px;
+}
+
+.demand-analysis-card .readiness-factors ul {
+  margin: 0;
+  padding-left: 20px;
+  color: #1A1A1A;
+}
+
+.demand-analysis-card .readiness-factors li {
+  margin-bottom: 6px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* Elasticity Metrics */
+.demand-analysis-card .elasticity-metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 16px;
+}
+
+.demand-analysis-card .elasticity-item {
+  background: #FAFAFA;
+  padding: 16px;
+  border-radius: 8px;
+  border-left: 4px solid #4A90E2;
+}
+
+.demand-analysis-card .metric-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.demand-analysis-card .metric-icon {
+  font-size: 20px;
+}
+
+.demand-analysis-card .metric-value {
+  margin: 0;
+  color: #1A1A1A;
+  font-size: 14px;
+  line-height: 1.6;
+  font-weight: 500;
+}
+
+/* Mobile (< 768px) */
+@media (max-width: 767px) {
+  .demand-analysis-card .card-header {
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  
+  .demand-analysis-card .card-icon {
+    font-size: 24px;
+  }
+  
+  .demand-analysis-card h2 {
+    font-size: 20px;
+  }
+  
+  .demand-analysis-card h3 {
+    font-size: 16px;
+    margin-bottom: 12px;
+  }
+  
+  .demand-analysis-card h4 {
+    font-size: 14px;
+  }
+  
+  .demand-analysis-card .card-content {
+    gap: 16px;
+  }
+  
+  .demand-analysis-card .demand-section {
+    padding-bottom: 16px;
+  }
+  
+  .demand-analysis-card .readiness-score {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .demand-analysis-card .score-value {
+    font-size: 20px;
+    padding: 6px 12px;
+  }
+  
+  .demand-analysis-card .elasticity-metrics {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  
+  .demand-analysis-card .demand-subsection,
+  .demand-analysis-card .adoption-curve,
+  .demand-analysis-card .elasticity-item {
+    padding: 12px;
+  }
+  
+  .demand-analysis-card .readiness-indicator {
+    font-size: 12px;
+    padding: 5px 12px;
+  }
+}
+
+/* Tablet (768px - 1024px) */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .demand-analysis-card .elasticity-metrics {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

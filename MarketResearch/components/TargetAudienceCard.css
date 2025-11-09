@@ -1,0 +1,244 @@
+.target-audience-card .card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.target-audience-card .card-icon {
+  font-size: 28px;
+}
+
+.target-audience-card h2 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+  color: #1A1A1A;
+}
+
+.target-audience-card .card-content {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.target-audience-card .audience-section {
+  border-bottom: 1px solid #E0E0E0;
+  padding-bottom: 20px;
+}
+
+.target-audience-card .audience-section:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.target-audience-card h3 {
+  margin: 0 0 16px 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #1A1A1A;
+}
+
+.target-audience-card h4 {
+  margin: 0 0 8px 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: #666666;
+}
+
+.target-audience-card .demographics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+.target-audience-card .demo-item {
+  display: flex;
+  gap: 8px;
+}
+
+.target-audience-card .demo-item.full-width {
+  grid-column: 1 / -1;
+}
+
+.target-audience-card .label {
+  font-weight: 500;
+  color: #666666;
+}
+
+.target-audience-card .value {
+  color: #1A1A1A;
+}
+
+.target-audience-card .psycho-content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.target-audience-card .psycho-item p {
+  margin: 0;
+  color: #1A1A1A;
+  line-height: 1.6;
+}
+
+.target-audience-card .tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.target-audience-card .tag {
+  background: #E3F2FD;
+  color: #1976D2;
+  padding: 6px 12px;
+  border-radius: 16px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.target-audience-card .behavioral-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.target-audience-card .behavior-item {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.target-audience-card .behavior-item ul {
+  margin: 0;
+  padding-left: 20px;
+  color: #1A1A1A;
+}
+
+.target-audience-card .behavior-item li {
+  margin-bottom: 4px;
+}
+
+.target-audience-card .pain-points-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.target-audience-card .pain-points-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 12px;
+  background: #FFF3E0;
+  border-left: 3px solid #FF9800;
+  margin-bottom: 8px;
+  border-radius: 4px;
+  color: #1A1A1A;
+}
+
+.target-audience-card .pain-icon {
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.target-audience-card .segments-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 16px;
+}
+
+.target-audience-card .segment-card {
+  background: #FAFAFA;
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid #E0E0E0;
+}
+
+.target-audience-card .segment-card h4 {
+  margin: 0 0 8px 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #1A1A1A;
+}
+
+.target-audience-card .segment-description {
+  margin: 0 0 12px 0;
+  color: #666666;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.target-audience-card .segment-size {
+  display: flex;
+  gap: 8px;
+  font-size: 14px;
+}
+
+/* Mobile (< 768px) */
+@media (max-width: 767px) {
+  .target-audience-card .card-header {
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  
+  .target-audience-card .card-icon {
+    font-size: 24px;
+  }
+  
+  .target-audience-card h2 {
+    font-size: 20px;
+  }
+  
+  .target-audience-card h3 {
+    font-size: 16px;
+    margin-bottom: 12px;
+  }
+  
+  .target-audience-card h4 {
+    font-size: 14px;
+  }
+  
+  .target-audience-card .card-content {
+    gap: 16px;
+  }
+  
+  .target-audience-card .audience-section {
+    padding-bottom: 16px;
+  }
+  
+  .target-audience-card .demographics-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  
+  .target-audience-card .segments-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  
+  .target-audience-card .segment-card {
+    padding: 12px;
+  }
+  
+  .target-audience-card .tag {
+    font-size: 13px;
+    padding: 5px 10px;
+  }
+  
+  .target-audience-card .pain-points-list li {
+    padding: 10px;
+    font-size: 14px;
+  }
+}
+
+/* Tablet (768px - 1024px) */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .target-audience-card .demographics-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .target-audience-card .segments-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

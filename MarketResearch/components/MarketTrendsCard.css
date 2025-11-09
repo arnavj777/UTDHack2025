@@ -1,0 +1,271 @@
+.market-trends-card .card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.market-trends-card .card-icon {
+  font-size: 28px;
+}
+
+.market-trends-card h2 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+  color: #1A1A1A;
+}
+
+.market-trends-card .card-content {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.market-trends-card .trends-section {
+  border-bottom: 1px solid #E0E0E0;
+  padding-bottom: 20px;
+}
+
+.market-trends-card .trends-section:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.market-trends-card h3 {
+  margin: 0 0 16px 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #1A1A1A;
+}
+
+.market-trends-card h4 {
+  margin: 0 0 8px 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: #1A1A1A;
+}
+
+/* Emerging Trends */
+.market-trends-card .trends-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.market-trends-card .trend-item {
+  background: #FAFAFA;
+  padding: 16px;
+  border-radius: 8px;
+  border-left: 4px solid #4A90E2;
+}
+
+.market-trends-card .trend-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.market-trends-card .trend-description {
+  margin: 0;
+  color: #666666;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* Impact Badges */
+.market-trends-card .impact-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.market-trends-card .impact-badge.impact-high {
+  background: #FFEBEE;
+  color: #C62828;
+}
+
+.market-trends-card .impact-badge.impact-medium {
+  background: #FFF3E0;
+  color: #F57C00;
+}
+
+.market-trends-card .impact-badge.impact-low {
+  background: #E8F5E9;
+  color: #2E7D32;
+}
+
+/* Unmet Needs */
+.market-trends-card .unmet-needs-list {
+  margin: 0;
+  padding-left: 20px;
+  color: #1A1A1A;
+}
+
+.market-trends-card .unmet-needs-list li {
+  margin-bottom: 8px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* Growth Drivers */
+.market-trends-card .growth-drivers {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.market-trends-card .driver-category {
+  background: #FAFAFA;
+  padding: 16px;
+  border-radius: 8px;
+}
+
+.market-trends-card .driver-category h4 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 12px 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: #1A1A1A;
+}
+
+.market-trends-card .category-icon {
+  font-size: 20px;
+}
+
+.market-trends-card .driver-category ul {
+  margin: 0;
+  padding-left: 20px;
+  color: #1A1A1A;
+}
+
+.market-trends-card .driver-category li {
+  margin-bottom: 6px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* Barriers to Entry */
+.market-trends-card .barriers-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.market-trends-card .barrier-item {
+  background: #FFF3E0;
+  padding: 16px;
+  border-radius: 8px;
+  border-left: 4px solid #FF9800;
+}
+
+.market-trends-card .barrier-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.market-trends-card .barrier-description {
+  margin: 0;
+  color: #666666;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* Severity Badges */
+.market-trends-card .severity-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.market-trends-card .severity-badge.severity-high {
+  background: #FFEBEE;
+  color: #C62828;
+}
+
+.market-trends-card .severity-badge.severity-medium {
+  background: #FFF3E0;
+  color: #F57C00;
+}
+
+.market-trends-card .severity-badge.severity-low {
+  background: #E8F5E9;
+  color: #2E7D32;
+}
+
+/* Mobile (< 768px) */
+@media (max-width: 767px) {
+  .market-trends-card .card-header {
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  
+  .market-trends-card .card-icon {
+    font-size: 24px;
+  }
+  
+  .market-trends-card h2 {
+    font-size: 20px;
+  }
+  
+  .market-trends-card h3 {
+    font-size: 16px;
+    margin-bottom: 12px;
+  }
+  
+  .market-trends-card h4 {
+    font-size: 14px;
+  }
+  
+  .market-trends-card .card-content {
+    gap: 16px;
+  }
+  
+  .market-trends-card .trends-section {
+    padding-bottom: 16px;
+  }
+  
+  .market-trends-card .trend-header,
+  .market-trends-card .barrier-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .market-trends-card .trend-item,
+  .market-trends-card .barrier-item {
+    padding: 12px;
+  }
+  
+  .market-trends-card .driver-category {
+    padding: 12px;
+  }
+  
+  .market-trends-card .impact-badge,
+  .market-trends-card .severity-badge {
+    font-size: 11px;
+    padding: 3px 8px;
+  }
+}
+
+/* Tablet (768px - 1024px) */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .market-trends-card .trends-list {
+    gap: 14px;
+  }
+}

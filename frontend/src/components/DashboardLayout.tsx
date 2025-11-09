@@ -87,6 +87,7 @@ export function DashboardLayout() {
         { name: 'User Personas', path: '/workspace/personas', icon: Users },
         { name: 'Research Vault', path: '/workspace/research', icon: BookOpen },
         { name: 'Research Chatbot', path: '/workspace/research/chatbot', icon: MessageCircle },
+        { name: 'Generative Market Research', path: '/workspace/market-research', icon: TrendingUp },
       ]
     }
   ];

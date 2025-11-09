@@ -71,6 +71,7 @@ import { UserPersonaEditPage } from './components/UserPersonaEditPage';
 import { ResearchDocumentCreatePage } from './components/ResearchDocumentCreatePage';
 import { ResearchDocumentEditPage } from './components/ResearchDocumentEditPage';
 import { ResearchChatbot } from './components/ResearchChatbot';
+import { GenerativeMarketResearch } from './components/GenerativeMarketResearch';
 
 export default function App() {
   return (
@@ -165,6 +166,7 @@ export default function App() {
           <Route path="research/create" element={<ResearchDocumentCreatePage />} />
           <Route path="research/edit/:id" element={<ResearchDocumentEditPage />} />
           <Route path="research/chatbot" element={<ResearchChatbot />} />
+          <Route path="market-research" element={<GenerativeMarketResearch />} />
         </Route>
       </Routes>
     </Router>

@@ -1,0 +1,16 @@
+/* ============================================
+   Main Styles Entry Point
+   Market Research Tool
+   ============================================ */
+
+/* Import design system variables */
+@import './variables.css';
+
+/* Import global styles */
+@import './global.css';
+
+/* Import responsive utilities and mobile optimization */
+@import './responsive.css';
+
+/* This file serves as the main entry point for all styles.
+   Import this file in your main application file (e.g., main.tsx or App.tsx) */

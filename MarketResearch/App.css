@@ -1,0 +1,89 @@
+.app {
+  min-height: 100vh;
+  background: #FAFAFA;
+  overflow-x: hidden; /* Prevent horizontal scroll */
+}
+
+/* Skip to content link for keyboard navigation */
+.skip-to-content {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: var(--color-accent-primary, #4A90E2);
+  color: white;
+  padding: 8px 16px;
+  text-decoration: none;
+  font-weight: 600;
+  border-radius: 0 0 4px 0;
+  z-index: 100;
+  transition: top 0.2s ease;
+}
+
+.skip-to-content:focus {
+  top: 0;
+  outline: 3px solid var(--color-accent-primary, #4A90E2);
+  outline-offset: 2px;
+}
+
+.app__container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 16px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.app__header {
+  margin-bottom: 24px;
+}
+
+.app__content {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Mobile (< 768px) */
+@media (max-width: 767px) {
+  .app__container {
+    padding: 16px;
+  }
+  
+  .app__header {
+    margin-bottom: 24px;
+  }
+  
+  .app__content {
+    gap: 16px;
+  }
+}
+
+/* Tablet (768px - 1024px) */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .app__container {
+    padding: 32px;
+  }
+  
+  .app__header {
+    margin-bottom: 32px;
+  }
+  
+  .app__content {
+    gap: 24px;
+  }
+}
+
+/* Desktop (>= 1024px) */
+@media (min-width: 1024px) {
+  .app__container {
+    padding: 48px 64px;
+  }
+  
+  .app__header {
+    margin-bottom: 48px;
+  }
+  
+  .app__content {
+    gap: 32px;
+  }
+}
