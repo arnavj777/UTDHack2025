@@ -1,10 +1,54 @@
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card } from './ui/card';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
 import { Progress } from './ui/progress';
-import { Sparkles, Plus, Calendar, AlertTriangle, TrendingUp, Users } from 'lucide-react';
+import { Sparkles, Plus, Calendar, AlertTriangle, TrendingUp, Users, Edit, Trash2 } from 'lucide-react';
+import { sprintService } from '../services/developmentService';
+import { Sprint } from '../types/Sprint';
+import { ApiError } from '../services/api';
 
 export function SprintPlanning() {
+  const navigate = useNavigate();
+  const [sprints, setSprints] = useState<Sprint[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    loadSprints();
+  }, []);
+
+  const loadSprints = async () => {
+    try {
+      setLoading(true);
+      setError('');
+      const data = await sprintService.list();
+      setSprints(data);
+    } catch (err) {
+      if (err instanceof ApiError) {
+        setError(err.message);
+      } else {
+        setError('Failed to load sprints. Please try again.');
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = async (id: number) => {
+    if (!confirm('Are you sure you want to delete this sprint?')) return;
+    try {
+      await sprintService.delete(id);
+      await loadSprints();
+    } catch (err) {
+      if (err instanceof ApiError) {
+        setError(err.message);
+      } else {
+        setError('Failed to delete sprint. Please try again.');
+      }
+    }
+  };
   const currentSprint = {
     number: 24,
     startDate: '2025-11-10',
@@ -62,12 +106,14 @@ export function SprintPlanning() {
       {/* Header */}
       <div className="flex justify-between items-start">
         <div>
-          <h1 className="mb-2">Sprint Planning - Sprint {currentSprint.number}</h1>
-          <p className="text-slate-600">
-            {new Date(currentSprint.startDate).toLocaleDateString()} - {new Date(currentSprint.endDate).toLocaleDateString()}
-          </p>
+          <h1 className="mb-2">Sprint Planning</h1>
+          <p className="text-slate-600">Plan and manage your sprints</p>
         </div>
         <div className="flex gap-2">
+          <Button className="gap-2" onClick={() => navigate('/workspace/sprint-planning/create')}>
+            <Plus className="w-4 h-4" />
+            Add Sprint
+          </Button>
           <Button variant="outline" className="gap-2">
             <Sparkles className="w-4 h-4" />
             AI Recommendations
@@ -78,6 +124,45 @@ export function SprintPlanning() {
           </Button>
         </div>
       </div>
+
+      {/* Saved Sprints */}
+      {sprints.length > 0 && (
+        <Card className="p-6">
+          <h3 className="mb-4">Saved Sprints</h3>
+          {loading ? (
+            <p className="text-slate-600">Loading...</p>
+          ) : error ? (
+            <p className="text-red-600">{error}</p>
+          ) : (
+            <div className="space-y-3">
+              {sprints.map((sprint) => (
+                <div key={sprint.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-slate-50">
+                  <div className="flex-1">
+                    <h4 className="font-medium">{sprint.title}</h4>
+                    {sprint.description && <p className="text-slate-600 text-sm mt-1">{sprint.description}</p>}
+                    <div className="flex gap-2 mt-2">
+                      <Badge variant="outline">{sprint.status || 'planned'}</Badge>
+                      {sprint.start_date && <span className="text-slate-600 text-sm">Start: {sprint.start_date.split('T')[0]}</span>}
+                      {sprint.end_date && <span className="text-slate-600 text-sm">End: {sprint.end_date.split('T')[0]}</span>}
+                      {sprint.velocity && <span className="text-slate-600 text-sm">Velocity: {sprint.velocity}</span>}
+                    </div>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button variant="outline" size="sm" onClick={() => navigate(`/workspace/sprint-planning/edit/${sprint.id}`)}>
+                      <Edit className="w-4 h-4 mr-1" />
+                      Edit
+                    </Button>
+                    <Button variant="outline" size="sm" onClick={() => handleDelete(sprint.id)}>
+                      <Trash2 className="w-4 h-4 mr-1" />
+                      Delete
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </Card>
+      )}
 
       {/* AI Planning Assistant */}
       <Card className="p-6 bg-gradient-to-br from-blue-50 to-purple-50 border-blue-200">

@@ -1,12 +1,56 @@
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card } from './ui/card';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
 import { Textarea } from './ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
-import { Sparkles, Copy, Download, RefreshCw, FileText, Mail, Share2, Edit } from 'lucide-react';
+import { Sparkles, Copy, Download, RefreshCw, FileText, Mail, Share2, Edit, Plus, Trash2 } from 'lucide-react';
+import { contentAssetService } from '../services/gtmService';
+import { ContentAsset } from '../types/ContentAsset';
+import { ApiError } from '../services/api';
 
 export function ContentAutomationStudio() {
+  const navigate = useNavigate();
+  const [contentAssets, setContentAssets] = useState<ContentAsset[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    loadContentAssets();
+  }, []);
+
+  const loadContentAssets = async () => {
+    try {
+      setLoading(true);
+      setError('');
+      const data = await contentAssetService.list();
+      setContentAssets(data);
+    } catch (err) {
+      if (err instanceof ApiError) {
+        setError(err.message);
+      } else {
+        setError('Failed to load content assets. Please try again.');
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = async (id: number) => {
+    if (!confirm('Are you sure you want to delete this content asset?')) return;
+    try {
+      await contentAssetService.delete(id);
+      await loadContentAssets();
+    } catch (err) {
+      if (err instanceof ApiError) {
+        setError(err.message);
+      } else {
+        setError('Failed to delete content asset. Please try again.');
+      }
+    }
+  };
   return (
     <div className="space-y-6 max-w-7xl">
       {/* Header */}
@@ -20,12 +64,49 @@ export function ContentAutomationStudio() {
             <Download className="w-4 h-4" />
             Export All
           </Button>
-          <Button className="gap-2">
-            <Sparkles className="w-4 h-4" />
-            Generate All Content
+          <Button className="gap-2" onClick={() => navigate('/workspace/content-automation/create')}>
+            <Plus className="w-4 h-4" />
+            Add Content Asset
           </Button>
         </div>
       </div>
+
+      {/* Saved Content Assets */}
+      {contentAssets.length > 0 && (
+        <Card className="p-6">
+          <h3 className="mb-4">Saved Content Assets</h3>
+          {loading ? (
+            <p className="text-slate-600">Loading...</p>
+          ) : error ? (
+            <p className="text-red-600">{error}</p>
+          ) : (
+            <div className="space-y-3">
+              {contentAssets.map((asset) => (
+                <div key={asset.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-slate-50">
+                  <div className="flex-1">
+                    <h4 className="font-medium">{asset.title}</h4>
+                    {asset.description && <p className="text-slate-600 text-sm mt-1">{asset.description}</p>}
+                    <div className="flex gap-2 mt-2">
+                      <Badge variant="outline">{asset.content_type || 'release-notes'}</Badge>
+                      <Badge variant="outline">{asset.status || 'draft'}</Badge>
+                    </div>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button variant="outline" size="sm" onClick={() => navigate(`/workspace/content-automation/edit/${asset.id}`)}>
+                      <Edit className="w-4 h-4 mr-1" />
+                      Edit
+                    </Button>
+                    <Button variant="outline" size="sm" onClick={() => handleDelete(asset.id)}>
+                      <Trash2 className="w-4 h-4 mr-1" />
+                      Delete
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </Card>
+      )}
 
       {/* Quick Generate */}
       <Card className="p-6 bg-gradient-to-br from-blue-50 to-purple-50 border-blue-200">

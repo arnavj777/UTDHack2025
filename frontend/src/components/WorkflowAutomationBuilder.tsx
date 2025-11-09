@@ -1,11 +1,55 @@
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card } from './ui/card';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
-import { Sparkles, Plus, Play, Pause, Trash, Copy } from 'lucide-react';
+import { Sparkles, Plus, Play, Pause, Trash, Copy, Edit, Trash2 } from 'lucide-react';
+import { workflowService } from '../services/automationService';
+import { Workflow } from '../types/Workflow';
+import { ApiError } from '../services/api';
 
 export function WorkflowAutomationBuilder() {
-  const workflows = [
+  const navigate = useNavigate();
+  const [workflows, setWorkflows] = useState<Workflow[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    loadWorkflows();
+  }, []);
+
+  const loadWorkflows = async () => {
+    try {
+      setLoading(true);
+      setError('');
+      const data = await workflowService.list();
+      setWorkflows(data);
+    } catch (err) {
+      if (err instanceof ApiError) {
+        setError(err.message);
+      } else {
+        setError('Failed to load workflows. Please try again.');
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = async (id: number) => {
+    if (!confirm('Are you sure you want to delete this workflow?')) return;
+    try {
+      await workflowService.delete(id);
+      await loadWorkflows();
+    } catch (err) {
+      if (err instanceof ApiError) {
+        setError(err.message);
+      } else {
+        setError('Failed to delete workflow. Please try again.');
+      }
+    }
+  };
+  const mockWorkflows = [
     {
       name: 'Jira Story Sync',
       trigger: 'When Jira ticket moves to "In Review"',
@@ -55,11 +99,47 @@ export function WorkflowAutomationBuilder() {
           <h1 className="mb-2">Workflow Automation Builder</h1>
           <p className="text-slate-600">Create custom automations with drag-and-drop logic</p>
         </div>
-        <Button className="gap-2">
+        <Button className="gap-2" onClick={() => navigate('/workspace/workflow-automation/create')}>
           <Plus className="w-4 h-4" />
-          New Workflow
+          Add Workflow
         </Button>
       </div>
+
+      {/* Saved Workflows */}
+      {workflows.length > 0 && (
+        <Card className="p-6">
+          <h3 className="mb-4">Saved Workflows</h3>
+          {loading ? (
+            <p className="text-slate-600">Loading...</p>
+          ) : error ? (
+            <p className="text-red-600">{error}</p>
+          ) : (
+            <div className="space-y-3">
+              {workflows.map((wf) => (
+                <div key={wf.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-slate-50">
+                  <div className="flex-1">
+                    <h4 className="font-medium">{wf.title}</h4>
+                    {wf.description && <p className="text-slate-600 text-sm mt-1">{wf.description}</p>}
+                    <div className="flex gap-2 mt-2">
+                      <Badge variant="outline">{wf.status || 'active'}</Badge>
+                    </div>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button variant="outline" size="sm" onClick={() => navigate(`/workspace/workflow-automation/edit/${wf.id}`)}>
+                      <Edit className="w-4 h-4 mr-1" />
+                      Edit
+                    </Button>
+                    <Button variant="outline" size="sm" onClick={() => handleDelete(wf.id)}>
+                      <Trash2 className="w-4 h-4 mr-1" />
+                      Delete
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </Card>
+      )}
 
       {/* AI Suggestions */}
       <Card className="p-6 bg-gradient-to-br from-blue-50 to-purple-50 border-blue-200">
@@ -89,7 +169,7 @@ export function WorkflowAutomationBuilder() {
       <Card className="p-6">
         <h3 className="mb-4">Active Workflows</h3>
         <div className="space-y-4">
-          {workflows.map((workflow, index) => (
+          {mockWorkflows.map((workflow, index) => (
             <Card key={index} className="p-6 border-l-4 border-blue-600">
               <div className="flex items-start justify-between mb-4">
                 <div className="flex-1">

@@ -1,11 +1,55 @@
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card } from './ui/card';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
-import { Sparkles, Plus, Calendar, Filter, Layout } from 'lucide-react';
+import { Sparkles, Plus, Calendar, Filter, Layout, Edit, Trash2 } from 'lucide-react';
+import { roadmapService } from '../services/developmentService';
+import { Roadmap as RoadmapType } from '../types/Roadmap';
+import { ApiError } from '../services/api';
 
 export function Roadmap() {
+  const navigate = useNavigate();
+  const [roadmaps, setRoadmaps] = useState<RoadmapType[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    loadRoadmaps();
+  }, []);
+
+  const loadRoadmaps = async () => {
+    try {
+      setLoading(true);
+      setError('');
+      const data = await roadmapService.list();
+      setRoadmaps(data);
+    } catch (err) {
+      if (err instanceof ApiError) {
+        setError(err.message);
+      } else {
+        setError('Failed to load roadmaps. Please try again.');
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = async (id: number) => {
+    if (!confirm('Are you sure you want to delete this roadmap?')) return;
+    try {
+      await roadmapService.delete(id);
+      await loadRoadmaps();
+    } catch (err) {
+      if (err instanceof ApiError) {
+        setError(err.message);
+      } else {
+        setError('Failed to delete roadmap. Please try again.');
+      }
+    }
+  };
   const quarters = [
     {
       name: 'Q4 2025',
@@ -89,12 +133,50 @@ export function Roadmap() {
             <Sparkles className="w-4 h-4" />
             AI Prioritization
           </Button>
-          <Button className="gap-2">
+          <Button className="gap-2" type="button" onClick={() => navigate('/workspace/roadmap/create')}>
             <Plus className="w-4 h-4" />
-            Add Initiative
+            Add Roadmap
           </Button>
         </div>
       </div>
+
+      {/* Saved Roadmaps */}
+      {roadmaps.length > 0 && (
+        <Card className="p-6">
+          <h3 className="mb-4">Saved Roadmaps</h3>
+          {loading ? (
+            <p className="text-slate-600">Loading...</p>
+          ) : error ? (
+            <p className="text-red-600">{error}</p>
+          ) : (
+            <div className="space-y-3">
+              {roadmaps.map((rm) => (
+                <div key={rm.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-slate-50">
+                  <div className="flex-1">
+                    <h4 className="font-medium">{rm.title}</h4>
+                    {rm.description && <p className="text-slate-600 text-sm mt-1">{rm.description}</p>}
+                    <div className="flex gap-2 mt-2">
+                      <Badge variant="outline">{rm.status || 'active'}</Badge>
+                      {rm.start_date && <span className="text-slate-600 text-sm">Start: {rm.start_date.split('T')[0]}</span>}
+                      {rm.end_date && <span className="text-slate-600 text-sm">End: {rm.end_date.split('T')[0]}</span>}
+                    </div>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button variant="outline" size="sm" type="button" onClick={() => navigate(`/workspace/roadmap/edit/${rm.id}`)}>
+                      <Edit className="w-4 h-4 mr-1" />
+                      Edit
+                    </Button>
+                    <Button variant="outline" size="sm" type="button" onClick={() => handleDelete(rm.id)}>
+                      <Trash2 className="w-4 h-4 mr-1" />
+                      Delete
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </Card>
+      )}
 
       {/* AI Insights */}
       <Card className="p-6 bg-gradient-to-br from-blue-50 to-purple-50 border-blue-200">

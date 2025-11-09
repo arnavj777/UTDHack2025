@@ -1,18 +1,62 @@
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card } from './ui/card';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Slider } from './ui/slider';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
-import { Sparkles, TrendingUp, DollarSign, Users, Target, Download } from 'lucide-react';
-import { useState } from 'react';
+import { Badge } from './ui/badge';
+import { Sparkles, TrendingUp, DollarSign, Users, Target, Download, Plus, Edit, Trash2 } from 'lucide-react';
+import { marketSizingService } from '../services/strategyService';
+import { MarketSizing } from '../types/MarketSizing';
+import { ApiError } from '../services/api';
 
 export function MarketSizingSimulator() {
+  const navigate = useNavigate();
+  const [marketSizings, setMarketSizings] = useState<MarketSizing[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
   const [tam, setTam] = useState(250);
   const [sam, setSam] = useState(75);
   const [som, setSom] = useState(12);
   const [marketShare, setMarketShare] = useState([3]);
   const [avgRevenue, setAvgRevenue] = useState(120);
+
+  useEffect(() => {
+    loadMarketSizings();
+  }, []);
+
+  const loadMarketSizings = async () => {
+    try {
+      setLoading(true);
+      setError('');
+      const data = await marketSizingService.list();
+      setMarketSizings(data);
+    } catch (err) {
+      if (err instanceof ApiError) {
+        setError(err.message);
+      } else {
+        setError('Failed to load market sizing analyses. Please try again.');
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = async (id: number) => {
+    if (!confirm('Are you sure you want to delete this market sizing analysis?')) return;
+    try {
+      await marketSizingService.delete(id);
+      await loadMarketSizings();
+    } catch (err) {
+      if (err instanceof ApiError) {
+        setError(err.message);
+      } else {
+        setError('Failed to delete market sizing analysis. Please try again.');
+      }
+    }
+  };
 
   const calculatedRevenue = (som * 1000000 * (marketShare[0] / 100) * avgRevenue) / 1000000;
 
@@ -29,12 +73,50 @@ export function MarketSizingSimulator() {
             <Sparkles className="w-4 h-4" />
             AI Market Analysis
           </Button>
-          <Button variant="outline" className="gap-2">
-            <Download className="w-4 h-4" />
-            Export Report
+          <Button className="gap-2" type="button" onClick={() => navigate('/workspace/market-sizing/create')}>
+            <Plus className="w-4 h-4" />
+            Add Market Sizing
           </Button>
         </div>
       </div>
+
+      {/* Saved Analyses List */}
+      {marketSizings.length > 0 && (
+        <Card className="p-6">
+          <h3 className="mb-4">Saved Market Sizing Analyses</h3>
+          {loading ? (
+            <p className="text-slate-600">Loading...</p>
+          ) : error ? (
+            <p className="text-red-600">{error}</p>
+          ) : (
+            <div className="space-y-3">
+              {marketSizings.map((ms) => (
+                <div key={ms.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-slate-50">
+                  <div className="flex-1">
+                    <h4 className="font-medium">{ms.title}</h4>
+                    {ms.description && <p className="text-slate-600 text-sm mt-1">{ms.description}</p>}
+                    <div className="flex gap-4 mt-2 text-sm text-slate-600">
+                      {ms.tam && <span>TAM: ${ms.tam}B</span>}
+                      {ms.sam && <span>SAM: ${ms.sam}B</span>}
+                      {ms.som && <span>SOM: ${ms.som}B</span>}
+                    </div>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button variant="outline" size="sm" onClick={() => navigate(`/workspace/market-sizing/edit/${ms.id}`)}>
+                      <Edit className="w-4 h-4 mr-1" />
+                      Edit
+                    </Button>
+                    <Button variant="outline" size="sm" onClick={() => handleDelete(ms.id)}>
+                      <Trash2 className="w-4 h-4 mr-1" />
+                      Delete
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </Card>
+      )}
 
       <div className="grid lg:grid-cols-3 gap-6">
         {/* Input Panel */}

@@ -1,11 +1,55 @@
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card } from './ui/card';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
 import { Progress } from './ui/progress';
 import { Checkbox } from './ui/checkbox';
-import { Sparkles, CheckCircle, AlertTriangle, Clock, FileText } from 'lucide-react';
+import { Sparkles, CheckCircle, AlertTriangle, Clock, FileText, Plus, Edit, Trash2, Users, Megaphone, Server, Shield } from 'lucide-react';
+import { launchChecklistService } from '../services/gtmService';
+import { LaunchChecklist } from '../types/LaunchChecklist';
+import { ApiError } from '../services/api';
 
 export function LaunchReadinessChecklist() {
+  const navigate = useNavigate();
+  const [launchChecklists, setLaunchChecklists] = useState<LaunchChecklist[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    loadLaunchChecklists();
+  }, []);
+
+  const loadLaunchChecklists = async () => {
+    try {
+      setLoading(true);
+      setError('');
+      const data = await launchChecklistService.list();
+      setLaunchChecklists(data);
+    } catch (err) {
+      if (err instanceof ApiError) {
+        setError(err.message);
+      } else {
+        setError('Failed to load launch checklists. Please try again.');
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = async (id: number) => {
+    if (!confirm('Are you sure you want to delete this launch checklist?')) return;
+    try {
+      await launchChecklistService.delete(id);
+      await loadLaunchChecklists();
+    } catch (err) {
+      if (err instanceof ApiError) {
+        setError(err.message);
+      } else {
+        setError('Failed to delete launch checklist. Please try again.');
+      }
+    }
+  };
   const categories = [
     {
       name: 'Quality Assurance',
@@ -122,9 +166,51 @@ export function LaunchReadinessChecklist() {
             <Sparkles className="w-4 h-4" />
             AI Risk Assessment
           </Button>
-          <Button>Export Report</Button>
+          <Button className="gap-2" onClick={() => navigate('/workspace/launch-checklist/create')}>
+            <Plus className="w-4 h-4" />
+            Add Launch Checklist
+          </Button>
         </div>
       </div>
+
+      {/* Saved Launch Checklists */}
+      {launchChecklists.length > 0 && (
+        <Card className="p-6">
+          <h3 className="mb-4">Saved Launch Checklists</h3>
+          {loading ? (
+            <p className="text-slate-600">Loading...</p>
+          ) : error ? (
+            <p className="text-red-600">{error}</p>
+          ) : (
+            <div className="space-y-3">
+              {launchChecklists.map((checklist) => (
+                <div key={checklist.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-slate-50">
+                  <div className="flex-1">
+                    <h4 className="font-medium">{checklist.title}</h4>
+                    {checklist.description && <p className="text-slate-600 text-sm mt-1">{checklist.description}</p>}
+                    <div className="flex gap-2 mt-2">
+                      <Badge variant="outline">{checklist.status || 'in-progress'}</Badge>
+                      {checklist.completion_percentage !== undefined && (
+                        <span className="text-slate-600 text-sm">{checklist.completion_percentage}% Complete</span>
+                      )}
+                    </div>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button variant="outline" size="sm" onClick={() => navigate(`/workspace/launch-checklist/edit/${checklist.id}`)}>
+                      <Edit className="w-4 h-4 mr-1" />
+                      Edit
+                    </Button>
+                    <Button variant="outline" size="sm" onClick={() => handleDelete(checklist.id)}>
+                      <Trash2 className="w-4 h-4 mr-1" />
+                      Delete
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </Card>
+      )}
 
       {/* Overall Progress */}
       <Card className="p-6">
@@ -287,6 +373,3 @@ export function LaunchReadinessChecklist() {
     </div>
   );
 }
-
-// Add missing icon imports
-import { Megaphone, Server, Shield, Users } from 'lucide-react';

@@ -17,5 +17,60 @@ urlpatterns = [
     # OAuth endpoints
     path('auth/oauth/login-url/', views.oauth_login_url_view, name='oauth_login_url'),
     path('auth/oauth/callback/', views.oauth_callback_view, name='oauth_callback'),
+    # Wireframe generation endpoints
+    path('wireframe/generate/', views.generate_wireframe_view, name='generate_wireframe'),
+    path('wireframe/refine/', views.refine_wireframe_view, name='refine_wireframe'),
+    
+    # Strategy & Ideation endpoints
+    path('strategy/', views.product_strategy_list_create_view, name='product_strategy_list_create'),
+    path('strategy/<int:pk>/', views.product_strategy_detail_view, name='product_strategy_detail'),
+    path('ideas/', views.idea_list_create, name='idea_list_create'),
+    path('ideas/<int:pk>/', views.idea_detail, name='idea_detail'),
+    path('market-sizing/', views.market_sizing_list_create, name='market_sizing_list_create'),
+    path('market-sizing/<int:pk>/', views.market_sizing_detail, name='market_sizing_detail'),
+    path('scenario-planning/', views.scenario_plan_list_create, name='scenario_plan_list_create'),
+    path('scenario-planning/<int:pk>/', views.scenario_plan_detail, name='scenario_plan_detail'),
+    
+    # Requirements & Development endpoints
+    path('roadmap/', views.roadmap_list_create, name='roadmap_list_create'),
+    path('roadmap/<int:pk>/', views.roadmap_detail, name='roadmap_detail'),
+    path('backlog/', views.backlog_item_list_create, name='backlog_item_list_create'),
+    path('backlog/<int:pk>/', views.backlog_item_detail, name='backlog_item_detail'),
+    path('prd/', views.prd_document_list_create, name='prd_document_list_create'),
+    path('prd/<int:pk>/', views.prd_document_detail, name='prd_document_detail'),
+    path('sprint/', views.sprint_list_create, name='sprint_list_create'),
+    path('sprint/<int:pk>/', views.sprint_detail, name='sprint_detail'),
+    
+    # Go-to-Market endpoints
+    path('gtm-strategy/', views.gtm_strategy_list_create, name='gtm_strategy_list_create'),
+    path('gtm-strategy/<int:pk>/', views.gtm_strategy_detail, name='gtm_strategy_detail'),
+    path('content/', views.content_asset_list_create, name='content_asset_list_create'),
+    path('content/<int:pk>/', views.content_asset_detail, name='content_asset_detail'),
+    path('launch-checklist/', views.launch_checklist_list_create, name='launch_checklist_list_create'),
+    path('launch-checklist/<int:pk>/', views.launch_checklist_detail, name='launch_checklist_detail'),
+    
+    # Analytics & Insights endpoints
+    path('metrics/', views.metric_list_create, name='metric_list_create'),
+    path('metrics/<int:pk>/', views.metric_detail, name='metric_detail'),
+    path('ai-insights/', views.ai_insight_list_create, name='ai_insight_list_create'),
+    path('ai-insights/<int:pk>/', views.ai_insight_detail, name='ai_insight_detail'),
+    path('experiments/', views.experiment_list_create, name='experiment_list_create'),
+    path('experiments/<int:pk>/', views.experiment_detail, name='experiment_detail'),
+    
+    # Automation endpoints
+    path('ai-agent/', views.ai_agent_list_create, name='ai_agent_list_create'),
+    path('ai-agent/<int:pk>/', views.ai_agent_detail, name='ai_agent_detail'),
+    path('workflow/', views.workflow_list_create, name='workflow_list_create'),
+    path('workflow/<int:pk>/', views.workflow_detail, name='workflow_detail'),
+    
+    # Research & Intelligence endpoints
+    path('feedback/', views.customer_feedback_list_create, name='customer_feedback_list_create'),
+    path('feedback/<int:pk>/', views.customer_feedback_detail, name='customer_feedback_detail'),
+    path('competitors/', views.competitor_intel_list_create, name='competitor_intel_list_create'),
+    path('competitors/<int:pk>/', views.competitor_intel_detail, name='competitor_intel_detail'),
+    path('personas/', views.user_persona_list_create, name='user_persona_list_create'),
+    path('personas/<int:pk>/', views.user_persona_detail, name='user_persona_detail'),
+    path('research/', views.research_document_list_create, name='research_document_list_create'),
+    path('research/<int:pk>/', views.research_document_detail, name='research_document_detail'),
 ]
 

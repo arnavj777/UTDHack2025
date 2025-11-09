@@ -1,11 +1,55 @@
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card } from './ui/card';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
-import { Sparkles, TrendingUp, TrendingDown, Users, DollarSign, Activity, AlertCircle, RefreshCw } from 'lucide-react';
+import { Sparkles, TrendingUp, TrendingDown, Users, DollarSign, Activity, AlertCircle, RefreshCw, Plus, Edit, Trash2 } from 'lucide-react';
+import { metricService } from '../services/analyticsService';
+import { Metric } from '../types/Metric';
+import { ApiError } from '../services/api';
 
 export function MetricsDashboard() {
+  const navigate = useNavigate();
+  const [metrics, setMetrics] = useState<Metric[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    loadMetrics();
+  }, []);
+
+  const loadMetrics = async () => {
+    try {
+      setLoading(true);
+      setError('');
+      const data = await metricService.list();
+      setMetrics(data);
+    } catch (err) {
+      if (err instanceof ApiError) {
+        setError(err.message);
+      } else {
+        setError('Failed to load metrics. Please try again.');
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = async (id: number) => {
+    if (!confirm('Are you sure you want to delete this metric?')) return;
+    try {
+      await metricService.delete(id);
+      await loadMetrics();
+    } catch (err) {
+      if (err instanceof ApiError) {
+        setError(err.message);
+      } else {
+        setError('Failed to delete metric. Please try again.');
+      }
+    }
+  };
   const kpis = [
     {
       metric: 'Active Users',
@@ -125,6 +169,10 @@ export function MetricsDashboard() {
           <p className="text-slate-600">Real-time product KPIs and performance analytics</p>
         </div>
         <div className="flex gap-2">
+          <Button className="gap-2" type="button" onClick={() => navigate('/workspace/metrics/create')}>
+            <Plus className="w-4 h-4" />
+            Add Metric
+          </Button>
           <Select defaultValue="30d">
             <SelectTrigger className="w-32">
               <SelectValue />
@@ -146,6 +194,44 @@ export function MetricsDashboard() {
           </Button>
         </div>
       </div>
+
+      {/* Saved Metrics */}
+      {metrics.length > 0 && (
+        <Card className="p-6">
+          <h3 className="mb-4">Saved Metrics</h3>
+          {loading ? (
+            <p className="text-slate-600">Loading...</p>
+          ) : error ? (
+            <p className="text-red-600">{error}</p>
+          ) : (
+            <div className="space-y-3">
+              {metrics.map((metric) => (
+                <div key={metric.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-slate-50">
+                  <div className="flex-1">
+                    <h4 className="font-medium">{metric.title}</h4>
+                    {metric.description && <p className="text-slate-600 text-sm mt-1">{metric.description}</p>}
+                    <div className="flex gap-2 mt-2">
+                      <Badge variant="outline">{metric.metric_type || 'kpi'}</Badge>
+                      {metric.value !== undefined && <span className="text-slate-600 text-sm">{metric.value} {metric.unit || ''}</span>}
+                      {metric.date && <span className="text-slate-600 text-sm">Date: {metric.date.split('T')[0]}</span>}
+                    </div>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button variant="outline" size="sm" type="button" onClick={() => navigate(`/workspace/metrics/edit/${metric.id}`)}>
+                      <Edit className="w-4 h-4 mr-1" />
+                      Edit
+                    </Button>
+                    <Button variant="outline" size="sm" type="button" onClick={() => handleDelete(metric.id)}>
+                      <Trash2 className="w-4 h-4 mr-1" />
+                      Delete
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </Card>
+      )}
 
       {/* Metric Alerts */}
       {alerts.length > 0 && (

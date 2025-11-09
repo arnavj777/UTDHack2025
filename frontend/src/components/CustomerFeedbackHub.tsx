@@ -1,13 +1,57 @@
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card } from './ui/card';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
 import { Input } from './ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
-import { Sparkles, Search, TrendingUp, MessageSquare, Star, ThumbsUp, ThumbsDown } from 'lucide-react';
+import { Sparkles, Search, TrendingUp, MessageSquare, Star, ThumbsUp, ThumbsDown, Plus, Edit, Trash2 } from 'lucide-react';
+import { customerFeedbackService } from '../services/researchService';
+import { CustomerFeedback } from '../types/CustomerFeedback';
+import { ApiError } from '../services/api';
 
 export function CustomerFeedbackHub() {
-  const feedbackItems = [
+  const navigate = useNavigate();
+  const [feedbacks, setFeedbacks] = useState<CustomerFeedback[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    loadFeedbacks();
+  }, []);
+
+  const loadFeedbacks = async () => {
+    try {
+      setLoading(true);
+      setError('');
+      const data = await customerFeedbackService.list();
+      setFeedbacks(data);
+    } catch (err) {
+      if (err instanceof ApiError) {
+        setError(err.message);
+      } else {
+        setError('Failed to load customer feedbacks. Please try again.');
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = async (id: number) => {
+    if (!confirm('Are you sure you want to delete this customer feedback?')) return;
+    try {
+      await customerFeedbackService.delete(id);
+      await loadFeedbacks();
+    } catch (err) {
+      if (err instanceof ApiError) {
+        setError(err.message);
+      } else {
+        setError('Failed to delete customer feedback. Please try again.');
+      }
+    }
+  };
+  const mockFeedbackItems = [
     {
       id: 'FB-1234',
       source: 'App Store Review',
@@ -93,9 +137,50 @@ export function CustomerFeedbackHub() {
             <Sparkles className="w-4 h-4" />
             AI Analysis
           </Button>
-          <Button>Configure Sources</Button>
+          <Button className="gap-2" onClick={() => navigate('/workspace/feedback/create')}>
+            <Plus className="w-4 h-4" />
+            Add Feedback
+          </Button>
         </div>
       </div>
+
+      {/* Saved Customer Feedbacks */}
+      {feedbacks.length > 0 && (
+        <Card className="p-6">
+          <h3 className="mb-4">Saved Customer Feedbacks</h3>
+          {loading ? (
+            <p className="text-slate-600">Loading...</p>
+          ) : error ? (
+            <p className="text-red-600">{error}</p>
+          ) : (
+            <div className="space-y-3">
+              {feedbacks.map((feedback) => (
+                <div key={feedback.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-slate-50">
+                  <div className="flex-1">
+                    <h4 className="font-medium">{feedback.title}</h4>
+                    {feedback.description && <p className="text-slate-600 text-sm mt-1">{feedback.description}</p>}
+                    <div className="flex gap-2 mt-2">
+                      <Badge variant="outline">{feedback.source || 'support'}</Badge>
+                      <Badge variant="outline">{feedback.sentiment || 'neutral'}</Badge>
+                      {feedback.rating && <span className="text-slate-600 text-sm">Rating: {feedback.rating}/5</span>}
+                    </div>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button variant="outline" size="sm" onClick={() => navigate(`/workspace/feedback/edit/${feedback.id}`)}>
+                      <Edit className="w-4 h-4 mr-1" />
+                      Edit
+                    </Button>
+                    <Button variant="outline" size="sm" onClick={() => handleDelete(feedback.id)}>
+                      <Trash2 className="w-4 h-4 mr-1" />
+                      Delete
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </Card>
+      )}
 
       {/* AI Insights */}
       <Card className="p-6 bg-gradient-to-br from-blue-50 to-purple-50 border-blue-200">
@@ -133,7 +218,7 @@ export function CustomerFeedbackHub() {
       <div className="grid md:grid-cols-4 gap-4">
         <Card className="p-6">
           <div className="text-slate-600 mb-2">Total Feedback</div>
-          <div className="text-3xl mb-2">{feedbackItems.length * 47}</div>
+          <div className="text-3xl mb-2">{mockFeedbackItems.length * 47}</div>
           <div className="text-slate-500">Last 30 days</div>
         </Card>
 
@@ -234,7 +319,7 @@ export function CustomerFeedbackHub() {
         </TabsList>
 
         <TabsContent value="all" className="space-y-4">
-          {feedbackItems.map((item, index) => (
+          {mockFeedbackItems.map((item, index) => (
             <Card key={index} className="p-6">
               <div className="flex items-start justify-between mb-3">
                 <div className="flex items-center gap-3">

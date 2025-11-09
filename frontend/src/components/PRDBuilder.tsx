@@ -1,3 +1,5 @@
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card } from './ui/card';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
@@ -5,10 +7,52 @@ import { Input } from './ui/input';
 import { Textarea } from './ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
-import { Sparkles, Plus, Save, Download, MessageSquare, Clock, CheckCircle, AlertCircle } from 'lucide-react';
+import { Sparkles, Plus, Save, Download, MessageSquare, Clock, CheckCircle, AlertCircle, Edit, Trash2 } from 'lucide-react';
 import { Separator } from './ui/separator';
+import { prdDocumentService } from '../services/developmentService';
+import { PRDDocument } from '../types/PRDDocument';
+import { ApiError } from '../services/api';
 
 export function PRDBuilder() {
+  const navigate = useNavigate();
+  const [prdDocuments, setPrdDocuments] = useState<PRDDocument[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    loadPRDDocuments();
+  }, []);
+
+  const loadPRDDocuments = async () => {
+    try {
+      setLoading(true);
+      setError('');
+      const data = await prdDocumentService.list();
+      setPrdDocuments(data);
+    } catch (err) {
+      if (err instanceof ApiError) {
+        setError(err.message);
+      } else {
+        setError('Failed to load PRD documents. Please try again.');
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = async (id: number) => {
+    if (!confirm('Are you sure you want to delete this PRD document?')) return;
+    try {
+      await prdDocumentService.delete(id);
+      await loadPRDDocuments();
+    } catch (err) {
+      if (err instanceof ApiError) {
+        setError(err.message);
+      } else {
+        setError('Failed to delete PRD document. Please try again.');
+      }
+    }
+  };
   return (
     <div className="space-y-6 max-w-7xl">
       {/* Header */}
@@ -26,12 +70,49 @@ export function PRDBuilder() {
             <Sparkles className="w-4 h-4" />
             AI Fill Sections
           </Button>
-          <Button className="gap-2">
-            <Save className="w-4 h-4" />
-            Save Draft
+          <Button className="gap-2" onClick={() => navigate('/workspace/prd/create')}>
+            <Plus className="w-4 h-4" />
+            Create PRD
           </Button>
         </div>
       </div>
+
+      {/* Saved PRD Documents */}
+      {prdDocuments.length > 0 && (
+        <Card className="p-6">
+          <h3 className="mb-4">Saved PRD Documents</h3>
+          {loading ? (
+            <p className="text-slate-600">Loading...</p>
+          ) : error ? (
+            <p className="text-red-600">{error}</p>
+          ) : (
+            <div className="space-y-3">
+              {prdDocuments.map((prd) => (
+                <div key={prd.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-slate-50">
+                  <div className="flex-1">
+                    <h4 className="font-medium">{prd.title}</h4>
+                    {prd.description && <p className="text-slate-600 text-sm mt-1">{prd.description}</p>}
+                    <div className="flex gap-2 mt-2">
+                      <Badge variant="outline">{prd.status || 'draft'}</Badge>
+                      {prd.version && <span className="text-slate-600 text-sm">v{prd.version}</span>}
+                    </div>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button variant="outline" size="sm" onClick={() => navigate(`/workspace/prd/edit/${prd.id}`)}>
+                      <Edit className="w-4 h-4 mr-1" />
+                      Edit
+                    </Button>
+                    <Button variant="outline" size="sm" onClick={() => handleDelete(prd.id)}>
+                      <Trash2 className="w-4 h-4 mr-1" />
+                      Delete
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </Card>
+      )}
 
       <div className="grid lg:grid-cols-3 gap-6">
         {/* Main Editor */}

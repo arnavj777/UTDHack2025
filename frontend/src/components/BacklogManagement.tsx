@@ -1,13 +1,57 @@
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card } from './ui/card';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
 import { Input } from './ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import { Checkbox } from './ui/checkbox';
-import { Sparkles, Plus, Search, Filter, ArrowUpDown, MoreVertical } from 'lucide-react';
+import { Sparkles, Plus, Search, Filter, ArrowUpDown, MoreVertical, Edit, Trash2 } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from './ui/dropdown-menu';
+import { backlogItemService } from '../services/developmentService';
+import { BacklogItem } from '../types/BacklogItem';
+import { ApiError } from '../services/api';
 
 export function BacklogManagement() {
+  const navigate = useNavigate();
+  const [backlogItems, setBacklogItems] = useState<BacklogItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    loadBacklogItems();
+  }, []);
+
+  const loadBacklogItems = async () => {
+    try {
+      setLoading(true);
+      setError('');
+      const data = await backlogItemService.list();
+      setBacklogItems(data);
+    } catch (err) {
+      if (err instanceof ApiError) {
+        setError(err.message);
+      } else {
+        setError('Failed to load backlog items. Please try again.');
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = async (id: number) => {
+    if (!confirm('Are you sure you want to delete this backlog item?')) return;
+    try {
+      await backlogItemService.delete(id);
+      await loadBacklogItems();
+    } catch (err) {
+      if (err instanceof ApiError) {
+        setError(err.message);
+      } else {
+        setError('Failed to delete backlog item. Please try again.');
+      }
+    }
+  };
   const stories = [
     {
       id: 'US-101',
@@ -98,12 +142,50 @@ export function BacklogManagement() {
             <Sparkles className="w-4 h-4" />
             AI Grooming Assistant
           </Button>
-          <Button className="gap-2">
+          <Button className="gap-2" type="button" onClick={() => navigate('/workspace/backlog/create')}>
             <Plus className="w-4 h-4" />
-            Add User Story
+            Add Backlog Item
           </Button>
         </div>
       </div>
+
+      {/* Saved Backlog Items */}
+      {backlogItems.length > 0 && (
+        <Card className="p-6">
+          <h3 className="mb-4">Saved Backlog Items</h3>
+          {loading ? (
+            <p className="text-slate-600">Loading...</p>
+          ) : error ? (
+            <p className="text-red-600">{error}</p>
+          ) : (
+            <div className="space-y-3">
+              {backlogItems.map((item) => (
+                <div key={item.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-slate-50">
+                  <div className="flex-1">
+                    <h4 className="font-medium">{item.title}</h4>
+                    {item.description && <p className="text-slate-600 text-sm mt-1">{item.description}</p>}
+                    <div className="flex gap-2 mt-2">
+                      <Badge variant="outline">{item.status || 'backlog'}</Badge>
+                      <Badge variant="outline">{item.priority || 'medium'}</Badge>
+                      {item.story_points && <span className="text-slate-600 text-sm">Points: {item.story_points}</span>}
+                    </div>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button variant="outline" size="sm" type="button" onClick={() => navigate(`/workspace/backlog/edit/${item.id}`)}>
+                      <Edit className="w-4 h-4 mr-1" />
+                      Edit
+                    </Button>
+                    <Button variant="outline" size="sm" type="button" onClick={() => handleDelete(item.id)}>
+                      <Trash2 className="w-4 h-4 mr-1" />
+                      Delete
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </Card>
+      )}
 
       {/* AI Insights */}
       <Card className="p-6 bg-gradient-to-br from-blue-50 to-purple-50 border-blue-200">

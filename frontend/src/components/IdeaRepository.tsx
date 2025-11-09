@@ -1,13 +1,67 @@
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card } from './ui/card';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
 import { Input } from './ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
-import { Lightbulb, Sparkles, Plus, ThumbsUp, MessageSquare, TrendingUp, Filter, Search } from 'lucide-react';
+import { Lightbulb, Sparkles, Plus, ThumbsUp, MessageSquare, TrendingUp, Filter, Search, Edit, Trash2 } from 'lucide-react';
+import { ideaService } from '../services/strategyService';
+import { Idea } from '../types/Idea';
+import { ApiError } from '../services/api';
 
 export function IdeaRepository() {
-  const ideas = [
+  const navigate = useNavigate();
+  const [ideas, setIdeas] = useState<Idea[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [statusFilter, setStatusFilter] = useState('all');
+
+  useEffect(() => {
+    loadIdeas();
+  }, []);
+
+  const loadIdeas = async () => {
+    try {
+      setLoading(true);
+      setError('');
+      const data = await ideaService.list();
+      setIdeas(data);
+    } catch (err) {
+      if (err instanceof ApiError) {
+        setError(err.message);
+      } else {
+        setError('Failed to load ideas. Please try again.');
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = async (id: number) => {
+    if (!confirm('Are you sure you want to delete this idea?')) return;
+    try {
+      await ideaService.delete(id);
+      await loadIdeas();
+    } catch (err) {
+      if (err instanceof ApiError) {
+        setError(err.message);
+      } else {
+        setError('Failed to delete idea. Please try again.');
+      }
+    }
+  };
+
+  const filteredIdeas = ideas.filter(idea => {
+    const matchesSearch = !searchQuery || idea.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+      (idea.description || '').toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesStatus = statusFilter === 'all' || idea.status === statusFilter;
+    return matchesSearch && matchesStatus;
+  });
+
+  const mockIdeas = [
     {
       title: 'Dark Mode Support',
       description: 'Add system-wide dark mode to reduce eye strain for users who bank at night',
@@ -126,7 +180,7 @@ export function IdeaRepository() {
             <Sparkles className="w-4 h-4" />
             Generate Ideas with AI
           </Button>
-          <Button className="gap-2">
+          <Button className="gap-2" type="button" onClick={() => navigate('/workspace/ideas/create')}>
             <Plus className="w-4 h-4" />
             Add Idea
           </Button>
@@ -155,19 +209,24 @@ export function IdeaRepository() {
         <div className="flex-1 min-w-64">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-            <Input placeholder="Search ideas..." className="pl-10" />
+            <Input 
+              placeholder="Search ideas..." 
+              className="pl-10"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
           </div>
         </div>
-        <Select defaultValue="all">
+        <Select value={statusFilter} onValueChange={setStatusFilter}>
           <SelectTrigger className="w-48">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All Statuses</SelectItem>
             <SelectItem value="new">New</SelectItem>
-            <SelectItem value="review">Under Review</SelectItem>
+            <SelectItem value="under-review">Under Review</SelectItem>
             <SelectItem value="planned">Planned</SelectItem>
-            <SelectItem value="progress">In Progress</SelectItem>
+            <SelectItem value="in-progress">In Progress</SelectItem>
           </SelectContent>
         </Select>
         <Select defaultValue="score">
@@ -190,15 +249,28 @@ export function IdeaRepository() {
       {/* Tabs */}
       <Tabs defaultValue="all" className="space-y-6">
         <TabsList>
-          <TabsTrigger value="all">All Ideas ({ideas.length})</TabsTrigger>
-          <TabsTrigger value="customer">From Customers (1)</TabsTrigger>
-          <TabsTrigger value="ai">AI Generated (4)</TabsTrigger>
-          <TabsTrigger value="team">Team Ideas (2)</TabsTrigger>
+          <TabsTrigger value="all">All Ideas ({filteredIdeas.length})</TabsTrigger>
+          <TabsTrigger value="customer">From Customers</TabsTrigger>
+          <TabsTrigger value="ai">AI Generated</TabsTrigger>
+          <TabsTrigger value="team">Team Ideas</TabsTrigger>
         </TabsList>
 
         <TabsContent value="all" className="space-y-4">
-          {ideas.map((idea, index) => (
-            <Card key={index} className="p-6 hover:shadow-md transition-shadow">
+          {loading ? (
+            <Card className="p-6">
+              <p className="text-slate-600">Loading ideas...</p>
+            </Card>
+          ) : error ? (
+            <Card className="p-6">
+              <p className="text-red-600">{error}</p>
+            </Card>
+          ) : filteredIdeas.length === 0 ? (
+            <Card className="p-6">
+              <p className="text-slate-600">No ideas found. Create your first idea!</p>
+            </Card>
+          ) : (
+            filteredIdeas.map((idea) => (
+            <Card key={idea.id} className="p-6 hover:shadow-md transition-shadow">
               <div className="flex gap-4">
                 {/* Vote Section */}
                 <div className="flex flex-col items-center gap-1 min-w-16">
@@ -225,47 +297,47 @@ export function IdeaRepository() {
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-3 mb-3">
-                    <span className="text-slate-500">by {idea.author}</span>
-                    <span className="text-slate-300">•</span>
-                    <div className="flex items-center gap-1 text-slate-500">
-                      <MessageSquare className="w-4 h-4" />
-                      <span>{idea.comments}</span>
-                    </div>
-                  </div>
-
                   <div className="flex items-center gap-2 flex-wrap">
                     <Badge className={getStatusColor(idea.status)}>
                       {idea.status}
                     </Badge>
-                    <Badge className={getImpactColor(idea.impact)}>
-                      Impact: {idea.impact}
-                    </Badge>
-                    <Badge variant="outline">
-                      Effort: {idea.effort}
-                    </Badge>
-                    <div className="flex items-center gap-1 text-blue-600 ml-2">
-                      <TrendingUp className="w-4 h-4" />
-                      <span>Score: {idea.score}</span>
-                    </div>
-                    <div className="ml-auto flex gap-1">
-                      {idea.tags.map((tag, tagIndex) => (
-                        <Badge key={tagIndex} variant="secondary">
-                          {tag}
-                        </Badge>
-                      ))}
-                    </div>
+                    {idea.impact_score > 0 && (
+                      <Badge className={idea.impact_score >= 7 ? 'bg-green-100 text-green-700' : idea.impact_score >= 4 ? 'bg-yellow-100 text-yellow-700' : 'bg-slate-100 text-slate-700'}>
+                        Impact: {idea.impact_score}
+                      </Badge>
+                    )}
+                    {idea.effort_score > 0 && (
+                      <Badge variant="outline">
+                        Effort: {idea.effort_score}
+                      </Badge>
+                    )}
+                    {idea.tags && idea.tags.length > 0 && (
+                      <div className="ml-auto flex gap-1">
+                        {idea.tags.map((tag, tagIndex) => (
+                          <Badge key={tagIndex} variant="secondary">
+                            {tag}
+                          </Badge>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </div>
 
                 {/* Actions */}
                 <div className="flex flex-col gap-2">
-                  <Button variant="outline" size="sm">View Details</Button>
-                  <Button variant="outline" size="sm">Add to Roadmap</Button>
+                  <Button variant="outline" size="sm" type="button" onClick={() => navigate(`/workspace/ideas/edit/${idea.id}`)}>
+                    <Edit className="w-4 h-4 mr-1" />
+                    Edit
+                  </Button>
+                  <Button variant="outline" size="sm" type="button" onClick={() => handleDelete(idea.id)}>
+                    <Trash2 className="w-4 h-4 mr-1" />
+                    Delete
+                  </Button>
                 </div>
               </div>
             </Card>
-          ))}
+            ))
+          )}
         </TabsContent>
 
         <TabsContent value="customer">

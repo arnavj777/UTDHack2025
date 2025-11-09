@@ -1,3 +1,5 @@
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card } from './ui/card';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
@@ -5,13 +7,54 @@ import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Slider } from './ui/slider';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
-import { Sparkles, Play, Plus, TrendingUp, TrendingDown, AlertCircle } from 'lucide-react';
-import { useState } from 'react';
+import { Sparkles, Play, Plus, TrendingUp, TrendingDown, AlertCircle, Edit, Trash2 } from 'lucide-react';
+import { scenarioPlanService } from '../services/strategyService';
+import { ScenarioPlan } from '../types/ScenarioPlan';
+import { ApiError } from '../services/api';
 
 export function ScenarioPlanning() {
+  const navigate = useNavigate();
+  const [scenarioPlans, setScenarioPlans] = useState<ScenarioPlan[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
   const [budget, setBudget] = useState([1200]);
   const [headcount, setHeadcount] = useState([12]);
   const [timeDelay, setTimeDelay] = useState([0]);
+
+  useEffect(() => {
+    loadScenarioPlans();
+  }, []);
+
+  const loadScenarioPlans = async () => {
+    try {
+      setLoading(true);
+      setError('');
+      const data = await scenarioPlanService.list();
+      setScenarioPlans(data);
+    } catch (err) {
+      if (err instanceof ApiError) {
+        setError(err.message);
+      } else {
+        setError('Failed to load scenario plans. Please try again.');
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = async (id: number) => {
+    if (!confirm('Are you sure you want to delete this scenario plan?')) return;
+    try {
+      await scenarioPlanService.delete(id);
+      await loadScenarioPlans();
+    } catch (err) {
+      if (err instanceof ApiError) {
+        setError(err.message);
+      } else {
+        setError('Failed to delete scenario plan. Please try again.');
+      }
+    }
+  };
 
   const scenarios = [
     {
@@ -90,12 +133,48 @@ export function ScenarioPlanning() {
             <Sparkles className="w-4 h-4" />
             AI Recommendations
           </Button>
-          <Button className="gap-2">
+          <Button className="gap-2" onClick={() => navigate('/workspace/scenario-planning/create')}>
             <Plus className="w-4 h-4" />
             New Scenario
           </Button>
         </div>
       </div>
+
+      {/* Saved Scenario Plans */}
+      {scenarioPlans.length > 0 && (
+        <Card className="p-6">
+          <h3 className="mb-4">Saved Scenario Plans</h3>
+          {loading ? (
+            <p className="text-slate-600">Loading...</p>
+          ) : error ? (
+            <p className="text-red-600">{error}</p>
+          ) : (
+            <div className="space-y-3">
+              {scenarioPlans.map((sp) => (
+                <div key={sp.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-slate-50">
+                  <div className="flex-1">
+                    <h4 className="font-medium">{sp.title}</h4>
+                    {sp.description && <p className="text-slate-600 text-sm mt-1">{sp.description}</p>}
+                    <div className="flex gap-2 mt-2">
+                      <Badge variant="outline">{sp.scenario_type || 'what-if'}</Badge>
+                    </div>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button variant="outline" size="sm" onClick={() => navigate(`/workspace/scenario-planning/edit/${sp.id}`)}>
+                      <Edit className="w-4 h-4 mr-1" />
+                      Edit
+                    </Button>
+                    <Button variant="outline" size="sm" onClick={() => handleDelete(sp.id)}>
+                      <Trash2 className="w-4 h-4 mr-1" />
+                      Delete
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </Card>
+      )}
 
       {/* AI Insights */}
       <Card className="p-6 bg-gradient-to-br from-blue-50 to-purple-50 border-blue-200">

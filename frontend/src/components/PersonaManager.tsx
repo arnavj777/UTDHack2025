@@ -1,11 +1,55 @@
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card } from './ui/card';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
 import { Progress } from './ui/progress';
-import { Sparkles, Plus, Users, TrendingUp, DollarSign, Target } from 'lucide-react';
+import { Sparkles, Plus, Users, TrendingUp, DollarSign, Target, Edit, Trash2 } from 'lucide-react';
+import { userPersonaService } from '../services/researchService';
+import { UserPersona } from '../types/UserPersona';
+import { ApiError } from '../services/api';
 
 export function PersonaManager() {
-  const personas = [
+  const navigate = useNavigate();
+  const [personas, setPersonas] = useState<UserPersona[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    loadPersonas();
+  }, []);
+
+  const loadPersonas = async () => {
+    try {
+      setLoading(true);
+      setError('');
+      const data = await userPersonaService.list();
+      setPersonas(data);
+    } catch (err) {
+      if (err instanceof ApiError) {
+        setError(err.message);
+      } else {
+        setError('Failed to load user personas. Please try again.');
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = async (id: number) => {
+    if (!confirm('Are you sure you want to delete this user persona?')) return;
+    try {
+      await userPersonaService.delete(id);
+      await loadPersonas();
+    } catch (err) {
+      if (err instanceof ApiError) {
+        setError(err.message);
+      } else {
+        setError('Failed to delete user persona. Please try again.');
+      }
+    }
+  };
+  const mockPersonas = [
     {
       name: 'Tech-Savvy Millennial',
       avatar: '👨‍💻',
@@ -149,12 +193,48 @@ export function PersonaManager() {
             <Sparkles className="w-4 h-4" />
             AI Persona Insights
           </Button>
-          <Button className="gap-2">
+          <Button className="gap-2" onClick={() => navigate('/workspace/personas/create')}>
             <Plus className="w-4 h-4" />
-            Create Persona
+            Add Persona
           </Button>
         </div>
       </div>
+
+      {/* Saved User Personas */}
+      {personas.length > 0 && (
+        <Card className="p-6">
+          <h3 className="mb-4">Saved User Personas</h3>
+          {loading ? (
+            <p className="text-slate-600">Loading...</p>
+          ) : error ? (
+            <p className="text-red-600">{error}</p>
+          ) : (
+            <div className="space-y-3">
+              {personas.map((persona) => (
+                <div key={persona.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-slate-50">
+                  <div className="flex-1">
+                    <h4 className="font-medium">{persona.title}</h4>
+                    {persona.description && <p className="text-slate-600 text-sm mt-1">{persona.description}</p>}
+                    <div className="flex gap-2 mt-2">
+                      <Badge variant="outline">{persona.persona_name || 'Unnamed'}</Badge>
+                    </div>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button variant="outline" size="sm" onClick={() => navigate(`/workspace/personas/edit/${persona.id}`)}>
+                      <Edit className="w-4 h-4 mr-1" />
+                      Edit
+                    </Button>
+                    <Button variant="outline" size="sm" onClick={() => handleDelete(persona.id)}>
+                      <Trash2 className="w-4 h-4 mr-1" />
+                      Delete
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </Card>
+      )}
 
       {/* AI Insights */}
       <Card className="p-6 bg-gradient-to-br from-blue-50 to-purple-50 border-blue-200">
@@ -192,7 +272,7 @@ export function PersonaManager() {
       <Card className="p-6">
         <h3 className="mb-4">Customer Segment Distribution</h3>
         <div className="space-y-4">
-          {personas.map((persona, index) => (
+          {mockPersonas.map((persona, index) => (
             <div key={index}>
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2">
