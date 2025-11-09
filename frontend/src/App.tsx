@@ -28,6 +28,9 @@ import { ExperimentResultsViewer } from './components/ExperimentResultsViewer';
 import { AIAgentControlCenter } from './components/AIAgentControlCenter';
 import { WorkflowAutomationBuilder } from './components/WorkflowAutomationBuilder';
 import { PMDailyBriefing } from './components/PMDailyBriefing';
+import { ProtectedRoute } from './components/ProtectedRoute';
+import { ForgotPasswordPage } from './components/ForgotPasswordPage';
+import { ResetPasswordPage } from './components/ResetPasswordPage';
 
 export default function App() {
   return (
@@ -38,10 +41,12 @@ export default function App() {
         <Route path="/pricing" element={<PricingPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
-        <Route path="/onboarding" element={<OnboardingWizard />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="/reset-password" element={<ResetPasswordPage />} />
+        <Route path="/onboarding" element={<ProtectedRoute><OnboardingWizard /></ProtectedRoute>} />
         
         {/* Protected workspace routes */}
-        <Route path="/workspace" element={<DashboardLayout />}>
+        <Route path="/workspace" element={<ProtectedRoute><DashboardLayout /></ProtectedRoute>}>
           <Route index element={<Navigate to="/workspace/dashboard" replace />} />
           <Route path="dashboard" element={<Dashboard />} />
           

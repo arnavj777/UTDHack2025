@@ -1,0 +1,291 @@
+import { Card } from './ui/card';
+import { Button } from './ui/button';
+import { Badge } from './ui/badge';
+import { Input } from './ui/input';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
+import { Lightbulb, Sparkles, Plus, ThumbsUp, MessageSquare, TrendingUp, Filter, Search } from 'lucide-react';
+
+export function IdeaRepository() {
+  const ideas = [
+    {
+      title: 'Dark Mode Support',
+      description: 'Add system-wide dark mode to reduce eye strain for users who bank at night',
+      author: 'Sarah Chen',
+      votes: 47,
+      comments: 12,
+      impact: 'High',
+      effort: 'Medium',
+      score: 8.5,
+      status: 'Under Review',
+      tags: ['UX', 'Accessibility', 'Quick Win'],
+      source: 'Customer Feedback'
+    },
+    {
+      title: 'Biometric Authentication',
+      description: 'Enable Face ID and fingerprint login for faster, more secure access',
+      author: 'AI Generated',
+      votes: 34,
+      comments: 8,
+      impact: 'High',
+      effort: 'High',
+      score: 7.2,
+      status: 'Planned',
+      tags: ['Security', 'UX'],
+      source: 'AI Suggestion'
+    },
+    {
+      title: 'Savings Goals with Visual Progress',
+      description: 'Allow users to create multiple savings goals with progress tracking and celebratory animations',
+      author: 'Michael Torres',
+      votes: 56,
+      comments: 15,
+      impact: 'High',
+      effort: 'Medium',
+      score: 9.1,
+      status: 'In Progress',
+      tags: ['Engagement', 'Savings', 'Gamification'],
+      source: 'Team Member'
+    },
+    {
+      title: 'Bill Split Calculator',
+      description: 'Built-in tool to split bills among friends and send payment requests',
+      author: 'Jessica Kumar',
+      votes: 23,
+      comments: 5,
+      impact: 'Medium',
+      effort: 'Low',
+      score: 6.8,
+      status: 'New',
+      tags: ['Social', 'Payments'],
+      source: 'Team Member'
+    },
+    {
+      title: 'AI Budget Coach',
+      description: 'Personalized spending insights and budget recommendations based on user behavior',
+      author: 'AI Generated',
+      votes: 61,
+      comments: 19,
+      impact: 'Very High',
+      effort: 'High',
+      score: 8.9,
+      status: 'Under Review',
+      tags: ['AI', 'Personalization', 'Financial Health'],
+      source: 'AI Suggestion'
+    },
+    {
+      title: 'Recurring Transaction Detection',
+      description: 'Automatically identify and tag recurring payments for better budget tracking',
+      author: 'AI Generated',
+      votes: 29,
+      comments: 7,
+      impact: 'Medium',
+      effort: 'Medium',
+      score: 6.5,
+      status: 'New',
+      tags: ['AI', 'Automation'],
+      source: 'AI Suggestion'
+    }
+  ];
+
+  const getImpactColor = (impact: string) => {
+    switch (impact) {
+      case 'Very High':
+      case 'High':
+        return 'bg-green-100 text-green-700';
+      case 'Medium':
+        return 'bg-yellow-100 text-yellow-700';
+      default:
+        return 'bg-slate-100 text-slate-700';
+    }
+  };
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'In Progress':
+        return 'bg-blue-100 text-blue-700';
+      case 'Planned':
+        return 'bg-purple-100 text-purple-700';
+      case 'Under Review':
+        return 'bg-orange-100 text-orange-700';
+      default:
+        return 'bg-slate-100 text-slate-700';
+    }
+  };
+
+  return (
+    <div className="space-y-6 max-w-7xl">
+      {/* Header */}
+      <div className="flex justify-between items-start">
+        <div>
+          <h1 className="mb-2">Idea Repository</h1>
+          <p className="text-slate-600">Capture, prioritize, and track product ideas from all sources</p>
+        </div>
+        <div className="flex gap-2">
+          <Button variant="outline" className="gap-2">
+            <Sparkles className="w-4 h-4" />
+            Generate Ideas with AI
+          </Button>
+          <Button className="gap-2">
+            <Plus className="w-4 h-4" />
+            Add Idea
+          </Button>
+        </div>
+      </div>
+
+      {/* AI Suggestions Banner */}
+      <Card className="p-6 bg-gradient-to-br from-blue-50 to-purple-50 border-blue-200">
+        <div className="flex items-start gap-4">
+          <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center shrink-0">
+            <Sparkles className="w-5 h-5 text-white" />
+          </div>
+          <div className="flex-1">
+            <h4 className="mb-2">AI-Generated Ideas Available</h4>
+            <p className="text-slate-700 mb-4">
+              Based on customer feedback analysis, market trends, and competitor intelligence, 
+              we've identified 8 new potential features for your consideration.
+            </p>
+            <Button variant="outline" size="sm">Review AI Suggestions</Button>
+          </div>
+        </div>
+      </Card>
+
+      {/* Filters & Search */}
+      <div className="flex gap-3 flex-wrap">
+        <div className="flex-1 min-w-64">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+            <Input placeholder="Search ideas..." className="pl-10" />
+          </div>
+        </div>
+        <Select defaultValue="all">
+          <SelectTrigger className="w-48">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Statuses</SelectItem>
+            <SelectItem value="new">New</SelectItem>
+            <SelectItem value="review">Under Review</SelectItem>
+            <SelectItem value="planned">Planned</SelectItem>
+            <SelectItem value="progress">In Progress</SelectItem>
+          </SelectContent>
+        </Select>
+        <Select defaultValue="score">
+          <SelectTrigger className="w-48">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="score">Sort by Score</SelectItem>
+            <SelectItem value="votes">Sort by Votes</SelectItem>
+            <SelectItem value="recent">Most Recent</SelectItem>
+            <SelectItem value="impact">High Impact</SelectItem>
+          </SelectContent>
+        </Select>
+        <Button variant="outline" className="gap-2">
+          <Filter className="w-4 h-4" />
+          More Filters
+        </Button>
+      </div>
+
+      {/* Tabs */}
+      <Tabs defaultValue="all" className="space-y-6">
+        <TabsList>
+          <TabsTrigger value="all">All Ideas ({ideas.length})</TabsTrigger>
+          <TabsTrigger value="customer">From Customers (1)</TabsTrigger>
+          <TabsTrigger value="ai">AI Generated (4)</TabsTrigger>
+          <TabsTrigger value="team">Team Ideas (2)</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="all" className="space-y-4">
+          {ideas.map((idea, index) => (
+            <Card key={index} className="p-6 hover:shadow-md transition-shadow">
+              <div className="flex gap-4">
+                {/* Vote Section */}
+                <div className="flex flex-col items-center gap-1 min-w-16">
+                  <Button variant="outline" size="sm" className="w-full">
+                    <ThumbsUp className="w-4 h-4" />
+                  </Button>
+                  <span className="font-mono">{idea.votes}</span>
+                </div>
+
+                {/* Content */}
+                <div className="flex-1">
+                  <div className="flex items-start justify-between mb-2">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-1">
+                        <h4>{idea.title}</h4>
+                        {idea.source === 'AI Suggestion' && (
+                          <Badge variant="secondary" className="gap-1">
+                            <Sparkles className="w-3 h-3" />
+                            AI
+                          </Badge>
+                        )}
+                      </div>
+                      <p className="text-slate-600 mb-3">{idea.description}</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-3 mb-3">
+                    <span className="text-slate-500">by {idea.author}</span>
+                    <span className="text-slate-300">•</span>
+                    <div className="flex items-center gap-1 text-slate-500">
+                      <MessageSquare className="w-4 h-4" />
+                      <span>{idea.comments}</span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <Badge className={getStatusColor(idea.status)}>
+                      {idea.status}
+                    </Badge>
+                    <Badge className={getImpactColor(idea.impact)}>
+                      Impact: {idea.impact}
+                    </Badge>
+                    <Badge variant="outline">
+                      Effort: {idea.effort}
+                    </Badge>
+                    <div className="flex items-center gap-1 text-blue-600 ml-2">
+                      <TrendingUp className="w-4 h-4" />
+                      <span>Score: {idea.score}</span>
+                    </div>
+                    <div className="ml-auto flex gap-1">
+                      {idea.tags.map((tag, tagIndex) => (
+                        <Badge key={tagIndex} variant="secondary">
+                          {tag}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Actions */}
+                <div className="flex flex-col gap-2">
+                  <Button variant="outline" size="sm">View Details</Button>
+                  <Button variant="outline" size="sm">Add to Roadmap</Button>
+                </div>
+              </div>
+            </Card>
+          ))}
+        </TabsContent>
+
+        <TabsContent value="customer">
+          <Card className="p-6">
+            <p className="text-slate-600">Showing ideas sourced from customer feedback...</p>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="ai">
+          <Card className="p-6">
+            <p className="text-slate-600">Showing AI-generated ideas...</p>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="team">
+          <Card className="p-6">
+            <p className="text-slate-600">Showing ideas from team members...</p>
+          </Card>
+        </TabsContent>
+      </Tabs>
+    </div>
+  );
+}

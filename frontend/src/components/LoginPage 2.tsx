@@ -5,47 +5,17 @@ import { Label } from './ui/label';
 import { Card } from './ui/card';
 import { Sparkles } from 'lucide-react';
 import { Separator } from './ui/separator';
-import { Checkbox } from './ui/checkbox';
 import { useState } from 'react';
-import { useAuth } from '../contexts/AuthContext';
-import { ApiError } from '../services/api';
 
-export function SignupPage() {
+export function LoginPage() {
   const navigate = useNavigate();
-  const { signup } = useAuth();
-  const [formData, setFormData] = useState({
-    fullName: '',
-    email: '',
-    password: '',
-    agreeToTerms: false
-  });
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
-  const handleSignup = async (e: React.FormEvent) => {
+  const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (!formData.agreeToTerms) {
-      setError('Please agree to the Terms of Service and Privacy Policy');
-      return;
-    }
-
-    setError('');
-    setLoading(true);
-
-    try {
-      await signup(formData.email, formData.password, formData.fullName);
-      // Redirect to onboarding after signup
-      navigate('/onboarding');
-    } catch (err) {
-      if (err instanceof ApiError) {
-        setError(err.message);
-      } else {
-        setError('Signup failed. Please try again.');
-      }
-    } finally {
-      setLoading(false);
-    }
+    // Mock login - go to workspace
+    navigate('/workspace/dashboard');
   };
 
   return (
@@ -58,69 +28,42 @@ export function SignupPage() {
           <span className="text-2xl">ProductAI</span>
         </div>
 
-        <h2 className="text-center mb-2">Create Your Account</h2>
+        <h2 className="text-center mb-2">Welcome Back</h2>
         <p className="text-center text-slate-600 mb-8">
-          Start your 14-day free trial. No credit card required.
+          Sign in to your account to continue
         </p>
 
-        <form onSubmit={handleSignup} className="space-y-6">
+        <form onSubmit={handleLogin} className="space-y-6">
           <div className="space-y-2">
-            <Label htmlFor="fullName">Full Name</Label>
-            <Input 
-              id="fullName" 
-              type="text" 
-              placeholder="John Doe"
-              value={formData.fullName}
-              onChange={(e) => setFormData({...formData, fullName: e.target.value})}
-              required
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="email">Work Email</Label>
+            <Label htmlFor="email">Email</Label>
             <Input 
               id="email" 
               type="email" 
               placeholder="you@company.com"
-              value={formData.email}
-              onChange={(e) => setFormData({...formData, email: e.target.value})}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               required
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
+            <div className="flex justify-between">
+              <Label htmlFor="password">Password</Label>
+              <Link to="/forgot-password" className="text-blue-600 hover:underline">
+                Forgot?
+              </Link>
+            </div>
             <Input 
               id="password" 
               type="password"
-              placeholder="At least 8 characters"
-              value={formData.password}
-              onChange={(e) => setFormData({...formData, password: e.target.value})}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               required
             />
           </div>
 
-          <div className="flex items-start gap-2">
-            <Checkbox 
-              id="terms" 
-              checked={formData.agreeToTerms}
-              onCheckedChange={(checked) => setFormData({...formData, agreeToTerms: checked as boolean})}
-              required
-            />
-            <label htmlFor="terms" className="text-slate-600 cursor-pointer">
-              I agree to the <Link to="/terms" className="text-blue-600 hover:underline">Terms of Service</Link> and{' '}
-              <Link to="/privacy" className="text-blue-600 hover:underline">Privacy Policy</Link>
-            </label>
-          </div>
-
-          {error && (
-            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
-              {error}
-            </div>
-          )}
-
-          <Button type="submit" className="w-full" disabled={loading}>
-            {loading ? 'Creating account...' : 'Create Account'}
+          <Button type="submit" className="w-full">
+            Sign In
           </Button>
         </form>
 
@@ -132,7 +75,7 @@ export function SignupPage() {
         </div>
 
         <div className="space-y-3">
-          <Button variant="outline" className="w-full" type="button" onClick={() => navigate('/onboarding')}>
+          <Button variant="outline" className="w-full" type="button">
             <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
               <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
               <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
@@ -141,7 +84,7 @@ export function SignupPage() {
             </svg>
             Continue with Google
           </Button>
-          <Button variant="outline" className="w-full" type="button" onClick={() => navigate('/onboarding')}>
+          <Button variant="outline" className="w-full" type="button">
             <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
               <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
             </svg>
@@ -150,9 +93,9 @@ export function SignupPage() {
         </div>
 
         <div className="mt-6 text-center">
-          <span className="text-slate-600">Already have an account? </span>
-          <Link to="/login" className="text-blue-600 hover:underline">
-            Sign in
+          <span className="text-slate-600">Don't have an account? </span>
+          <Link to="/signup" className="text-blue-600 hover:underline">
+            Sign up
           </Link>
         </div>
 

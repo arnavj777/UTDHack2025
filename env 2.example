@@ -1,0 +1,12 @@
+# Django Settings
+# Copy this file to .env and update the values
+DJANGO_SECRET_KEY=your-secret-key-here-change-in-production
+DEBUG=True
+ALLOWED_HOSTS=localhost,127.0.0.1
+
+# Database (if using PostgreSQL or other, uncomment and configure)
+# DATABASE_URL=postgresql://user:password@localhost:5432/dbname
+
+# Frontend Development Server Port (optional)
+# FRONTEND_PORT=5173
+
