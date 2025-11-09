@@ -105,20 +105,49 @@ export function LandingPage() {
                 Start Free Trial <ArrowRight className="w-4 h-4" />
               </Button>
             </Link>
-            <Button size="lg" variant="outline">
+            <Button 
+              size="lg" 
+              variant="outline"
+              onClick={() => {
+                const videoElement = document.querySelector('iframe[title="ProductAI Demo Video"]');
+                if (videoElement) {
+                  videoElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+              }}
+            >
               Watch Demo
             </Button>
           </div>
 
-          {/* Demo Video Placeholder */}
+          {/* Demo Video */}
           <div className="mt-16 max-w-5xl mx-auto">
-            <div className="relative rounded-xl overflow-hidden shadow-2xl border bg-slate-900 aspect-video flex items-center justify-center">
-              <div className="text-center">
-                <div className="w-20 h-20 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <div className="w-0 h-0 border-l-8 border-l-white border-y-6 border-y-transparent ml-1"></div>
-                </div>
-                <p className="text-white/60">Product Demo Video</p>
-              </div>
+            <div className="relative rounded-xl overflow-hidden shadow-2xl border border-slate-200 bg-slate-900 aspect-video">
+              {/* YouTube Embed */}
+              <iframe
+                className="w-full h-full"
+                src="https://www.youtube.com/embed/V28R2FyFI0c?rel=0&modestbranding=1"
+                title="ProductAI Demo Video"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              ></iframe>
+              
+              {/* Alternative: Use a local video file */}
+              {/* Uncomment below and comment out the iframe above to use a local video file */}
+              {/* 
+              <video
+                className="w-full h-full object-cover"
+                controls
+                autoPlay
+                muted
+                loop
+                poster="/demo-video-poster.jpg"
+              >
+                <source src="/demo-video.mp4" type="video/mp4" />
+                <source src="/demo-video.webm" type="video/webm" />
+                Your browser does not support the video tag.
+              </video>
+              */}
             </div>
           </div>
         </div>

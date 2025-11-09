@@ -332,9 +332,12 @@ def forgot_password_view(request):
                 html_message=html_message,
                 fail_silently=False,
             )
+            print(f"✅ Password reset email sent successfully to {user.email}")
         except Exception as email_error:
-            # Log the error but don't reveal it to the user (security best practice)
-            print(f"Error sending email: {email_error}")
+            # Log the error for debugging
+            print(f"❌ Error sending email: {email_error}")
+            print(f"   Make sure EMAIL_HOST_USER and EMAIL_HOST_PASSWORD are set in your .env file")
+            print(f"   For Gmail: Create an App Password at https://myaccount.google.com/apppasswords")
             # Still return success to user (don't reveal if email exists)
         
         return Response({
