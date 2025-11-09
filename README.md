@@ -2,6 +2,49 @@
 
 A modern full-stack web application with Django REST Framework backend and React frontend.
 
+## Quick Start
+
+**For detailed setup instructions, see [SETUP.md](SETUP.md)**
+
+### Prerequisites
+
+- **Python 3.8+** (Python 3.10+ recommended)
+- **Node.js 20+** (see `.nvmrc` for exact version)
+- **npm** or **yarn**
+
+### Quick Setup
+
+1. **Clone and navigate to the project:**
+   ```bash
+   git clone <repository-url>
+   cd UTDHack2025
+   ```
+
+2. **Backend Setup:**
+   ```bash
+   # Create and activate virtual environment
+   python -m venv venv
+   # Windows: venv\Scripts\activate
+   # macOS/Linux: source venv/bin/activate
+   
+   # Install dependencies
+   pip install -r requirements.txt
+   
+   # Create .env file (see SETUP.md for details)
+   # Run migrations
+   python manage.py migrate
+   
+   # Start server
+   python manage.py runserver
+   ```
+
+3. **Frontend Setup:**
+   ```bash
+   cd frontend
+   npm install
+   npm run dev
+   ```
+
 ## Project Structure
 
 ```
@@ -16,77 +59,33 @@ A modern full-stack web application with Django REST Framework backend and React
 │   ├── src/          # React source files
 │   └── package.json  # Frontend dependencies
 ├── requirements.txt  # Python dependencies
-└── manage.py         # Django management script
+├── .nvmrc           # Node.js version specification
+├── SETUP.md         # Detailed setup instructions
+└── manage.py        # Django management script
 ```
 
-## Prerequisites
+## Important Notes
 
-- Python 3.8+
-- Node.js 16+
-- npm or yarn
+### Environment Variables
 
-## Setup Instructions
+**You must create a `.env` file in the root directory before running the backend:**
 
-### Backend Setup (Django)
+```bash
+# Copy the example file
+copy env.example .env  # Windows
+cp env.example .env    # macOS/Linux
+```
 
-1. **Create and activate a virtual environment (Recommended):**
-   
-   **Windows:**
-   ```bash
-   python -m venv venv
-   venv\Scripts\activate
-   ```
-   
-   **macOS/Linux:**
-   ```bash
-   python -m venv venv
-   source venv/bin/activate
-   ```
-   
-   **Note:** The virtual environment has already been created. You just need to activate it:
-   - Windows: `venv\Scripts\activate`
-   - macOS/Linux: `source venv/bin/activate`
+Then edit `.env` and set your `DJANGO_SECRET_KEY`. See [SETUP.md](SETUP.md) for detailed instructions.
 
-2. **Install Python dependencies:**
-   ```bash
-   pip install -r requirements.txt
-   ```
-   
-   **Note:** Make sure your virtual environment is activated (you should see `(venv)` in your terminal prompt).
+### Common Issues
 
-3. **Run database migrations:**
-   ```bash
-   python manage.py migrate
-   ```
+- **`npm run dev` not working?** Make sure you're in the `frontend` directory and have run `npm install`
+- **Missing dependencies?** Always run `npm install` after pulling changes
+- **CORS errors?** Check that both servers are running and ports match
+- **Database errors?** Run `python manage.py migrate`
 
-4. **Create a superuser (optional):**
-   ```bash
-   python manage.py createsuperuser
-   ```
-
-5. **Start the Django development server:**
-   ```bash
-   python manage.py runserver
-   ```
-   The backend will be available at `http://127.0.0.1:8000`
-
-### Frontend Setup (React)
-
-1. **Navigate to the frontend directory:**
-   ```bash
-   cd frontend
-   ```
-
-2. **Install dependencies:**
-   ```bash
-   npm install
-   ```
-
-3. **Start the development server:**
-   ```bash
-   npm run dev
-   ```
-   The frontend will be available at `http://localhost:5173`
+For more troubleshooting, see [SETUP.md](SETUP.md#common-issues-and-solutions).
 
 ## API Endpoints
 
@@ -96,14 +95,7 @@ A modern full-stack web application with Django REST Framework backend and React
 
 ### CORS Settings
 
-The Django backend is configured to allow requests from the React frontend. CORS settings are in `backend/settings.py`:
-
-```python
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",
-    "http://127.0.0.1:5173",
-]
-```
+The Django backend is configured to allow requests from the React frontend on common development ports (5173-5175) and any localhost port when `DEBUG=True`. CORS settings are automatically configured in `backend/settings.py` based on environment variables.
 
 ### API Proxy
 
