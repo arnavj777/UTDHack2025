@@ -1,13 +1,56 @@
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card } from './ui/card';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
 import { Switch } from './ui/switch';
 import { Slider } from './ui/slider';
-import { Sparkles, Settings, Zap, CheckCircle, AlertCircle } from 'lucide-react';
-import { useState } from 'react';
+import { Sparkles, Settings, Zap, CheckCircle, AlertCircle, Plus, Edit, Trash2 } from 'lucide-react';
+import { aiAgentService } from '../services/automationService';
+import { AIAgent } from '../types/AIAgent';
+import { ApiError } from '../services/api';
 
 export function AIAgentControlCenter() {
+  const navigate = useNavigate();
+  const [aiAgents, setAiAgents] = useState<AIAgent[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
   const [autonomyLevel, setAutonomyLevel] = useState([50]);
+
+  useEffect(() => {
+    loadAIAgents();
+  }, []);
+
+  const loadAIAgents = async () => {
+    try {
+      setLoading(true);
+      setError('');
+      const data = await aiAgentService.list();
+      setAiAgents(data);
+    } catch (err) {
+      if (err instanceof ApiError) {
+        setError(err.message);
+      } else {
+        setError('Failed to load AI agents. Please try again.');
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = async (id: number) => {
+    if (!confirm('Are you sure you want to delete this AI agent?')) return;
+    try {
+      await aiAgentService.delete(id);
+      await loadAIAgents();
+    } catch (err) {
+      if (err instanceof ApiError) {
+        setError(err.message);
+      } else {
+        setError('Failed to delete AI agent. Please try again.');
+      }
+    }
+  };
 
   const automationCapabilities = [
     {
@@ -63,11 +106,57 @@ export function AIAgentControlCenter() {
           <h1 className="mb-2">AI Agent Control Center</h1>
           <p className="text-slate-600">Configure what your AI assistant can automate</p>
         </div>
-        <Button variant="outline" className="gap-2">
-          <Settings className="w-4 h-4" />
-          Advanced Settings
-        </Button>
+        <div className="flex gap-2">
+          <Button className="gap-2" onClick={() => navigate('/workspace/ai-agent/create')}>
+            <Plus className="w-4 h-4" />
+            Add AI Agent
+          </Button>
+          <Button variant="outline" className="gap-2">
+            <Settings className="w-4 h-4" />
+            Advanced Settings
+          </Button>
+        </div>
       </div>
+
+      {/* Saved AI Agents */}
+      {aiAgents.length > 0 && (
+        <Card className="p-6">
+          <h3 className="mb-4">Saved AI Agents</h3>
+          {loading ? (
+            <p className="text-slate-600">Loading...</p>
+          ) : error ? (
+            <p className="text-red-600">{error}</p>
+          ) : (
+            <div className="space-y-3">
+              {aiAgents.map((agent) => (
+                <div key={agent.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-slate-50">
+                  <div className="flex-1">
+                    <h4 className="font-medium">{agent.title}</h4>
+                    {agent.description && <p className="text-slate-600 text-sm mt-1">{agent.description}</p>}
+                    <div className="flex gap-2 mt-2">
+                      <Badge variant="outline">{agent.agent_type || 'automation'}</Badge>
+                      <Badge variant="outline">{agent.status || 'active'}</Badge>
+                      {agent.autonomy_level !== undefined && (
+                        <span className="text-slate-600 text-sm">Autonomy: {agent.autonomy_level}%</span>
+                      )}
+                    </div>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button variant="outline" size="sm" onClick={() => navigate(`/workspace/ai-agent/edit/${agent.id}`)}>
+                      <Edit className="w-4 h-4 mr-1" />
+                      Edit
+                    </Button>
+                    <Button variant="outline" size="sm" onClick={() => handleDelete(agent.id)}>
+                      <Trash2 className="w-4 h-4 mr-1" />
+                      Delete
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </Card>
+      )}
 
       {/* Autonomy Level */}
       <Card className="p-6 bg-gradient-to-br from-blue-50 to-purple-50 border-blue-200">

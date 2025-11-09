@@ -4,22 +4,373 @@ import { Badge } from './ui/badge';
 import { Textarea } from './ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
 import { Slider } from './ui/slider';
-import { Sparkles, Download, Play, Wand2, Share, CheckCircle, AlertCircle } from 'lucide-react';
-import { useState } from 'react';
+import { Sparkles, Download, Wand2, Share, CheckCircle, AlertCircle } from 'lucide-react';
+import { useState, useEffect, useCallback } from 'react';
+import { api, ApiError } from '../services/api';
+
+interface WireframeData {
+  description: string;
+  fidelity: number;
+  device_type: string;
+  svg: string;
+  accessibility_score: number;
+  suggestions: string[];
+  components?: string[];
+}
 
 export function WireframeGenerator() {
   const [prompt, setPrompt] = useState('');
   const [fidelity, setFidelity] = useState([50]);
+  const [deviceType, setDeviceType] = useState('desktop');
+  const [loading, setLoading] = useState(false);
+  const [refining, setRefining] = useState(false);
+  const [error, setError] = useState('');
+  const [wireframe, setWireframe] = useState<WireframeData | null>(null);
+  const [refinementPrompt, setRefinementPrompt] = useState('');
+  
+  // Undo/Redo state management
+  const [history, setHistory] = useState<WireframeData[]>([]);
+  const [historyIndex, setHistoryIndex] = useState(-1);
 
-  const generated = prompt.length > 0;
+  const generated = wireframe !== null;
+  
+  // Helper function to save wireframe to history
+  const saveToHistory = (wf: WireframeData) => {
+    setHistory(prev => {
+      // Remove any history after current index (when undoing and then making new changes)
+      const newHistory = prev.slice(0, historyIndex + 1);
+      // Add new wireframe to history
+      newHistory.push(wf);
+      // Limit history to 50 items to prevent memory issues
+      if (newHistory.length > 50) {
+        newHistory.shift();
+        return newHistory;
+      }
+      return newHistory;
+    });
+    setHistoryIndex(prev => {
+      const newIndex = prev + 1;
+      // If we're at max history, stay at the last index
+      return Math.min(newIndex, 49);
+    });
+  };
+  
+  // Undo functionality
+  const handleUndo = useCallback(() => {
+    setHistoryIndex(prevIndex => {
+      if (prevIndex > 0) {
+        const newIndex = prevIndex - 1;
+        setWireframe(history[newIndex]);
+        return newIndex;
+      } else if (prevIndex === 0) {
+        // Go back to initial state (no wireframe)
+        setWireframe(null);
+        return -1;
+      }
+      return prevIndex;
+    });
+  }, [history]);
+  
+  // Redo functionality
+  const handleRedo = useCallback(() => {
+    setHistoryIndex(prevIndex => {
+      if (prevIndex < history.length - 1) {
+        const newIndex = prevIndex + 1;
+        setWireframe(history[newIndex]);
+        return newIndex;
+      }
+      return prevIndex;
+    });
+  }, [history]);
+  
+  // Check if undo/redo are available
+  const canUndo = historyIndex >= 0;
+  const canRedo = historyIndex < history.length - 1;
+  
+  // Keyboard shortcuts for undo/redo
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Only handle if not typing in an input/textarea
+      const target = e.target as HTMLElement;
+      if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') {
+        return;
+      }
+      
+      // Ctrl+Z or Cmd+Z for undo
+      if ((e.ctrlKey || e.metaKey) && e.key === 'z' && !e.shiftKey) {
+        e.preventDefault();
+        if (canUndo) {
+          handleUndo();
+        }
+      }
+      // Ctrl+Y or Ctrl+Shift+Z or Cmd+Shift+Z for redo
+      if ((e.ctrlKey || e.metaKey) && e.key === 'y') {
+        e.preventDefault();
+        if (canRedo) {
+          handleRedo();
+        }
+      }
+      // Ctrl+Shift+Z or Cmd+Shift+Z for redo (alternative)
+      if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'z') {
+        e.preventDefault();
+        if (canRedo) {
+          handleRedo();
+        }
+      }
+    };
+    
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [canUndo, canRedo, handleUndo, handleRedo]);
 
-  const accessibilityScores = [
-    { category: 'Color Contrast', score: 95, status: 'pass' },
-    { category: 'Touch Target Size', score: 88, status: 'pass' },
-    { category: 'Text Readability', score: 72, status: 'warning' },
-    { category: 'Screen Reader Support', score: 100, status: 'pass' },
-    { category: 'Keyboard Navigation', score: 65, status: 'warning' }
-  ];
+  const handleGenerate = async () => {
+    if (!prompt.trim()) {
+      setError('Please enter a description');
+      return;
+    }
+
+    setLoading(true);
+    setError('');
+
+    try {
+      const response = await api.post<{ wireframe: WireframeData; message: string }>('/wireframe/generate/', {
+        prompt: prompt,
+        fidelity: fidelity[0],
+        device_type: deviceType
+      });
+
+      const newWireframe = response.wireframe;
+      setWireframe(newWireframe);
+      // Save to history
+      saveToHistory(newWireframe);
+    } catch (err) {
+      if (err instanceof ApiError) {
+        setError(err.message);
+      } else {
+        setError('Failed to generate wireframe. Please try again.');
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleRefine = async () => {
+    if (!refinementPrompt.trim()) {
+      setError('Please enter refinement instructions');
+      return;
+    }
+
+    if (!wireframe) {
+      setError('Please generate a wireframe first');
+      return;
+    }
+
+    setRefining(true);
+    setError('');
+
+    try {
+      const response = await api.post<{ refined_wireframe: WireframeData; message: string }>('/wireframe/refine/', {
+        wireframe_data: wireframe,
+        refinement_prompt: refinementPrompt,
+        fidelity: wireframe.fidelity,
+        device_type: wireframe.device_type
+      });
+
+      const newWireframe = response.refined_wireframe;
+      setWireframe(newWireframe);
+      // Save to history
+      saveToHistory(newWireframe);
+      setRefinementPrompt('');
+    } catch (err) {
+      if (err instanceof ApiError) {
+        setError(err.message);
+      } else {
+        setError('Failed to refine wireframe. Please try again.');
+      }
+    } finally {
+      setRefining(false);
+    }
+  };
+
+  // Realistic accessibility scoring model
+  const calculateAccessibilityScores = (wf: WireframeData | null, device: string, fid: number) => {
+    if (!wf) {
+      // Default scores when no wireframe (ranging from 10-85)
+      return {
+        overall: 70,
+        categories: [
+          { category: 'Color Contrast', score: 75, status: 'pass' },
+          { category: 'Touch Target Size', score: 70, status: 'pass' },
+          { category: 'Text Readability', score: 65, status: 'warning' },
+          { category: 'Screen Reader Support', score: 72, status: 'pass' },
+          { category: 'Keyboard Navigation', score: 58, status: 'warning' }
+        ]
+      };
+    }
+
+    const components = wf.components || [];
+    const hasButton = components.includes('button') || components.includes('Button');
+    const hasForm = components.includes('form') || components.includes('Form') || components.includes('input') || components.includes('Input');
+    const hasHeader = components.includes('header') || components.includes('Header') || components.includes('nav') || components.includes('Nav');
+    const hasTable = components.includes('table') || components.includes('Table');
+    const hasImage = components.includes('image') || components.includes('Image');
+    const hasText = components.includes('text') || components.includes('Text') || components.includes('textblock') || components.includes('Text Block');
+    
+    // Base scores for each category (ranging from 10-85)
+    let colorContrast = 45;
+    let touchTargetSize = 50;
+    let textReadability = 45;
+    let screenReaderSupport = 40;
+    let keyboardNavigation = 42;
+
+    // Color Contrast scoring (based on fidelity and components)
+    if (fid >= 80) {
+      colorContrast = 80; // High fidelity usually has better contrast
+    } else if (fid >= 50) {
+      colorContrast = 65;
+    } else {
+      colorContrast = 50; // Low fidelity may have contrast issues
+    }
+    if (hasText && fid >= 60) {
+      colorContrast += 5; // Text elements with good fidelity
+    }
+    if (hasButton && fid >= 70) {
+      colorContrast += 3; // Buttons with good contrast
+    }
+    if (!hasText && !hasButton) {
+      colorContrast -= 10; // No text or buttons = lower score
+    }
+    colorContrast = Math.min(85, Math.max(10, colorContrast));
+
+    // Touch Target Size scoring (device-dependent)
+    if (device === 'mobile') {
+      if (hasButton) {
+        touchTargetSize = fid >= 70 ? 82 : fid >= 50 ? 70 : 55;
+      } else {
+        touchTargetSize = 25; // No buttons = much lower score on mobile
+      }
+      if (hasForm && fid >= 60) {
+        touchTargetSize += 5; // Form inputs with good sizing
+      }
+    } else if (device === 'tablet') {
+      touchTargetSize = hasButton ? (fid >= 60 ? 75 : 60) : 45;
+    } else {
+      // Desktop - less critical but still important
+      touchTargetSize = hasButton ? (fid >= 50 ? 70 : 58) : 50;
+    }
+    touchTargetSize = Math.min(85, Math.max(10, touchTargetSize));
+
+    // Text Readability scoring
+    if (hasText) {
+      textReadability = fid >= 70 ? 78 : fid >= 50 ? 65 : 52;
+      if (fid >= 80) {
+        textReadability += 5; // High fidelity = better typography
+      }
+    } else {
+      textReadability = 20; // No text elements = much lower score
+    }
+    if (hasHeader && fid >= 60) {
+      textReadability += 4; // Headers improve readability
+    }
+    textReadability = Math.min(85, Math.max(10, textReadability));
+
+    // Screen Reader Support scoring
+    if (hasHeader) {
+      screenReaderSupport += 12; // Headers provide structure
+    }
+    if (hasButton) {
+      screenReaderSupport += 10; // Buttons are usually accessible
+    }
+    if (hasForm) {
+      screenReaderSupport += 8; // Forms may have labels
+      if (fid >= 60) {
+        screenReaderSupport += 6; // Higher fidelity forms have better labels
+      }
+    }
+    if (hasImage && fid >= 70) {
+      screenReaderSupport += 4; // Images may have alt text at higher fidelity
+    }
+    if (hasTable) {
+      screenReaderSupport -= 8; // Tables can be challenging for screen readers
+    }
+    // Base accessibility practices
+    screenReaderSupport += 10;
+    if (!hasHeader && !hasButton && !hasForm) {
+      screenReaderSupport -= 15; // No semantic elements = much lower score
+    }
+    screenReaderSupport = Math.min(85, Math.max(10, screenReaderSupport));
+
+    // Keyboard Navigation scoring
+    if (hasButton) {
+      keyboardNavigation += 12; // Buttons are keyboard accessible
+    }
+    if (hasForm) {
+      keyboardNavigation += 10; // Forms support keyboard navigation
+      if (fid >= 60) {
+        keyboardNavigation += 6; // Better form structure
+      }
+    }
+    if (hasHeader) {
+      keyboardNavigation += 8; // Headers often contain navigation
+    }
+    if (hasTable) {
+      keyboardNavigation -= 10; // Tables can be difficult to navigate
+    }
+    // Base keyboard support
+    keyboardNavigation += 8;
+    if (!hasButton && !hasForm && !hasHeader) {
+      keyboardNavigation -= 12; // No interactive elements = much lower score
+    }
+    keyboardNavigation = Math.min(85, Math.max(10, keyboardNavigation));
+
+    const categories = [
+      { 
+        category: 'Color Contrast', 
+        score: Math.round(colorContrast), 
+        status: colorContrast >= 80 ? 'pass' : colorContrast >= 60 ? 'warning' : 'fail' 
+      },
+      { 
+        category: 'Touch Target Size', 
+        score: Math.round(touchTargetSize), 
+        status: touchTargetSize >= 80 ? 'pass' : touchTargetSize >= 60 ? 'warning' : 'fail' 
+      },
+      { 
+        category: 'Text Readability', 
+        score: Math.round(textReadability), 
+        status: textReadability >= 75 ? 'pass' : textReadability >= 60 ? 'warning' : 'fail' 
+      },
+      { 
+        category: 'Screen Reader Support', 
+        score: Math.round(screenReaderSupport), 
+        status: screenReaderSupport >= 80 ? 'pass' : screenReaderSupport >= 60 ? 'warning' : 'fail' 
+      },
+      { 
+        category: 'Keyboard Navigation', 
+        score: Math.round(keyboardNavigation), 
+        status: keyboardNavigation >= 75 ? 'pass' : keyboardNavigation >= 60 ? 'warning' : 'fail' 
+      }
+    ];
+
+    // Calculate overall score (weighted average)
+    const weights = {
+      'Color Contrast': 0.20,
+      'Touch Target Size': 0.20,
+      'Text Readability': 0.20,
+      'Screen Reader Support': 0.20,
+      'Keyboard Navigation': 0.20
+    };
+
+    const overall = Math.round(
+      categories.reduce((sum, cat) => sum + (cat.score * weights[cat.category as keyof typeof weights]), 0)
+    );
+
+    return { overall, categories };
+  };
+
+  const accessibilityData = calculateAccessibilityScores(wireframe, deviceType, fidelity[0]);
+  const accessibilityScores = accessibilityData.categories;
 
   return (
     <div className="space-y-6 max-w-7xl">
@@ -78,20 +429,54 @@ export function WireframeGenerator() {
             </div>
 
             <div className="flex gap-3">
-              <Button className="gap-2">
+              <Button className="gap-2" onClick={handleGenerate} disabled={loading || !prompt.trim()}>
                 <Sparkles className="w-4 h-4" />
-                Generate Wireframe
+                {loading ? 'Generating...' : 'Generate Wireframe'}
               </Button>
-              <Button variant="outline" className="gap-2">
+              <Button variant="outline" className="gap-2" onClick={handleRefine} disabled={refining || !wireframe || !refinementPrompt.trim()}>
                 <Wand2 className="w-4 h-4" />
-                Refine with AI
+                {refining ? 'Refining...' : 'Refine with AI'}
               </Button>
             </div>
+
+            {error && (
+              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
+                {error}
+              </div>
+            )}
+
+            {wireframe && (
+              <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded">
+                <p className="text-sm text-blue-800">{wireframe.description}</p>
+              </div>
+            )}
+
+            {wireframe && (
+              <div className="mt-4">
+                <label className="mb-2 block text-sm font-medium">Refinement Instructions</label>
+                <Textarea 
+                  placeholder="e.g., Increase button sizes, add more spacing, improve contrast..."
+                  className="min-h-20"
+                  value={refinementPrompt}
+                  onChange={(e) => setRefinementPrompt(e.target.value)}
+                />
+              </div>
+            )}
           </Card>
 
           {/* Canvas Area */}
           <Card className="p-6">
-            <Tabs defaultValue="desktop">
+            <div className="mb-4">
+              <Tabs defaultValue="wireframe">
+                <TabsList>
+                  <TabsTrigger value="wireframe">Wireframe</TabsTrigger>
+                  <TabsTrigger value="mockup">Mockup</TabsTrigger>
+                  <TabsTrigger value="pixel-perfect">Pixel-perfect</TabsTrigger>
+                </TabsList>
+              </Tabs>
+            </div>
+            
+            <Tabs defaultValue="desktop" value={deviceType} onValueChange={setDeviceType}>
               <div className="flex items-center justify-between mb-4">
                 <TabsList>
                   <TabsTrigger value="mobile">Mobile</TabsTrigger>
@@ -99,75 +484,96 @@ export function WireframeGenerator() {
                   <TabsTrigger value="desktop">Desktop</TabsTrigger>
                 </TabsList>
                 <div className="flex gap-2">
-                  <Button variant="outline" size="sm">Undo</Button>
-                  <Button variant="outline" size="sm">Redo</Button>
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    onClick={handleUndo}
+                    disabled={!canUndo}
+                    title={canUndo ? 'Undo last action' : 'Nothing to undo'}
+                  >
+                    Undo
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    onClick={handleRedo}
+                    disabled={!canRedo}
+                    title={canRedo ? 'Redo last undone action' : 'Nothing to redo'}
+                  >
+                    Redo
+                  </Button>
                 </div>
               </div>
 
               <TabsContent value="desktop" className="mt-0">
-                <div className="bg-slate-50 rounded-lg p-8 min-h-[600px] border-2 border-dashed border-slate-300">
-                  {generated ? (
-                    <div className="bg-white rounded-lg shadow-lg p-6 space-y-4">
-                      {/* Mock Wireframe */}
-                      <div className="border-b pb-4">
-                        <div className="flex items-center justify-between mb-2">
-                          <div className="h-6 w-32 bg-slate-200 rounded" />
-                          <div className="h-8 w-8 bg-slate-200 rounded-full" />
-                        </div>
-                      </div>
-                      
-                      <div className="grid grid-cols-3 gap-4">
-                        <div className="col-span-2 space-y-4">
-                          <div className="h-32 bg-blue-100 rounded-lg p-4">
-                            <div className="h-4 w-24 bg-blue-300 rounded mb-2" />
-                            <div className="h-8 w-40 bg-blue-400 rounded" />
-                          </div>
-                          
-                          <div className="space-y-2">
-                            <div className="h-4 w-32 bg-slate-200 rounded" />
-                            {[1, 2, 3].map((i) => (
-                              <div key={i} className="flex items-center gap-3 p-3 border rounded">
-                                <div className="h-10 w-10 bg-slate-200 rounded-full" />
-                                <div className="flex-1 space-y-2">
-                                  <div className="h-3 w-3/4 bg-slate-200 rounded" />
-                                  <div className="h-2 w-1/2 bg-slate-100 rounded" />
-                                </div>
-                                <div className="h-4 w-16 bg-slate-200 rounded" />
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-
-                        <div className="space-y-3">
-                          <div className="h-4 w-24 bg-slate-200 rounded" />
-                          {[1, 2, 3, 4].map((i) => (
-                            <div key={i} className="h-12 bg-slate-100 rounded-lg flex items-center justify-center">
-                              <div className="h-6 w-6 bg-slate-300 rounded" />
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
+                <div className="bg-slate-50 rounded-lg p-8 min-h-[600px] border-2 border-dashed border-slate-300 flex items-center justify-center overflow-auto">
+                  {generated && wireframe ? (
+                    <div 
+                      className="bg-white rounded-lg shadow-lg p-4"
+                      dangerouslySetInnerHTML={{ __html: wireframe.svg }}
+                    />
                   ) : (
-                    <div className="flex items-center justify-center h-full">
-                      <div className="text-center text-slate-400">
-                        <Wand2 className="w-16 h-16 mx-auto mb-4" />
-                        <p>Enter a description and click "Generate Wireframe"</p>
+                    <div className="text-center text-slate-400">
+                      <div className="relative w-16 h-16 mx-auto mb-4">
+                        <Wand2 className="w-16 h-16 mx-auto" />
+                        <div className="absolute -top-1 -right-1 w-3 h-3 bg-blue-500 rounded-full flex items-center justify-center">
+                          <span className="text-white text-xs font-bold">+</span>
+                        </div>
+                        <div className="absolute -bottom-1 -left-1 w-3 h-3 bg-blue-500 rounded-full flex items-center justify-center">
+                          <span className="text-white text-xs font-bold">+</span>
+                        </div>
                       </div>
+                      <p>Enter a description and click "Generate Wireframe"</p>
                     </div>
                   )}
                 </div>
               </TabsContent>
 
               <TabsContent value="mobile">
-                <div className="bg-slate-50 rounded-lg p-8 min-h-[600px] flex items-center justify-center border-2 border-dashed border-slate-300">
-                  <div className="text-slate-400">Mobile view</div>
+                <div className="bg-slate-50 rounded-lg p-8 min-h-[600px] border-2 border-dashed border-slate-300 flex items-center justify-center overflow-auto">
+                  {generated && wireframe ? (
+                    <div 
+                      className="bg-white rounded-lg shadow-lg p-4"
+                      dangerouslySetInnerHTML={{ __html: wireframe.svg }}
+                    />
+                  ) : (
+                    <div className="text-center text-slate-400">
+                      <div className="relative w-16 h-16 mx-auto mb-4">
+                        <Wand2 className="w-16 h-16 mx-auto" />
+                        <div className="absolute -top-1 -right-1 w-3 h-3 bg-blue-500 rounded-full flex items-center justify-center">
+                          <span className="text-white text-xs font-bold">+</span>
+                        </div>
+                        <div className="absolute -bottom-1 -left-1 w-3 h-3 bg-blue-500 rounded-full flex items-center justify-center">
+                          <span className="text-white text-xs font-bold">+</span>
+                        </div>
+                      </div>
+                      <p>Enter a description and click "Generate Wireframe"</p>
+                    </div>
+                  )}
                 </div>
               </TabsContent>
 
               <TabsContent value="tablet">
-                <div className="bg-slate-50 rounded-lg p-8 min-h-[600px] flex items-center justify-center border-2 border-dashed border-slate-300">
-                  <div className="text-slate-400">Tablet view</div>
+                <div className="bg-slate-50 rounded-lg p-8 min-h-[600px] border-2 border-dashed border-slate-300 flex items-center justify-center overflow-auto">
+                  {generated && wireframe ? (
+                    <div 
+                      className="bg-white rounded-lg shadow-lg p-4"
+                      dangerouslySetInnerHTML={{ __html: wireframe.svg }}
+                    />
+                  ) : (
+                    <div className="text-center text-slate-400">
+                      <div className="relative w-16 h-16 mx-auto mb-4">
+                        <Wand2 className="w-16 h-16 mx-auto" />
+                        <div className="absolute -top-1 -right-1 w-3 h-3 bg-blue-500 rounded-full flex items-center justify-center">
+                          <span className="text-white text-xs font-bold">+</span>
+                        </div>
+                        <div className="absolute -bottom-1 -left-1 w-3 h-3 bg-blue-500 rounded-full flex items-center justify-center">
+                          <span className="text-white text-xs font-bold">+</span>
+                        </div>
+                      </div>
+                      <p>Enter a description and click "Generate Wireframe"</p>
+                    </div>
+                  )}
                 </div>
               </TabsContent>
             </Tabs>
@@ -204,8 +610,10 @@ export function WireframeGenerator() {
             </div>
             
             <div className="text-center mb-6">
-              <div className="text-4xl mb-2">85/100</div>
-              <Badge variant="secondary">Good</Badge>
+              <div className="text-4xl mb-2">{accessibilityData.overall}/100</div>
+              <Badge variant={accessibilityData.overall >= 80 ? 'secondary' : accessibilityData.overall >= 60 ? 'default' : 'destructive'}>
+                {accessibilityData.overall >= 80 ? 'Good' : accessibilityData.overall >= 60 ? 'Fair' : 'Needs Improvement'}
+              </Badge>
             </div>
 
             <div className="space-y-3">
@@ -245,21 +653,32 @@ export function WireframeGenerator() {
               <Sparkles className="w-5 h-5 text-blue-600" />
               <h4>AI Suggestions</h4>
             </div>
-            <ul className="space-y-2 text-slate-700">
-              <li className="flex items-start gap-2">
-                <div className="w-1.5 h-1.5 bg-blue-600 rounded-full mt-2" />
-                <span>Increase button size to 44px for better touch targets</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <div className="w-1.5 h-1.5 bg-blue-600 rounded-full mt-2" />
-                <span>Add more spacing between form fields</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <div className="w-1.5 h-1.5 bg-blue-600 rounded-full mt-2" />
-                <span>Use higher contrast text for readability</span>
-              </li>
-            </ul>
-            <Button variant="outline" size="sm" className="w-full mt-4">
+            {wireframe && wireframe.suggestions && wireframe.suggestions.length > 0 ? (
+              <ul className="space-y-2 text-slate-700">
+                {wireframe.suggestions.map((suggestion, index) => (
+                  <li key={index} className="flex items-start gap-2">
+                    <div className="w-1.5 h-1.5 bg-blue-600 rounded-full mt-2" />
+                    <span>{suggestion}</span>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <ul className="space-y-2 text-slate-700">
+                <li className="flex items-start gap-2">
+                  <div className="w-1.5 h-1.5 bg-blue-600 rounded-full mt-2" />
+                  <span>Increase button size to 44px for better touch targets</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <div className="w-1.5 h-1.5 bg-blue-600 rounded-full mt-2" />
+                  <span>Add more spacing between form fields</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <div className="w-1.5 h-1.5 bg-blue-600 rounded-full mt-2" />
+                  <span>Use higher contrast text for readability</span>
+                </li>
+              </ul>
+            )}
+            <Button variant="outline" size="sm" className="w-full mt-4" onClick={handleRefine} disabled={!wireframe || !refinementPrompt.trim()}>
               Apply All
             </Button>
           </Card>

@@ -1,11 +1,55 @@
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card } from './ui/card';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
-import { Sparkles, TrendingUp, CheckCircle, AlertCircle, Play } from 'lucide-react';
+import { Sparkles, TrendingUp, CheckCircle, AlertCircle, Play, Plus, Edit, Trash2 } from 'lucide-react';
+import { experimentService } from '../services/analyticsService';
+import { Experiment } from '../types/Experiment';
+import { ApiError } from '../services/api';
 
 export function ExperimentResultsViewer() {
-  const experiments = [
+  const navigate = useNavigate();
+  const [experiments, setExperiments] = useState<Experiment[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    loadExperiments();
+  }, []);
+
+  const loadExperiments = async () => {
+    try {
+      setLoading(true);
+      setError('');
+      const data = await experimentService.list();
+      setExperiments(data);
+    } catch (err) {
+      if (err instanceof ApiError) {
+        setError(err.message);
+      } else {
+        setError('Failed to load experiments. Please try again.');
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = async (id: number) => {
+    if (!confirm('Are you sure you want to delete this experiment?')) return;
+    try {
+      await experimentService.delete(id);
+      await loadExperiments();
+    } catch (err) {
+      if (err instanceof ApiError) {
+        setError(err.message);
+      } else {
+        setError('Failed to delete experiment. Please try again.');
+      }
+    }
+  };
+  const mockExperiments = [
     {
       name: 'New Onboarding Flow',
       status: 'completed',
@@ -46,11 +90,50 @@ export function ExperimentResultsViewer() {
           <h1 className="mb-2">Experiment Results Viewer</h1>
           <p className="text-slate-600">A/B test results with AI interpretation and recommendations</p>
         </div>
-        <Button className="gap-2">
-          <Play className="w-4 h-4" />
-          New Experiment
+        <Button className="gap-2" onClick={() => navigate('/workspace/experiments/create')}>
+          <Plus className="w-4 h-4" />
+          Add Experiment
         </Button>
       </div>
+
+      {/* Saved Experiments */}
+      {experiments.length > 0 && (
+        <Card className="p-6">
+          <h3 className="mb-4">Saved Experiments</h3>
+          {loading ? (
+            <p className="text-slate-600">Loading...</p>
+          ) : error ? (
+            <p className="text-red-600">{error}</p>
+          ) : (
+            <div className="space-y-3">
+              {experiments.map((exp) => (
+                <div key={exp.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-slate-50">
+                  <div className="flex-1">
+                    <h4 className="font-medium">{exp.title}</h4>
+                    {exp.description && <p className="text-slate-600 text-sm mt-1">{exp.description}</p>}
+                    <div className="flex gap-2 mt-2">
+                      <Badge variant="outline">{exp.status || 'running'}</Badge>
+                      <Badge variant="outline">{exp.experiment_type || 'a-b-test'}</Badge>
+                      {exp.start_date && <span className="text-slate-600 text-sm">Start: {exp.start_date.split('T')[0]}</span>}
+                      {exp.end_date && <span className="text-slate-600 text-sm">End: {exp.end_date.split('T')[0]}</span>}
+                    </div>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button variant="outline" size="sm" onClick={() => navigate(`/workspace/experiments/edit/${exp.id}`)}>
+                      <Edit className="w-4 h-4 mr-1" />
+                      Edit
+                    </Button>
+                    <Button variant="outline" size="sm" onClick={() => handleDelete(exp.id)}>
+                      <Trash2 className="w-4 h-4 mr-1" />
+                      Delete
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </Card>
+      )}
 
       {/* Active Experiments Summary */}
       <div className="grid md:grid-cols-4 gap-4">
@@ -74,7 +157,7 @@ export function ExperimentResultsViewer() {
 
       {/* Experiment Cards */}
       <div className="space-y-6">
-        {experiments.map((experiment, index) => (
+        {mockExperiments.map((experiment, index) => (
           <Card key={index} className="p-6">
             <div className="flex items-start justify-between mb-6">
               <div>

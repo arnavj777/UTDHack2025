@@ -1,20 +1,96 @@
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card } from './ui/card';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Slider } from './ui/slider';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
-import { Sparkles, TrendingUp, DollarSign, Users, Target, Download } from 'lucide-react';
-import { useState } from 'react';
+import { Badge } from './ui/badge';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from './ui/dialog';
+import { Sparkles, TrendingUp, DollarSign, Users, Target, Download, Plus, Edit, Trash2 } from 'lucide-react';
+import { marketSizingService } from '../services/strategyService';
+import { MarketSizing } from '../types/MarketSizing';
+import { ApiError } from '../services/api';
+import { aiService } from '../services/aiService';
+import { toast } from './ui/use-toast';
 
 export function MarketSizingSimulator() {
+  const navigate = useNavigate();
+  const [marketSizings, setMarketSizings] = useState<MarketSizing[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
   const [tam, setTam] = useState(250);
   const [sam, setSam] = useState(75);
   const [som, setSom] = useState(12);
   const [marketShare, setMarketShare] = useState([3]);
   const [avgRevenue, setAvgRevenue] = useState(120);
+  const [gettingAnalysis, setGettingAnalysis] = useState(false);
+  const [showAIAnalysis, setShowAIAnalysis] = useState(false);
+  const [aiAnalysis, setAiAnalysis] = useState<any>(null);
+
+  useEffect(() => {
+    loadMarketSizings();
+  }, []);
+
+  const loadMarketSizings = async () => {
+    try {
+      setLoading(true);
+      setError('');
+      const data = await marketSizingService.list();
+      setMarketSizings(data);
+    } catch (err) {
+      if (err instanceof ApiError) {
+        setError(err.message);
+      } else {
+        setError('Failed to load market sizing analyses. Please try again.');
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = async (id: number) => {
+    if (!confirm('Are you sure you want to delete this market sizing analysis?')) return;
+    try {
+      await marketSizingService.delete(id);
+      await loadMarketSizings();
+    } catch (err) {
+      if (err instanceof ApiError) {
+        setError(err.message);
+      } else {
+        setError('Failed to delete market sizing analysis. Please try again.');
+      }
+    }
+  };
 
   const calculatedRevenue = (som * 1000000 * (marketShare[0] / 100) * avgRevenue) / 1000000;
+
+  const handleGetMarketAnalysis = async () => {
+    try {
+      setGettingAnalysis(true);
+      const response = await aiService.getMarketAnalysis('SaaS/Product Management Tools', 'Product managers, product teams, startups');
+      const analysis = response.data || response;
+      
+      setAiAnalysis(analysis);
+      setShowAIAnalysis(true);
+      
+      toast({
+        title: "AI Market Analysis Generated",
+        description: "View the full analysis in the dialog",
+      });
+    } catch (err: any) {
+      console.error('Error getting market analysis:', err);
+      const errorMessage = err instanceof ApiError ? err.message : (err.message || 'Failed to get market analysis. Please try again.');
+      toast({
+        title: "Error",
+        description: errorMessage,
+        variant: "destructive",
+      });
+    } finally {
+      setGettingAnalysis(false);
+    }
+  };
 
   return (
     <div className="space-y-6 max-w-7xl">
@@ -25,16 +101,60 @@ export function MarketSizingSimulator() {
           <p className="text-slate-600">Calculate TAM, SAM, SOM and forecast revenue scenarios</p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" className="gap-2">
+          <Button 
+            variant="outline" 
+            className="gap-2" 
+            type="button"
+            onClick={handleGetMarketAnalysis}
+            disabled={gettingAnalysis}
+          >
             <Sparkles className="w-4 h-4" />
-            AI Market Analysis
+            {gettingAnalysis ? 'Analyzing...' : 'AI Market Analysis'}
           </Button>
-          <Button variant="outline" className="gap-2">
-            <Download className="w-4 h-4" />
-            Export Report
+          <Button className="gap-2" type="button" onClick={() => navigate('/workspace/market-sizing/create')}>
+            <Plus className="w-4 h-4" />
+            Add Market Sizing
           </Button>
         </div>
       </div>
+
+      {/* Saved Analyses List */}
+      {marketSizings.length > 0 && (
+        <Card className="p-6">
+          <h3 className="mb-4">Saved Market Sizing Analyses</h3>
+          {loading ? (
+            <p className="text-slate-600">Loading...</p>
+          ) : error ? (
+            <p className="text-red-600">{error}</p>
+          ) : (
+            <div className="space-y-3">
+              {marketSizings.map((ms) => (
+                <div key={ms.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-slate-50">
+                  <div className="flex-1">
+                    <h4 className="font-medium">{ms.title}</h4>
+                    {ms.description && <p className="text-slate-600 text-sm mt-1">{ms.description}</p>}
+                    <div className="flex gap-4 mt-2 text-sm text-slate-600">
+                      {ms.tam && <span>TAM: ${ms.tam}B</span>}
+                      {ms.sam && <span>SAM: ${ms.sam}B</span>}
+                      {ms.som && <span>SOM: ${ms.som}B</span>}
+                    </div>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button variant="outline" size="sm" onClick={() => navigate(`/workspace/market-sizing/edit/${ms.id}`)}>
+                      <Edit className="w-4 h-4 mr-1" />
+                      Edit
+                    </Button>
+                    <Button variant="outline" size="sm" onClick={() => handleDelete(ms.id)}>
+                      <Trash2 className="w-4 h-4 mr-1" />
+                      Delete
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </Card>
+      )}
 
       <div className="grid lg:grid-cols-3 gap-6">
         {/* Input Panel */}
@@ -314,6 +434,86 @@ export function MarketSizingSimulator() {
           </Card>
         </div>
       </div>
+
+      {/* AI Market Analysis Dialog */}
+      <Dialog open={showAIAnalysis} onOpenChange={setShowAIAnalysis}>
+        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Sparkles className="w-5 h-5 text-blue-600" />
+              AI Market Analysis
+            </DialogTitle>
+            <DialogDescription>
+              Comprehensive market sizing analysis with TAM, SAM, and SOM estimates
+            </DialogDescription>
+          </DialogHeader>
+          
+          {aiAnalysis && (
+            <div className="space-y-6 py-4">
+              {/* Market Sizing Metrics */}
+              <div className="grid grid-cols-3 gap-4">
+                <Card className="p-4">
+                  <div className="text-sm text-slate-600 mb-1">TAM</div>
+                  <div className="text-2xl font-bold">${aiAnalysis.tam}B</div>
+                  <div className="text-xs text-slate-500 mt-1">Total Addressable Market</div>
+                </Card>
+                <Card className="p-4">
+                  <div className="text-sm text-slate-600 mb-1">SAM</div>
+                  <div className="text-2xl font-bold">${aiAnalysis.sam}B</div>
+                  <div className="text-xs text-slate-500 mt-1">Serviceable Addressable Market</div>
+                </Card>
+                <Card className="p-4">
+                  <div className="text-sm text-slate-600 mb-1">SOM</div>
+                  <div className="text-2xl font-bold">${aiAnalysis.som}B</div>
+                  <div className="text-xs text-slate-500 mt-1">Serviceable Obtainable Market</div>
+                </Card>
+              </div>
+
+              {/* Growth Trends */}
+              {aiAnalysis.growth_trends && (
+                <div>
+                  <h4 className="font-semibold mb-2">Growth Trends</h4>
+                  <p className="text-slate-700">{aiAnalysis.growth_trends}</p>
+                </div>
+              )}
+
+              {/* Market Segments */}
+              {aiAnalysis.segments && aiAnalysis.segments.length > 0 && (
+                <div>
+                  <h4 className="font-semibold mb-3">Market Segments</h4>
+                  <div className="space-y-2">
+                    {aiAnalysis.segments.map((segment: any, index: number) => (
+                      <Card key={index} className="p-4">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <h5 className="font-medium">{segment.name}</h5>
+                            <p className="text-sm text-slate-600">Size: {segment.size}</p>
+                          </div>
+                          <Badge variant={segment.growth === 'High' ? 'default' : segment.growth === 'Medium' ? 'secondary' : 'outline'}>
+                            {segment.growth} Growth
+                          </Badge>
+                        </div>
+                      </Card>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Competitive Landscape */}
+              {aiAnalysis.competitive_landscape && (
+                <div>
+                  <h4 className="font-semibold mb-2">Competitive Landscape</h4>
+                  <p className="text-slate-700">{aiAnalysis.competitive_landscape}</p>
+                </div>
+              )}
+            </div>
+          )}
+
+          <DialogFooter>
+            <Button onClick={() => setShowAIAnalysis(false)}>Close</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

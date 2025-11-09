@@ -1,12 +1,89 @@
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card } from './ui/card';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
 import { Input } from './ui/input';
 import { Textarea } from './ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
-import { Sparkles, Target, Users, DollarSign, Megaphone, Calendar, TrendingUp } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from './ui/dialog';
+import { Sparkles, Target, Users, DollarSign, Megaphone, Calendar, TrendingUp, Plus, Edit, Trash2 } from 'lucide-react';
+import { gtmStrategyService } from '../services/gtmService';
+import { GTMStrategy } from '../types/GTMStrategy';
+import { ApiError } from '../services/api';
+import { aiService } from '../services/aiService';
+import { toast } from './ui/use-toast';
 
 export function GTMStrategyBoard() {
+  const navigate = useNavigate();
+  const [gtmStrategies, setGtmStrategies] = useState<GTMStrategy[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [gettingStrategy, setGettingStrategy] = useState(false);
+  const [showAIStrategy, setShowAIStrategy] = useState(false);
+  const [aiStrategy, setAiStrategy] = useState<any>(null);
+
+  useEffect(() => {
+    loadGTMStrategies();
+  }, []);
+
+  const loadGTMStrategies = async () => {
+    try {
+      setLoading(true);
+      setError('');
+      const data = await gtmStrategyService.list();
+      setGtmStrategies(data);
+    } catch (err) {
+      if (err instanceof ApiError) {
+        setError(err.message);
+      } else {
+        setError('Failed to load GTM strategies. Please try again.');
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = async (id: number) => {
+    if (!confirm('Are you sure you want to delete this GTM strategy?')) return;
+    try {
+      await gtmStrategyService.delete(id);
+      await loadGTMStrategies();
+    } catch (err) {
+      if (err instanceof ApiError) {
+        setError(err.message);
+      } else {
+        setError('Failed to delete GTM strategy. Please try again.');
+      }
+    }
+  };
+
+  const handleGetGTMStrategy = async () => {
+    try {
+      setGettingStrategy(true);
+      const response = await aiService.getGTMStrategy('Product', 'Product managers');
+      const strategy = response.data || response;
+      
+      setAiStrategy(strategy);
+      setShowAIStrategy(true);
+      
+      toast({
+        title: "AI GTM Strategy Generated",
+        description: "View the full strategy in the dialog",
+      });
+    } catch (err: any) {
+      console.error('Error getting GTM strategy:', err);
+      const errorMessage = err instanceof ApiError ? err.message : (err.message || 'Failed to get GTM strategy. Please try again.');
+      toast({
+        title: "Error",
+        description: errorMessage,
+        variant: "destructive",
+      });
+    } finally {
+      setGettingStrategy(false);
+    }
+  };
+
   const channels = [
     { name: 'Email Marketing', priority: 'High', cost: '$5K', reach: '50K', roi: '320%' },
     { name: 'Social Media', priority: 'High', cost: '$8K', reach: '200K', roi: '280%' },
@@ -32,13 +109,59 @@ export function GTMStrategyBoard() {
           <p className="text-slate-600">Plan and execute your product launch strategy</p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" className="gap-2">
+          <Button 
+            variant="outline" 
+            className="gap-2" 
+            type="button"
+            onClick={handleGetGTMStrategy}
+            disabled={gettingStrategy}
+          >
             <Sparkles className="w-4 h-4" />
-            AI Strategy Recommendations
+            {gettingStrategy ? 'Generating...' : 'AI Strategy Recommendations'}
           </Button>
-          <Button>Save Strategy</Button>
+          <Button className="gap-2" onClick={() => navigate('/workspace/gtm-strategy/create')}>
+            <Plus className="w-4 h-4" />
+            Add GTM Strategy
+          </Button>
         </div>
       </div>
+
+      {/* Saved GTM Strategies */}
+      {gtmStrategies.length > 0 && (
+        <Card className="p-6">
+          <h3 className="mb-4">Saved GTM Strategies</h3>
+          {loading ? (
+            <p className="text-slate-600">Loading...</p>
+          ) : error ? (
+            <p className="text-red-600">{error}</p>
+          ) : (
+            <div className="space-y-3">
+              {gtmStrategies.map((gtm) => (
+                <div key={gtm.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-slate-50">
+                  <div className="flex-1">
+                    <h4 className="font-medium">{gtm.title}</h4>
+                    {gtm.description && <p className="text-slate-600 text-sm mt-1">{gtm.description}</p>}
+                    <div className="flex gap-2 mt-2">
+                      <Badge variant="outline">{gtm.status || 'draft'}</Badge>
+                      {gtm.launch_date && <span className="text-slate-600 text-sm">Launch: {gtm.launch_date.split('T')[0]}</span>}
+                    </div>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button variant="outline" size="sm" onClick={() => navigate(`/workspace/gtm-strategy/edit/${gtm.id}`)}>
+                      <Edit className="w-4 h-4 mr-1" />
+                      Edit
+                    </Button>
+                    <Button variant="outline" size="sm" onClick={() => handleDelete(gtm.id)}>
+                      <Trash2 className="w-4 h-4 mr-1" />
+                      Delete
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </Card>
+      )}
 
       {/* AI Recommendations */}
       <Card className="p-6 bg-gradient-to-br from-blue-50 to-purple-50 border-blue-200">
@@ -327,6 +450,65 @@ export function GTMStrategyBoard() {
           </Card>
         </div>
       </div>
+
+      {/* AI GTM Strategy Dialog */}
+      <Dialog open={showAIStrategy} onOpenChange={setShowAIStrategy}>
+        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Sparkles className="w-5 h-5 text-blue-600" />
+              AI GTM Strategy Recommendations
+            </DialogTitle>
+            <DialogDescription>
+              AI-powered go-to-market strategy recommendations
+            </DialogDescription>
+          </DialogHeader>
+          
+          {aiStrategy && (
+            <div className="space-y-6 py-4">
+              {aiStrategy.pricing_strategy && (
+                <div>
+                  <h4 className="font-semibold mb-2">Pricing Strategy</h4>
+                  <p className="text-slate-700">{aiStrategy.pricing_strategy}</p>
+                </div>
+              )}
+
+              {aiStrategy.channels && (
+                <div>
+                  <h4 className="font-semibold mb-2">Marketing Channels</h4>
+                  <p className="text-slate-700">{aiStrategy.channels}</p>
+                </div>
+              )}
+
+              {aiStrategy.messaging && (
+                <div>
+                  <h4 className="font-semibold mb-2">Messaging</h4>
+                  <p className="text-slate-700">{aiStrategy.messaging}</p>
+                </div>
+              )}
+
+              {aiStrategy.recommendations && (
+                <div>
+                  <h4 className="font-semibold mb-2">Recommendations</h4>
+                  {Array.isArray(aiStrategy.recommendations) ? (
+                    <ul className="space-y-1">
+                      {aiStrategy.recommendations.map((rec: string, index: number) => (
+                        <li key={index} className="text-slate-700">• {rec}</li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="text-slate-700">{aiStrategy.recommendations}</p>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+
+          <DialogFooter>
+            <Button onClick={() => setShowAIStrategy(false)}>Close</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

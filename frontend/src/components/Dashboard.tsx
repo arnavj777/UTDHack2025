@@ -7,8 +7,11 @@ import {
   Clock, Target, Lightbulb, FileText, BarChart3, ArrowRight, Zap
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 
 export function Dashboard() {
+  const { user } = useAuth();
+  const userName = user?.first_name || user?.email?.split('@')[0] || 'there';
   const initiatives = [
     { 
       name: 'Mobile App Redesign', 
@@ -76,7 +79,7 @@ export function Dashboard() {
       {/* Header */}
       <div className="flex justify-between items-start">
         <div>
-          <h1 className="mb-2">Welcome back, John 👋</h1>
+          <h1 className="mb-2">Welcome back, {userName} 👋</h1>
           <p className="text-slate-600">Here's what's happening with your products today</p>
         </div>
         <Button className="gap-2">

@@ -3,33 +3,232 @@ import { Button } from './ui/button';
 import { Badge } from './ui/badge';
 import { Textarea } from './ui/textarea';
 import { Input } from './ui/input';
+import { Label } from './ui/label';
 import { Progress } from './ui/progress';
-import { Target, Sparkles, Plus, TrendingUp, Users, DollarSign, Edit, Check } from 'lucide-react';
-import { useState } from 'react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from './ui/dialog';
+import { Target, Sparkles, Plus, TrendingUp, Users, DollarSign, Edit, Check, X } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { productStrategyService } from '../services/strategyService';
+import { ProductStrategy } from '../types/ProductStrategy';
+import { ApiError } from '../services/api';
+import { aiService } from '../services/aiService';
+import { toast } from './ui/use-toast';
+
+interface OKR {
+  id: string;
+  objective: string;
+  progress: number;
+  keyResults: Array<{
+    description: string;
+    current: number;
+    target: number;
+    unit: string;
+  }>;
+}
 
 export function ProductStrategyHub() {
+  const [strategy, setStrategy] = useState<ProductStrategy | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
   const [editing, setEditing] = useState(false);
+  const [visionStatement, setVisionStatement] = useState('');
+  const [okrs, setOkrs] = useState<OKR[]>([]);
+  const [showAddOKR, setShowAddOKR] = useState(false);
+  const [newOKR, setNewOKR] = useState({
+    objective: '',
+    keyResults: [{ description: '', current: 0, target: 0, unit: '' }]
+  });
+  const [gettingAdvice, setGettingAdvice] = useState(false);
+  const [showAIAdvice, setShowAIAdvice] = useState(false);
+  const [aiAdvice, setAiAdvice] = useState<any>(null);
 
-  const okrs = [
-    {
-      objective: 'Become the #1 mobile banking app for millennials',
-      progress: 68,
-      keyResults: [
-        { description: 'Reach 500K active users', current: 340, target: 500, unit: 'K users' },
-        { description: 'Achieve 4.5+ app store rating', current: 4.2, target: 4.5, unit: 'stars' },
-        { description: 'Reduce customer churn to <5%', current: 7, target: 5, unit: '%' }
-      ]
-    },
-    {
-      objective: 'Launch AI-powered financial insights',
-      progress: 45,
-      keyResults: [
-        { description: 'Ship insights feature to 100% users', current: 45, target: 100, unit: '%' },
-        { description: 'Achieve 40% weekly engagement', current: 12, target: 40, unit: '%' },
-        { description: 'Collect 1000+ feedback responses', current: 234, target: 1000, unit: 'responses' }
-      ]
+  useEffect(() => {
+    loadStrategy();
+  }, []);
+
+  const loadStrategy = async () => {
+    try {
+      setLoading(true);
+      const strategies = await productStrategyService.list();
+      if (strategies.length > 0) {
+        const s = strategies[0];
+        setStrategy(s);
+        setVisionStatement(s.data?.visionStatement || 'To empower young professionals to take control of their financial future through intelligent, mobile-first banking that combines cutting-edge technology with personalized insights and exceptional user experience.');
+        setOkrs(s.data?.okrs || []);
+      } else {
+        // Create default strategy if none exists
+        const newStrategy = await productStrategyService.create({
+          title: 'Product Strategy',
+          description: 'Main product strategy',
+          data: {
+            visionStatement: 'To empower young professionals to take control of their financial future through intelligent, mobile-first banking that combines cutting-edge technology with personalized insights and exceptional user experience.',
+            okrs: []
+          }
+        });
+        setStrategy(newStrategy);
+        setVisionStatement(newStrategy.data?.visionStatement || '');
+        setOkrs(newStrategy.data?.okrs || []);
+      }
+    } catch (error) {
+      console.error('Failed to load strategy:', error);
+      // Set default values even on error to prevent white screen
+      setVisionStatement('To empower young professionals to take control of their financial future through intelligent, mobile-first banking that combines cutting-edge technology with personalized insights and exceptional user experience.');
+      setOkrs([]);
+    } finally {
+      setLoading(false);
     }
-  ];
+  };
+
+  const calculateOKRProgress = (okr: OKR): number => {
+    if (!okr.keyResults || okr.keyResults.length === 0) return 0;
+    const totalProgress = okr.keyResults.reduce((sum, kr) => {
+      if (kr.target === 0) return sum;
+      const progress = Math.min(100, (kr.current / kr.target) * 100);
+      return sum + progress;
+    }, 0);
+    return Math.round(totalProgress / okr.keyResults.length);
+  };
+
+  const saveVisionStatement = async () => {
+    if (!strategy) return;
+    try {
+      setSaving(true);
+      const updated = await productStrategyService.update(strategy.id, {
+        data: {
+          ...strategy.data,
+          visionStatement: visionStatement
+        }
+      });
+      setStrategy(updated);
+      setEditing(false);
+    } catch (error) {
+      if (error instanceof ApiError) {
+        alert(error.message);
+      } else {
+        alert('Failed to save vision statement');
+      }
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const addOKR = async () => {
+    if (!newOKR.objective.trim()) {
+      alert('Please enter an objective');
+      return;
+    }
+    
+    try {
+      setSaving(true);
+      
+      // Ensure we have a strategy
+      let currentStrategy = strategy;
+      if (!currentStrategy) {
+        // Create a new strategy if none exists
+        currentStrategy = await productStrategyService.create({
+          title: 'Product Strategy',
+          description: 'Main product strategy',
+          data: {
+            visionStatement: visionStatement || 'To empower young professionals to take control of their financial future through intelligent, mobile-first banking that combines cutting-edge technology with personalized insights and exceptional user experience.',
+            okrs: []
+          }
+        });
+        setStrategy(currentStrategy);
+      }
+      
+      const filteredKeyResults = newOKR.keyResults.filter(kr => kr.description.trim() !== '');
+      const okr: OKR = {
+        id: Date.now().toString(),
+        objective: newOKR.objective,
+        progress: 0,
+        keyResults: filteredKeyResults
+      };
+      // Calculate initial progress
+      okr.progress = calculateOKRProgress(okr);
+      const updatedOkrs = [...okrs, okr];
+      const updated = await productStrategyService.update(currentStrategy.id, {
+        data: {
+          ...currentStrategy.data,
+          okrs: updatedOkrs
+        }
+      });
+      setStrategy(updated);
+      setOkrs(updatedOkrs);
+      setNewOKR({ objective: '', keyResults: [{ description: '', current: 0, target: 0, unit: '' }] });
+      setShowAddOKR(false);
+    } catch (error) {
+      console.error('Error adding OKR:', error);
+      if (error instanceof ApiError) {
+        alert(error.message);
+      } else {
+        alert('Failed to add OKR. Please try again.');
+      }
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleGetStrategyAdvice = async () => {
+    try {
+      setGettingAdvice(true);
+      const response = await aiService.getStrategyAdvice(visionStatement, okrs);
+      
+      // Handle response - it might be wrapped in data or be an object directly
+      const advice = response.data || response;
+      
+      setAiAdvice(advice);
+      setShowAIAdvice(true);
+      
+      toast({
+        title: "AI Strategy Advice Generated",
+        description: "View the full recommendations in the dialog",
+      });
+      
+      if (strategy) {
+        await productStrategyService.update(strategy.id, { 
+          data: { 
+            ...strategy.data, 
+            ai_advice: advice,
+            last_ai_advice_at: new Date().toISOString()
+          } 
+        });
+      }
+    } catch (err: any) {
+      console.error('Error getting strategy advice:', err);
+      const errorMessage = err instanceof ApiError ? err.message : (err.message || 'Failed to get strategy advice. Please try again.');
+      toast({
+        title: "Error",
+        description: errorMessage,
+        variant: "destructive",
+      });
+    } finally {
+      setGettingAdvice(false);
+    }
+  };
+
+  const deleteOKR = async (okrId: string) => {
+    if (!strategy || !confirm('Are you sure you want to delete this OKR?')) return;
+    try {
+      setSaving(true);
+      const updatedOkrs = okrs.filter(okr => okr.id !== okrId);
+      const updated = await productStrategyService.update(strategy.id, {
+        data: {
+          ...strategy.data,
+          okrs: updatedOkrs
+        }
+      });
+      setStrategy(updated);
+      setOkrs(updatedOkrs);
+    } catch (error) {
+      if (error instanceof ApiError) {
+        alert(error.message);
+      } else {
+        alert('Failed to delete OKR');
+      }
+    } finally {
+      setSaving(false);
+    }
+  };
 
   const competitors = [
     { name: 'Chime', strength: 'Early direct deposit', weakness: 'Limited features', threat: 'Medium' },
@@ -37,6 +236,23 @@ export function ProductStrategyHub() {
     { name: 'Venmo', strength: 'Network effects', weakness: 'Business model', threat: 'Medium' },
     { name: 'Traditional Banks', strength: 'Trust & capital', weakness: 'Poor UX', threat: 'Low' }
   ];
+
+
+  if (loading) {
+    return (
+      <div className="space-y-6 max-w-7xl">
+        <div className="flex justify-between items-start">
+          <div>
+            <h1 className="mb-2">Product Strategy Hub</h1>
+            <p className="text-slate-600">Define and track your product vision and goals</p>
+          </div>
+        </div>
+        <Card className="p-6">
+          <p className="text-slate-600">Loading...</p>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6 max-w-7xl">
@@ -46,12 +262,26 @@ export function ProductStrategyHub() {
           <h1 className="mb-2">Product Strategy Hub</h1>
           <p className="text-slate-600">Define and track your product vision and goals</p>
         </div>
-        <div className="flex gap-2">
-          <Button variant="outline" className="gap-2">
+        <div className="flex gap-2 relative z-10">
+          <Button 
+            variant="outline" 
+            className="gap-2" 
+            type="button"
+            onClick={handleGetStrategyAdvice}
+            disabled={gettingAdvice}
+          >
             <Sparkles className="w-4 h-4" />
-            AI Strategy Coach
+            {gettingAdvice ? 'Getting Advice...' : 'AI Strategy Coach'}
           </Button>
-          <Button className="gap-2">
+          <Button 
+            className="gap-2" 
+            type="button"
+            onClick={() => {
+              console.log('Add OKR button clicked, showAddOKR:', showAddOKR);
+              setShowAddOKR(true);
+            }}
+            style={{ position: 'relative', zIndex: 10, pointerEvents: 'auto' }}
+          >
             <Plus className="w-4 h-4" />
             Add OKR
           </Button>
@@ -68,12 +298,19 @@ export function ProductStrategyHub() {
           <Button 
             variant="ghost" 
             size="sm" 
-            onClick={() => setEditing(!editing)}
+            onClick={() => {
+              if (editing) {
+                saveVisionStatement();
+              } else {
+                setEditing(true);
+              }
+            }}
             className="gap-2"
+            disabled={saving}
           >
             {editing ? (
               <>
-                <Check className="w-4 h-4" /> Save
+                <Check className="w-4 h-4" /> {saving ? 'Saving...' : 'Save'}
               </>
             ) : (
               <>
@@ -86,13 +323,13 @@ export function ProductStrategyHub() {
         {editing ? (
           <Textarea 
             className="min-h-32"
-            defaultValue="To empower young professionals to take control of their financial future through intelligent, mobile-first banking that combines cutting-edge technology with personalized insights and exceptional user experience."
+            value={visionStatement}
+            onChange={(e) => setVisionStatement(e.target.value)}
+            placeholder="Enter your vision statement..."
           />
         ) : (
           <p className="text-slate-700 leading-relaxed">
-            To empower young professionals to take control of their financial future through intelligent, 
-            mobile-first banking that combines cutting-edge technology with personalized insights and 
-            exceptional user experience.
+            {visionStatement || 'No vision statement set. Click Edit to add one.'}
           </p>
         )}
 
@@ -159,42 +396,165 @@ export function ProductStrategyHub() {
       {/* OKRs */}
       <div>
         <h3 className="mb-4">Objectives & Key Results (OKRs)</h3>
-        <div className="space-y-4">
-          {okrs.map((okr, index) => (
-            <Card key={index} className="p-6">
-              <div className="flex items-start justify-between mb-4">
-                <div className="flex-1">
-                  <h4 className="mb-2">{okr.objective}</h4>
-                  <div className="flex items-center gap-2 text-slate-600">
-                    <span>Overall Progress:</span>
-                    <span>{okr.progress}%</span>
-                  </div>
-                </div>
-                <div className="flex gap-2">
-                  <Button variant="ghost" size="sm">Edit</Button>
-                  <Button variant="ghost" size="sm">Details</Button>
-                </div>
-              </div>
-
-              <Progress value={okr.progress} className="mb-4" />
-
-              <div className="space-y-3">
-                {okr.keyResults.map((kr, krIndex) => (
-                  <div key={krIndex} className="pl-4 border-l-2 border-blue-200">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-slate-700">{kr.description}</span>
-                      <span className="text-slate-600">
-                        {kr.current} / {kr.target} {kr.unit}
-                      </span>
+        {loading ? (
+          <Card className="p-6">
+            <p className="text-slate-600">Loading OKRs...</p>
+          </Card>
+        ) : okrs.length === 0 ? (
+          <Card className="p-6">
+            <p className="text-slate-600">No OKRs yet. Click "Add OKR" to create your first one.</p>
+          </Card>
+        ) : (
+          <div className="space-y-4">
+            {okrs.map((okr) => (
+              <Card key={okr.id} className="p-6">
+                <div className="flex items-start justify-between mb-4">
+                  <div className="flex-1">
+                    <h4 className="mb-2">{okr.objective}</h4>
+                    <div className="flex items-center gap-2 text-slate-600">
+                      <span>Overall Progress:</span>
+                      <span>{calculateOKRProgress(okr)}%</span>
                     </div>
-                    <Progress value={(kr.current / kr.target) * 100} className="h-1.5" />
                   </div>
-                ))}
-              </div>
-            </Card>
-          ))}
-        </div>
+                  <div className="flex gap-2">
+                    <Button variant="ghost" size="sm" onClick={() => deleteOKR(okr.id)}>
+                      <X className="w-4 h-4" />
+                    </Button>
+                  </div>
+                </div>
+
+                <Progress value={calculateOKRProgress(okr)} className="mb-4" />
+
+                {okr.keyResults && okr.keyResults.length > 0 && (
+                  <div className="space-y-3">
+                    {okr.keyResults.map((kr, krIndex) => (
+                      <div key={krIndex} className="pl-4 border-l-2 border-blue-200">
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="text-slate-700">{kr.description}</span>
+                          <span className="text-slate-600">
+                            {kr.current} / {kr.target} {kr.unit}
+                          </span>
+                        </div>
+                        <Progress value={(kr.current / kr.target) * 100} className="h-1.5" />
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </Card>
+            ))}
+          </div>
+        )}
       </div>
+
+      {/* Add OKR Dialog */}
+      <Dialog open={showAddOKR} onOpenChange={setShowAddOKR}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto bg-white text-slate-900">
+          <DialogHeader>
+            <DialogTitle>Add New OKR</DialogTitle>
+            <DialogDescription>
+              Create a new Objective and Key Results
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-6 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="objective">Objective *</Label>
+              <Input
+                id="objective"
+                value={newOKR.objective}
+                onChange={(e) => setNewOKR({ ...newOKR, objective: e.target.value })}
+                placeholder="e.g., Become the #1 mobile banking app for millennials"
+                required
+              />
+            </div>
+
+            <div className="space-y-4">
+              <Label>Key Results</Label>
+              {newOKR.keyResults.map((kr, index) => (
+                <div key={index} className="space-y-2 p-4 border rounded-lg">
+                  <div className="flex items-center justify-between mb-2">
+                    <Label>Key Result {index + 1}</Label>
+                    {newOKR.keyResults.length > 1 && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => {
+                          setNewOKR({
+                            ...newOKR,
+                            keyResults: newOKR.keyResults.filter((_, i) => i !== index)
+                          });
+                        }}
+                      >
+                        <X className="w-4 h-4" />
+                      </Button>
+                    )}
+                  </div>
+                  <Input
+                    placeholder="Description"
+                    value={kr.description}
+                    onChange={(e) => {
+                      const updated = [...newOKR.keyResults];
+                      updated[index].description = e.target.value;
+                      setNewOKR({ ...newOKR, keyResults: updated });
+                    }}
+                  />
+                  <div className="grid grid-cols-3 gap-2">
+                    <Input
+                      type="number"
+                      placeholder="Current"
+                      value={kr.current || ''}
+                      onChange={(e) => {
+                        const updated = [...newOKR.keyResults];
+                        updated[index].current = parseFloat(e.target.value) || 0;
+                        setNewOKR({ ...newOKR, keyResults: updated });
+                      }}
+                    />
+                    <Input
+                      type="number"
+                      placeholder="Target"
+                      value={kr.target || ''}
+                      onChange={(e) => {
+                        const updated = [...newOKR.keyResults];
+                        updated[index].target = parseFloat(e.target.value) || 0;
+                        setNewOKR({ ...newOKR, keyResults: updated });
+                      }}
+                    />
+                    <Input
+                      placeholder="Unit (e.g., K users)"
+                      value={kr.unit}
+                      onChange={(e) => {
+                        const updated = [...newOKR.keyResults];
+                        updated[index].unit = e.target.value;
+                        setNewOKR({ ...newOKR, keyResults: updated });
+                      }}
+                    />
+                  </div>
+                </div>
+              ))}
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  setNewOKR({
+                    ...newOKR,
+                    keyResults: [...newOKR.keyResults, { description: '', current: 0, target: 0, unit: '' }]
+                  });
+                }}
+              >
+                <Plus className="w-4 h-4 mr-2" />
+                Add Key Result
+              </Button>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowAddOKR(false)}>
+              Cancel
+            </Button>
+            <Button onClick={addOKR} disabled={saving || !newOKR.objective.trim()}>
+              {saving ? 'Adding...' : 'Add OKR'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* Competitive Landscape */}
       <Card className="p-6">
@@ -242,6 +602,81 @@ export function ProductStrategyHub() {
           </Button>
         </div>
       </Card>
+
+      {/* AI Strategy Advice Dialog */}
+      <Dialog open={showAIAdvice} onOpenChange={setShowAIAdvice}>
+        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Sparkles className="w-5 h-5 text-blue-600" />
+              AI Strategy Advice
+            </DialogTitle>
+            <DialogDescription>
+              Strategic recommendations based on your vision statement and OKRs
+            </DialogDescription>
+          </DialogHeader>
+          
+          {aiAdvice && (
+            <div className="space-y-6 py-4">
+              {/* Recommendations */}
+              {aiAdvice.recommendations && aiAdvice.recommendations.length > 0 && (
+                <div>
+                  <h4 className="font-semibold mb-3">Strategic Recommendations</h4>
+                  <ul className="space-y-2">
+                    {aiAdvice.recommendations.map((rec: string, index: number) => (
+                      <li key={index} className="flex items-start gap-2">
+                        <div className="w-1.5 h-1.5 bg-blue-600 rounded-full mt-2 shrink-0" />
+                        <span className="text-slate-700">{rec}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {/* Competitive Positioning */}
+              {aiAdvice.competitive_positioning && (
+                <div>
+                  <h4 className="font-semibold mb-2">Competitive Positioning</h4>
+                  <p className="text-slate-700">{aiAdvice.competitive_positioning}</p>
+                </div>
+              )}
+
+              {/* Risks & Opportunities */}
+              {aiAdvice.risks_opportunities && (
+                <div>
+                  <h4 className="font-semibold mb-2">Risks & Opportunities</h4>
+                  <p className="text-slate-700">{aiAdvice.risks_opportunities}</p>
+                </div>
+              )}
+
+              {/* Suggested OKRs */}
+              {aiAdvice.suggested_okrs && aiAdvice.suggested_okrs.length > 0 && (
+                <div>
+                  <h4 className="font-semibold mb-3">Suggested OKRs</h4>
+                  <div className="space-y-3">
+                    {aiAdvice.suggested_okrs.map((okr: any, index: number) => (
+                      <Card key={index} className="p-4">
+                        <h5 className="font-medium mb-2">{okr.objective}</h5>
+                        {okr.key_results && (
+                          <ul className="space-y-1 ml-4">
+                            {okr.key_results.map((kr: string, krIndex: number) => (
+                              <li key={krIndex} className="text-slate-600 text-sm">• {kr}</li>
+                            ))}
+                          </ul>
+                        )}
+                      </Card>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          <DialogFooter>
+            <Button onClick={() => setShowAIAdvice(false)}>Close</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

@@ -2,8 +2,11 @@ import { Card } from './ui/card';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
 import { Sparkles, AlertTriangle, TrendingUp, TrendingDown, MessageSquare, CheckCircle, Clock } from 'lucide-react';
+import { useAuth } from '../contexts/AuthContext';
 
 export function PMDailyBriefing() {
+  const { user } = useAuth();
+  const userName = user?.first_name || user?.email?.split('@')[0] || 'there';
   const topRisks = [
     {
       risk: 'Payment Gateway Integration running 2 weeks behind',
@@ -65,7 +68,7 @@ export function PMDailyBriefing() {
       {/* Header */}
       <div className="flex justify-between items-start">
         <div>
-          <h1 className="mb-2">Good morning, John 👋</h1>
+          <h1 className="mb-2">Good morning, {userName} 👋</h1>
           <p className="text-slate-600">Here's your AI-powered daily briefing for Saturday, November 8, 2025</p>
         </div>
         <div className="flex gap-2">
