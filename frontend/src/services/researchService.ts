@@ -255,3 +255,45 @@ export const researchDocumentService = {
   },
 };
 
+// Gemini Chat Service
+export interface ChatMessage {
+  role: 'user' | 'assistant';
+  content: string;
+  images?: string[]; // Base64 encoded images
+  timestamp?: Date;
+}
+
+export interface ChatResponse {
+  message: string;
+  model: string;
+  sentiment_score?: number;
+  trend_score?: number;
+  keywords?: string[];
+  overall_score?: number;
+}
+
+export const geminiChatService = {
+  async sendMessage(
+    message: string, 
+    conversationHistory: ChatMessage[] = [], 
+    images: string[] = []
+  ): Promise<ChatResponse> {
+    try {
+      const response = await api.post<ChatResponse>('/research/chat/', {
+        message,
+        images,
+        conversation_history: conversationHistory.map(msg => ({
+          role: msg.role,
+          content: msg.content
+        }))
+      });
+      return response;
+    } catch (error) {
+      if (error instanceof ApiError) {
+        throw error;
+      }
+      throw new Error('Failed to send chat message');
+    }
+  },
+};
+

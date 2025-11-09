@@ -5,7 +5,7 @@ import {
   Map, ListTodo, FileText, CalendarDays, MessageSquare, BarChart3, 
   Users, BookOpen, Settings, Bell, Search, ChevronDown, LogOut, Wand2,
   Megaphone, PenTool, CheckSquare, Activity, Brain, FlaskConical, Zap,
-  Workflow, Coffee
+  Workflow, Coffee, MessageCircle
 } from 'lucide-react';
 import { Input } from './ui/input';
 import { Avatar, AvatarFallback } from './ui/avatar';
@@ -86,6 +86,7 @@ export function DashboardLayout() {
         { name: 'Competitor Intel', path: '/workspace/competitors', icon: BarChart3 },
         { name: 'User Personas', path: '/workspace/personas', icon: Users },
         { name: 'Research Vault', path: '/workspace/research', icon: BookOpen },
+        { name: 'Research Chatbot', path: '/workspace/research/chatbot', icon: MessageCircle },
       ]
     }
   ];

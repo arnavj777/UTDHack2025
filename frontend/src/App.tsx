@@ -70,6 +70,7 @@ import { UserPersonaCreatePage } from './components/UserPersonaCreatePage';
 import { UserPersonaEditPage } from './components/UserPersonaEditPage';
 import { ResearchDocumentCreatePage } from './components/ResearchDocumentCreatePage';
 import { ResearchDocumentEditPage } from './components/ResearchDocumentEditPage';
+import { ResearchChatbot } from './components/ResearchChatbot';
 
 export default function App() {
   return (
@@ -163,6 +164,7 @@ export default function App() {
           <Route path="research" element={<ResearchVault />} />
           <Route path="research/create" element={<ResearchDocumentCreatePage />} />
           <Route path="research/edit/:id" element={<ResearchDocumentEditPage />} />
+          <Route path="research/chatbot" element={<ResearchChatbot />} />
         </Route>
       </Routes>
     </Router>

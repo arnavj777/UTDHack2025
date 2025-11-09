@@ -1098,3 +1098,379 @@ user_persona_list_create = create_list_create_view(UserPersona, 'User Persona')
 user_persona_detail = create_detail_view(UserPersona, 'User Persona')
 research_document_list_create = create_list_create_view(ResearchDocument, 'Research Document')
 research_document_detail = create_detail_view(ResearchDocument, 'Research Document')
+
+# Helper function for simple sentiment analysis (fallback)
+def _calculate_simple_sentiment(text):
+    """Simple keyword-based sentiment analysis as fallback"""
+    if not text:
+        return 50.0
+    
+    text_lower = text.lower()
+    
+    # Positive keywords
+    positive_keywords = [
+        'good', 'great', 'excellent', 'amazing', 'wonderful', 'fantastic',
+        'love', 'like', 'best', 'perfect', 'awesome', 'brilliant',
+        'helpful', 'useful', 'easy', 'simple', 'clear', 'intuitive',
+        'improve', 'better', 'enhance', 'upgrade', 'feature', 'benefit',
+        'success', 'effective', 'efficient', 'robust', 'reliable'
+    ]
+    
+    # Negative keywords
+    negative_keywords = [
+        'bad', 'terrible', 'awful', 'horrible', 'worst', 'poor',
+        'hate', 'dislike', 'difficult', 'complex', 'confusing', 'unclear',
+        'bug', 'error', 'issue', 'problem', 'broken', 'fails',
+        'missing', 'lack', 'slow', 'crashes', 'unstable', 'fails'
+    ]
+    
+    # Count matches
+    positive_count = sum(1 for keyword in positive_keywords if keyword in text_lower)
+    negative_count = sum(1 for keyword in negative_keywords if keyword in text_lower)
+    
+    # Calculate score
+    if positive_count == 0 and negative_count == 0:
+        return 50.0  # Neutral
+    
+    total = positive_count + negative_count
+    positive_ratio = positive_count / total if total > 0 else 0.5
+    
+    # Map to 0-100 scale
+    score = 20 + (positive_ratio * 60)
+    return max(0, min(100, score))
+
+# Gemini Chatbot endpoint
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def gemini_chat_view(request):
+    """
+    Chat with Gemini AI for product image analysis and feature descriptions
+    Supports both text and image inputs
+    """
+    try:
+        # Import required libraries
+        try:
+            import google.generativeai as genai
+        except ImportError:
+            return Response({
+                'error': 'google-generativeai package is not installed. Please run: pip install google-generativeai'
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+        import base64
+        try:
+            from PIL import Image
+        except ImportError:
+            return Response({
+                'error': 'Pillow package is not installed. Please run: pip install Pillow'
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        import io
+        
+        # Get API key from environment
+        api_key = os.getenv('GEMINI_API_KEY')
+        if not api_key:
+            return Response({
+                'error': 'Gemini API key is not configured. Please set GEMINI_API_KEY in your environment variables.'
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+        # Configure Gemini
+        genai.configure(api_key=api_key)
+        
+        # Get message and images from request
+        message = request.data.get('message', '')
+        images = request.data.get('images', [])  # List of base64 encoded images
+        conversation_history = request.data.get('conversation_history', [])
+        
+        if not message and not images:
+            return Response({
+                'error': 'Message or image is required'
+            }, status=status.HTTP_400_BAD_REQUEST)
+        
+        # System instruction for product feature analysis
+        system_instruction = """You are an AI product analyst specializing in analyzing product images and converting them into detailed feature explanations and descriptions. 
+Your role is to:
+1. Analyze product images in detail
+2. Identify all visible features, UI elements, and functionality
+3. Provide clear, structured feature descriptions
+4. Explain how features work and their potential benefits
+5. Identify design patterns and user experience elements
+6. Suggest improvements or note potential issues
+
+Be thorough, accurate, and provide actionable insights. Format your responses in a clear, structured way with headings and bullet points when appropriate."""
+        
+        # Use gemini-2.5-flash model (fast, efficient, supports vision)
+        try:
+            # Try gemini-2.5-flash first (as requested)
+            model = genai.GenerativeModel('gemini-2.5-flash')
+        except Exception:
+            try:
+                # Fallback to gemini-2.0-flash-exp if 2.5-flash is not available
+                model = genai.GenerativeModel('gemini-2.0-flash-exp')
+            except Exception:
+                try:
+                    # Fallback to gemini-1.5-flash if newer models are not available
+                    model = genai.GenerativeModel('gemini-1.5-flash')
+                except Exception:
+                    try:
+                        # Last resort: try gemini-1.5-pro
+                        model = genai.GenerativeModel('gemini-1.5-pro')
+                    except Exception:
+                        return Response({
+                            'error': 'Failed to initialize Gemini model. Please check if the model name is correct and your API key has access. Available models may vary by region and API access level.'
+                        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+        # Process images
+        image_parts = []
+        if images:
+            for image_data in images:
+                try:
+                    # Handle base64 image data
+                    # Format: "data:image/png;base64,<base64data>" or just "<base64data>"
+                    if ',' in image_data:
+                        # Remove data URL prefix if present
+                        image_data = image_data.split(',')[1]
+                    
+                    # Decode base64 image
+                    image_bytes = base64.b64decode(image_data)
+                    image = Image.open(io.BytesIO(image_bytes))
+                    
+                    # Convert to RGB if necessary (some formats like PNG with transparency)
+                    if image.mode != 'RGB':
+                        image = image.convert('RGB')
+                    
+                    image_parts.append(image)
+                except Exception as e:
+                    print(f"Error processing image: {e}")
+                    # Continue with other images if one fails
+                    continue
+        
+        # Build conversation history for chat session
+        # Note: Gemini chat history doesn't support images directly in history,
+        # so we only include text messages in the history
+        chat_history = []
+        if conversation_history:
+            for msg in conversation_history[-10:]:  # Limit to last 10 messages for context
+                role = msg.get('role', '')
+                content = msg.get('content', '')
+                # Only include text content in history (images are sent with current message)
+                if role == 'user' and isinstance(content, str) and content:
+                    chat_history.append({'role': 'user', 'parts': [content]})
+                elif role == 'assistant' and isinstance(content, str) and content:
+                    chat_history.append({'role': 'model', 'parts': [content]})
+        
+        # Prepare content parts (text + images)
+        content_parts = []
+        
+        # Add images first if present
+        if image_parts:
+            content_parts.extend(image_parts)
+        
+        # Add text message
+        if message:
+            # Use the user's message as-is (they may have specific instructions)
+            user_message = message
+            
+            # Include system instruction for first message or when no history
+            if not chat_history:
+                # For first message with images, the system instruction will guide the analysis
+                if image_parts:
+                    full_message = f"{system_instruction}\n\nUser: {user_message}\nAssistant:"
+                else:
+                    full_message = f"{system_instruction}\n\nUser: {user_message}\nAssistant:"
+            else:
+                full_message = user_message
+            
+            content_parts.append(full_message)
+        elif image_parts:
+            # If only images without text, add a default prompt focused on analysis
+            default_prompt = "Analyze this product image and provide detailed feature explanations, UI elements, functionality, and design patterns. Be thorough and structured in your response."
+            if not chat_history:
+                full_message = f"{system_instruction}\n\nUser: {default_prompt}\nAssistant:"
+            else:
+                full_message = default_prompt
+            content_parts.append(full_message)
+        
+        # Generate response
+        try:
+            if chat_history:
+                # Use chat session with history
+                chat = model.start_chat(history=chat_history)
+                response = chat.send_message(content_parts)
+            else:
+                # For first message, generate content
+                response = model.generate_content(content_parts)
+        except Exception as e:
+            error_msg = f"Failed to generate response: {str(e)}"
+            print(f"Gemini API Error: {error_msg}")
+            import traceback
+            traceback.print_exc()
+            return Response({
+                'error': error_msg
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+        # Extract the response text
+        response_text = ""
+        try:
+            if hasattr(response, 'text'):
+                response_text = response.text
+            elif hasattr(response, 'candidates') and response.candidates:
+                if hasattr(response.candidates[0], 'content'):
+                    if hasattr(response.candidates[0].content, 'parts'):
+                        response_text = response.candidates[0].content.parts[0].text
+                    else:
+                        response_text = str(response.candidates[0].content)
+                else:
+                    response_text = str(response.candidates[0])
+            elif hasattr(response, 'parts'):
+                response_text = response.parts[0].text if response.parts else str(response)
+            else:
+                response_text = str(response)
+        except Exception as e:
+            response_text = f"Response received but parsing failed: {str(response)}"
+            print(f"Warning: Could not parse response properly: {e}")
+        
+        if not response_text:
+            response_text = "I apologize, but I couldn't generate a response. Please try again."
+        
+        # Determine model name for response
+        model_name = 'gemini-2.5-flash'
+        try:
+            # Try to get the actual model name from the model object
+            if hasattr(model, 'model_name'):
+                model_name = model.model_name
+            elif '2.0' in str(model):
+                model_name = 'gemini-2.0-flash-exp'
+            elif '2.5' in str(model):
+                model_name = 'gemini-2.5-flash'
+            elif '1.5-flash' in str(model):
+                model_name = 'gemini-1.5-flash'
+            elif '1.5-pro' in str(model):
+                model_name = 'gemini-1.5-pro'
+        except:
+            pass
+        
+        # Initialize sentiment, keywords, and trends analysis
+        sentiment_score = None
+        trend_score = None
+        keywords = []
+        overall_score = None
+        
+        # Always try to analyze sentiment and trends (with fallbacks)
+        try:
+            # Import services
+            from api.services.keyword_extractor import get_keyword_extractor
+            from api.services.sentiment_model import get_sentiment_model_service
+            from api.services.trends_service import get_trends_service
+            from django.conf import settings
+            
+            # Extract keywords from chatbot response
+            try:
+                keyword_extractor = get_keyword_extractor()
+                if keyword_extractor and response_text:
+                    keywords = keyword_extractor.extract_keywords(response_text, max_keywords=10)
+                    print(f"Extracted {len(keywords)} keywords: {keywords}")
+            except Exception as e:
+                print(f"Error extracting keywords: {e}")
+                keywords = []
+            
+            # Predict sentiment - always try to get a score
+            # The service should always return an instance (even without model, it uses fallback)
+            if response_text:
+                try:
+                    sentiment_service = get_sentiment_model_service()
+                    if sentiment_service:
+                        # Extract features from response text
+                        additional_features = {
+                            'feedback_length': len(response_text),
+                            'word_count': len(response_text.split())
+                        }
+                        sentiment_score = sentiment_service.predict_sentiment(response_text, additional_features)
+                        print(f"Sentiment score calculated: {sentiment_score}")
+                    else:
+                        # If service is None, use simple fallback directly
+                        print("Sentiment service returned None, using direct fallback")
+                        sentiment_score = _calculate_simple_sentiment(response_text)
+                except Exception as e:
+                    print(f"Error predicting sentiment: {e}")
+                    import traceback
+                    traceback.print_exc()
+                    # Use direct fallback if service fails
+                    try:
+                        sentiment_score = _calculate_simple_sentiment(response_text)
+                    except:
+                        sentiment_score = 50.0
+            else:
+                sentiment_score = 50.0  # Default for empty text
+            
+            # Get trend scores for keywords
+            if keywords:
+                try:
+                    trends_service = get_trends_service()
+                    if trends_service:
+                        trend_score = trends_service.get_average_trend_score(keywords)
+                        print(f"Trend score: {trend_score}")
+                    else:
+                        print("Trends service not available (SERPAPI_KEY not set?)")
+                        trend_score = 50.0  # Default neutral score
+                except Exception as e:
+                    print(f"Error fetching trends: {e}")
+                    import traceback
+                    traceback.print_exc()
+                    trend_score = 50.0  # Default neutral score
+            else:
+                print("No keywords extracted, skipping trend analysis")
+                trend_score = 50.0  # Default when no keywords
+            
+            # Calculate overall score (weighted average)
+            # Always calculate overall score if we have at least sentiment
+            if sentiment_score is not None:
+                if trend_score is not None:
+                    sentiment_weight = getattr(settings, 'SENTIMENT_WEIGHT', 0.6)
+                    trend_weight = getattr(settings, 'TREND_WEIGHT', 0.4)
+                    overall_score = (sentiment_score * sentiment_weight) + (trend_score * trend_weight)
+                else:
+                    # If no trend score, use sentiment only
+                    overall_score = sentiment_score
+                # Ensure score is in 0-100 range
+                overall_score = max(0, min(100, overall_score))
+                print(f"Overall score: {overall_score}")
+        
+        except Exception as e:
+            # If analysis fails completely, use defaults
+            print(f"Error in sentiment/trends analysis: {e}")
+            import traceback
+            traceback.print_exc()
+            # Set default scores so the card still shows
+            if sentiment_score is None:
+                sentiment_score = 50.0
+            if trend_score is None:
+                trend_score = 50.0
+            if overall_score is None:
+                overall_score = 50.0
+        
+        # Prepare response data
+        response_data = {
+            'message': response_text,
+            'model': model_name
+        }
+        
+        # Always include analysis results (use defaults if analysis failed)
+        # This ensures the frontend always receives score data
+        response_data['sentiment_score'] = round(sentiment_score if sentiment_score is not None else 50.0, 2)
+        response_data['trend_score'] = round(trend_score if trend_score is not None else 50.0, 2)
+        response_data['keywords'] = keywords if keywords else []
+        response_data['overall_score'] = round(overall_score if overall_score is not None else 50.0, 2)
+        
+        print(f"Returning response with scores: sentiment={response_data['sentiment_score']}, trend={response_data['trend_score']}, overall={response_data['overall_score']}, keywords={len(response_data['keywords'])}")
+        
+        return Response({
+            'data': response_data,
+            'message': 'Chat response generated successfully'
+        }, status=status.HTTP_200_OK)
+        
+    except Exception as e:
+        import traceback
+        error_details = str(e)
+        traceback.print_exc()
+        return Response({
+            'error': f'Failed to generate chat response: {error_details}'
+        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

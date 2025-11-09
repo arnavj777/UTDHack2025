@@ -72,5 +72,7 @@ urlpatterns = [
     path('personas/<int:pk>/', views.user_persona_detail, name='user_persona_detail'),
     path('research/', views.research_document_list_create, name='research_document_list_create'),
     path('research/<int:pk>/', views.research_document_detail, name='research_document_detail'),
+    # Gemini Chatbot endpoint
+    path('research/chat/', views.gemini_chat_view, name='gemini_chat'),
 ]
 

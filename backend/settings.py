@@ -13,16 +13,35 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 from pathlib import Path
 import os
 
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Sentiment Analysis and Trends Configuration
+SENTIMENT_MODEL_PATH = BASE_DIR / 'api' / 'services' / 'sentiment_model.pkl'
+SENTIMENT_WEIGHT = float(os.getenv('SENTIMENT_WEIGHT', '0.6'))  # Weight for sentiment score
+TREND_WEIGHT = float(os.getenv('TREND_WEIGHT', '0.4'))  # Weight for trend score
+SERPAPI_KEY = os.getenv('SERPAPI_KEY', '')
+
 # Load environment variables from .env file (if python-dotenv is installed)
 try:
     from dotenv import load_dotenv
-    load_dotenv()
+    # Load .env file from the project root (parent of backend directory)
+    env_path = BASE_DIR / '.env'
+    if env_path.exists():
+        load_dotenv(dotenv_path=env_path)
+        print(f"✅ Loaded .env file from: {env_path}")
+    else:
+        # Try loading from current directory as fallback
+        load_dotenv()
+        print("⚠️  .env file not found in project root, trying current directory")
 except ImportError:
     # python-dotenv not installed, skip loading .env file
+    print("⚠️  python-dotenv not installed, environment variables from .env will not be loaded")
     pass
-
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+except Exception as e:
+    # Log error but don't fail if .env loading fails
+    print(f"⚠️  Warning: Could not load .env file: {e}")
+    pass
 
 
 # Quick-start development settings - unsuitable for production
