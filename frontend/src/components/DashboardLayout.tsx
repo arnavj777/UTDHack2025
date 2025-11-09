@@ -180,15 +180,6 @@ export function DashboardLayout() {
         <header className="bg-white border-b sticky top-0 z-50">
           <div className="flex items-center justify-between px-4 h-16">
             <div className="flex items-center gap-4">
-              <Link to="/workspace/dashboard" className="flex items-center gap-2 lg:hidden">
-                <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
-                  <Sparkles className="w-5 h-5 text-white" />
-                </div>
-                <span className="text-xl">ProductAI</span>
-              </Link>
-              
-              <div className="hidden md:block w-px h-6 bg-slate-200" />
-              
               <div className="relative hidden md:block">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                 <Input 
