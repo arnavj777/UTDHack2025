@@ -4,16 +4,22 @@ import { Card } from './ui/card';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
 import { Progress } from './ui/progress';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from './ui/dialog';
 import { Sparkles, Plus, Calendar, AlertTriangle, TrendingUp, Users, Edit, Trash2 } from 'lucide-react';
 import { sprintService } from '../services/developmentService';
 import { Sprint } from '../types/Sprint';
 import { ApiError } from '../services/api';
+import { aiService } from '../services/aiService';
+import { toast } from './ui/use-toast';
 
 export function SprintPlanning() {
   const navigate = useNavigate();
   const [sprints, setSprints] = useState<Sprint[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [planning, setPlanning] = useState(false);
+  const [showAIPlan, setShowAIPlan] = useState(false);
+  const [aiPlan, setAiPlan] = useState<any>(null);
 
   useEffect(() => {
     loadSprints();
@@ -49,6 +55,33 @@ export function SprintPlanning() {
       }
     }
   };
+
+  const handlePlanSprint = async () => {
+    try {
+      setPlanning(true);
+      const response = await aiService.planSprint([], 21);
+      const plan = response.data || response;
+      
+      setAiPlan(plan);
+      setShowAIPlan(true);
+      
+      toast({
+        title: "AI Sprint Planning Generated",
+        description: "View the full sprint plan in the dialog",
+      });
+    } catch (err: any) {
+      console.error('Error planning sprint:', err);
+      const errorMessage = err instanceof ApiError ? err.message : (err.message || 'Failed to plan sprint. Please try again.');
+      toast({
+        title: "Error",
+        description: errorMessage,
+        variant: "destructive",
+      });
+    } finally {
+      setPlanning(false);
+    }
+  };
+
   const currentSprint = {
     number: 24,
     startDate: '2025-11-10',
@@ -114,9 +147,15 @@ export function SprintPlanning() {
             <Plus className="w-4 h-4" />
             Add Sprint
           </Button>
-          <Button variant="outline" className="gap-2">
+          <Button 
+            variant="outline" 
+            className="gap-2" 
+            type="button"
+            onClick={handlePlanSprint}
+            disabled={planning}
+          >
             <Sparkles className="w-4 h-4" />
-            AI Recommendations
+            {planning ? 'Planning...' : 'AI Recommendations'}
           </Button>
           <Button className="gap-2">
             <Plus className="w-4 h-4" />
@@ -369,6 +408,78 @@ export function SprintPlanning() {
           </Card>
         </div>
       </div>
+
+      {/* AI Sprint Planning Dialog */}
+      <Dialog open={showAIPlan} onOpenChange={setShowAIPlan}>
+        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Sparkles className="w-5 h-5 text-blue-600" />
+              AI Sprint Planning Recommendations
+            </DialogTitle>
+            <DialogDescription>
+              AI-powered sprint planning suggestions and recommendations
+            </DialogDescription>
+          </DialogHeader>
+          
+          {aiPlan && (
+            <div className="space-y-6 py-4">
+              {aiPlan.sprint_goal && (
+                <div>
+                  <h4 className="font-semibold mb-2">Sprint Goal</h4>
+                  <p className="text-slate-700">{aiPlan.sprint_goal}</p>
+                </div>
+              )}
+
+              {aiPlan.recommended_stories && aiPlan.recommended_stories.length > 0 && (
+                <div>
+                  <h4 className="font-semibold mb-3">Recommended Stories</h4>
+                  <div className="space-y-2">
+                    {aiPlan.recommended_stories.map((story: any, index: number) => (
+                      <Card key={index} className="p-3">
+                        {typeof story === 'string' ? (
+                          <p className="text-slate-700">{story}</p>
+                        ) : (
+                          <>
+                            {story.title && <h5 className="font-medium mb-1">{story.title}</h5>}
+                            {story.points && <Badge variant="outline">{story.points} points</Badge>}
+                          </>
+                        )}
+                      </Card>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {aiPlan.capacity_analysis && (
+                <div>
+                  <h4 className="font-semibold mb-2">Capacity Analysis</h4>
+                  <p className="text-slate-700">{aiPlan.capacity_analysis}</p>
+                </div>
+              )}
+
+              {aiPlan.risks && (
+                <div>
+                  <h4 className="font-semibold mb-2">Risks & Considerations</h4>
+                  {Array.isArray(aiPlan.risks) ? (
+                    <ul className="space-y-1">
+                      {aiPlan.risks.map((risk: string, index: number) => (
+                        <li key={index} className="text-slate-700">• {risk}</li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="text-slate-700">{aiPlan.risks}</p>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+
+          <DialogFooter>
+            <Button onClick={() => setShowAIPlan(false)}>Close</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

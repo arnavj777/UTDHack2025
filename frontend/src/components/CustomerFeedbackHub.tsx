@@ -16,6 +16,7 @@ export function CustomerFeedbackHub() {
   const [feedbacks, setFeedbacks] = useState<CustomerFeedback[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [analyzing, setAnalyzing] = useState(false);
 
   useEffect(() => {
     loadFeedbacks();
@@ -51,6 +52,30 @@ export function CustomerFeedbackHub() {
       }
     }
   };
+
+  const handleAnalyzeFeedback = async () => {
+    try {
+      setAnalyzing(true);
+      const response = await aiService.analyzeCustomerFeedback(feedbacks);
+      const analysis = response.data || response;
+      
+      toast({
+        title: "AI Feedback Analysis",
+        description: `Sentiment: ${analysis.sentiment || 'Analyzed'}`,
+      });
+    } catch (err: any) {
+      console.error('Error analyzing feedback:', err);
+      const errorMessage = err instanceof ApiError ? err.message : (err.message || 'Failed to analyze feedback. Please try again.');
+      toast({
+        title: "Error",
+        description: errorMessage,
+        variant: "destructive",
+      });
+    } finally {
+      setAnalyzing(false);
+    }
+  };
+
   const mockFeedbackItems = [
     {
       id: 'FB-1234',
@@ -133,9 +158,15 @@ export function CustomerFeedbackHub() {
           <p className="text-slate-600">Unified view of customer feedback from all sources</p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" className="gap-2">
+          <Button 
+            variant="outline" 
+            className="gap-2" 
+            type="button"
+            onClick={handleAnalyzeFeedback}
+            disabled={analyzing || feedbacks.length === 0}
+          >
             <Sparkles className="w-4 h-4" />
-            AI Analysis
+            {analyzing ? 'Analyzing...' : 'AI Analysis'}
           </Button>
           <Button className="gap-2" onClick={() => navigate('/workspace/feedback/create')}>
             <Plus className="w-4 h-4" />

@@ -8,12 +8,15 @@ import { Sparkles, Plus, Users, TrendingUp, DollarSign, Target, Edit, Trash2 } f
 import { userPersonaService } from '../services/researchService';
 import { UserPersona } from '../types/UserPersona';
 import { ApiError } from '../services/api';
+import { aiService } from '../services/aiService';
+import { toast } from './ui/use-toast';
 
 export function PersonaManager() {
   const navigate = useNavigate();
   const [personas, setPersonas] = useState<UserPersona[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [gettingInsights, setGettingInsights] = useState(false);
 
   useEffect(() => {
     loadPersonas();
@@ -49,6 +52,31 @@ export function PersonaManager() {
       }
     }
   };
+
+  const handleGetPersonaInsights = async () => {
+    try {
+      setGettingInsights(true);
+      const personaData = personas.length > 0 ? personas[0] : null;
+      const response = await aiService.getPersonaInsights(personaData);
+      const insights = response.data || response;
+      
+      toast({
+        title: "AI Persona Insights",
+        description: insights.characteristics || 'Insights generated successfully',
+      });
+    } catch (err: any) {
+      console.error('Error getting persona insights:', err);
+      const errorMessage = err instanceof ApiError ? err.message : (err.message || 'Failed to get persona insights. Please try again.');
+      toast({
+        title: "Error",
+        description: errorMessage,
+        variant: "destructive",
+      });
+    } finally {
+      setGettingInsights(false);
+    }
+  };
+
   const mockPersonas = [
     {
       name: 'Tech-Savvy Millennial',
@@ -189,9 +217,15 @@ export function PersonaManager() {
           <p className="text-slate-600">Dynamic personas that evolve with your customer data</p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" className="gap-2">
+          <Button 
+            variant="outline" 
+            className="gap-2" 
+            type="button"
+            onClick={handleGetPersonaInsights}
+            disabled={gettingInsights || personas.length === 0}
+          >
             <Sparkles className="w-4 h-4" />
-            AI Persona Insights
+            {gettingInsights ? 'Analyzing...' : 'AI Persona Insights'}
           </Button>
           <Button className="gap-2" onClick={() => navigate('/workspace/personas/create')}>
             <Plus className="w-4 h-4" />

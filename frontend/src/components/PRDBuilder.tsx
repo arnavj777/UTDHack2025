@@ -9,15 +9,21 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
 import { Sparkles, Plus, Save, Download, MessageSquare, Clock, CheckCircle, AlertCircle, Edit, Trash2 } from 'lucide-react';
 import { Separator } from './ui/separator';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from './ui/dialog';
 import { prdDocumentService } from '../services/developmentService';
 import { PRDDocument } from '../types/PRDDocument';
 import { ApiError } from '../services/api';
+import { aiService } from '../services/aiService';
+import { toast } from './ui/use-toast';
 
 export function PRDBuilder() {
   const navigate = useNavigate();
   const [prdDocuments, setPrdDocuments] = useState<PRDDocument[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [generatingPRD, setGeneratingPRD] = useState(false);
+  const [showAIPRD, setShowAIPRD] = useState(false);
+  const [aiPRD, setAiPRD] = useState<any>(null);
 
   useEffect(() => {
     loadPRDDocuments();
@@ -53,6 +59,33 @@ export function PRDBuilder() {
       }
     }
   };
+
+  const handleGeneratePRD = async () => {
+    try {
+      setGeneratingPRD(true);
+      const response = await aiService.generatePRD('Product Feature', []);
+      const prd = response.data || response;
+      
+      setAiPRD(prd);
+      setShowAIPRD(true);
+      
+      toast({
+        title: "AI PRD Generated",
+        description: "View the full PRD in the dialog",
+      });
+    } catch (err: any) {
+      console.error('Error generating PRD:', err);
+      const errorMessage = err instanceof ApiError ? err.message : (err.message || 'Failed to generate PRD. Please try again.');
+      toast({
+        title: "Error",
+        description: errorMessage,
+        variant: "destructive",
+      });
+    } finally {
+      setGeneratingPRD(false);
+    }
+  };
+
   return (
     <div className="space-y-6 max-w-7xl">
       {/* Header */}
@@ -66,9 +99,15 @@ export function PRDBuilder() {
             <Download className="w-4 h-4" />
             Export
           </Button>
-          <Button variant="outline" className="gap-2">
+          <Button 
+            variant="outline" 
+            className="gap-2" 
+            type="button"
+            onClick={handleGeneratePRD}
+            disabled={generatingPRD}
+          >
             <Sparkles className="w-4 h-4" />
-            AI Fill Sections
+            {generatingPRD ? 'Generating...' : 'AI Fill Sections'}
           </Button>
           <Button className="gap-2" onClick={() => navigate('/workspace/prd/create')}>
             <Plus className="w-4 h-4" />
@@ -555,6 +594,102 @@ export function PRDBuilder() {
           </Card>
         </div>
       </div>
+
+      {/* AI PRD Generation Dialog */}
+      <Dialog open={showAIPRD} onOpenChange={setShowAIPRD}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Sparkles className="w-5 h-5 text-blue-600" />
+              AI-Generated PRD
+            </DialogTitle>
+            <DialogDescription>
+              AI-powered Product Requirements Document
+            </DialogDescription>
+          </DialogHeader>
+          
+          {aiPRD && (
+            <div className="space-y-6 py-4">
+              {/* Executive Summary */}
+              {aiPRD.executive_summary && (
+                <div>
+                  <h4 className="font-semibold mb-2">Executive Summary</h4>
+                  <p className="text-slate-700">{aiPRD.executive_summary}</p>
+                </div>
+              )}
+
+              {/* Objectives */}
+              {aiPRD.objectives && (
+                <div>
+                  <h4 className="font-semibold mb-2">Objectives</h4>
+                  {Array.isArray(aiPRD.objectives) ? (
+                    <ul className="space-y-1">
+                      {aiPRD.objectives.map((obj: string, index: number) => (
+                        <li key={index} className="text-slate-700">• {obj}</li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="text-slate-700">{aiPRD.objectives}</p>
+                  )}
+                </div>
+              )}
+
+              {/* Features */}
+              {aiPRD.features && (
+                <div>
+                  <h4 className="font-semibold mb-2">Features</h4>
+                  {Array.isArray(aiPRD.features) ? (
+                    <div className="space-y-2">
+                      {aiPRD.features.map((feature: any, index: number) => (
+                        <Card key={index} className="p-3">
+                          {typeof feature === 'string' ? (
+                            <p className="text-slate-700">{feature}</p>
+                          ) : (
+                            <>
+                              {feature.name && <h5 className="font-medium mb-1">{feature.name}</h5>}
+                              {feature.description && <p className="text-sm text-slate-600">{feature.description}</p>}
+                            </>
+                          )}
+                        </Card>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-slate-700">{aiPRD.features}</p>
+                  )}
+                </div>
+              )}
+
+              {/* Success Metrics */}
+              {aiPRD.success_metrics && (
+                <div>
+                  <h4 className="font-semibold mb-2">Success Metrics</h4>
+                  {Array.isArray(aiPRD.success_metrics) ? (
+                    <ul className="space-y-1">
+                      {aiPRD.success_metrics.map((metric: string, index: number) => (
+                        <li key={index} className="text-slate-700">• {metric}</li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="text-slate-700">{aiPRD.success_metrics}</p>
+                  )}
+                </div>
+              )}
+
+              {/* Technical Requirements */}
+              {aiPRD.technical_requirements && (
+                <div>
+                  <h4 className="font-semibold mb-2">Technical Requirements</h4>
+                  <p className="text-slate-700">{aiPRD.technical_requirements}</p>
+                </div>
+              )}
+            </div>
+          )}
+
+          <DialogFooter>
+            <Button onClick={() => setShowAIPRD(false)}>Close</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { Toaster } from './components/ui/toaster';
 import { LandingPage } from './components/LandingPage';
 import { PricingPage } from './components/PricingPage';
 import { LoginPage } from './components/LoginPage';
@@ -165,6 +166,7 @@ export default function App() {
           <Route path="research/edit/:id" element={<ResearchDocumentEditPage />} />
         </Route>
       </Routes>
+      <Toaster />
     </Router>
   );
 }

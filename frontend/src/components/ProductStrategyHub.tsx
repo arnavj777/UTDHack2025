@@ -11,6 +11,8 @@ import { useState, useEffect } from 'react';
 import { productStrategyService } from '../services/strategyService';
 import { ProductStrategy } from '../types/ProductStrategy';
 import { ApiError } from '../services/api';
+import { aiService } from '../services/aiService';
+import { toast } from './ui/use-toast';
 
 interface OKR {
   id: string;
@@ -36,6 +38,9 @@ export function ProductStrategyHub() {
     objective: '',
     keyResults: [{ description: '', current: 0, target: 0, unit: '' }]
   });
+  const [gettingAdvice, setGettingAdvice] = useState(false);
+  const [showAIAdvice, setShowAIAdvice] = useState(false);
+  const [aiAdvice, setAiAdvice] = useState<any>(null);
 
   useEffect(() => {
     loadStrategy();
@@ -66,6 +71,9 @@ export function ProductStrategyHub() {
       }
     } catch (error) {
       console.error('Failed to load strategy:', error);
+      // Set default values even on error to prevent white screen
+      setVisionStatement('To empower young professionals to take control of their financial future through intelligent, mobile-first banking that combines cutting-edge technology with personalized insights and exceptional user experience.');
+      setOkrs([]);
     } finally {
       setLoading(false);
     }
@@ -160,6 +168,44 @@ export function ProductStrategyHub() {
     }
   };
 
+  const handleGetStrategyAdvice = async () => {
+    try {
+      setGettingAdvice(true);
+      const response = await aiService.getStrategyAdvice(visionStatement, okrs);
+      
+      // Handle response - it might be wrapped in data or be an object directly
+      const advice = response.data || response;
+      
+      setAiAdvice(advice);
+      setShowAIAdvice(true);
+      
+      toast({
+        title: "AI Strategy Advice Generated",
+        description: "View the full recommendations in the dialog",
+      });
+      
+      if (strategy) {
+        await productStrategyService.update(strategy.id, { 
+          data: { 
+            ...strategy.data, 
+            ai_advice: advice,
+            last_ai_advice_at: new Date().toISOString()
+          } 
+        });
+      }
+    } catch (err: any) {
+      console.error('Error getting strategy advice:', err);
+      const errorMessage = err instanceof ApiError ? err.message : (err.message || 'Failed to get strategy advice. Please try again.');
+      toast({
+        title: "Error",
+        description: errorMessage,
+        variant: "destructive",
+      });
+    } finally {
+      setGettingAdvice(false);
+    }
+  };
+
   const deleteOKR = async (okrId: string) => {
     if (!strategy || !confirm('Are you sure you want to delete this OKR?')) return;
     try {
@@ -192,6 +238,22 @@ export function ProductStrategyHub() {
   ];
 
 
+  if (loading) {
+    return (
+      <div className="space-y-6 max-w-7xl">
+        <div className="flex justify-between items-start">
+          <div>
+            <h1 className="mb-2">Product Strategy Hub</h1>
+            <p className="text-slate-600">Define and track your product vision and goals</p>
+          </div>
+        </div>
+        <Card className="p-6">
+          <p className="text-slate-600">Loading...</p>
+        </Card>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6 max-w-7xl">
       {/* Header */}
@@ -201,9 +263,15 @@ export function ProductStrategyHub() {
           <p className="text-slate-600">Define and track your product vision and goals</p>
         </div>
         <div className="flex gap-2 relative z-10">
-          <Button variant="outline" className="gap-2" type="button">
+          <Button 
+            variant="outline" 
+            className="gap-2" 
+            type="button"
+            onClick={handleGetStrategyAdvice}
+            disabled={gettingAdvice}
+          >
             <Sparkles className="w-4 h-4" />
-            AI Strategy Coach
+            {gettingAdvice ? 'Getting Advice...' : 'AI Strategy Coach'}
           </Button>
           <Button 
             className="gap-2" 
@@ -534,6 +602,81 @@ export function ProductStrategyHub() {
           </Button>
         </div>
       </Card>
+
+      {/* AI Strategy Advice Dialog */}
+      <Dialog open={showAIAdvice} onOpenChange={setShowAIAdvice}>
+        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Sparkles className="w-5 h-5 text-blue-600" />
+              AI Strategy Advice
+            </DialogTitle>
+            <DialogDescription>
+              Strategic recommendations based on your vision statement and OKRs
+            </DialogDescription>
+          </DialogHeader>
+          
+          {aiAdvice && (
+            <div className="space-y-6 py-4">
+              {/* Recommendations */}
+              {aiAdvice.recommendations && aiAdvice.recommendations.length > 0 && (
+                <div>
+                  <h4 className="font-semibold mb-3">Strategic Recommendations</h4>
+                  <ul className="space-y-2">
+                    {aiAdvice.recommendations.map((rec: string, index: number) => (
+                      <li key={index} className="flex items-start gap-2">
+                        <div className="w-1.5 h-1.5 bg-blue-600 rounded-full mt-2 shrink-0" />
+                        <span className="text-slate-700">{rec}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {/* Competitive Positioning */}
+              {aiAdvice.competitive_positioning && (
+                <div>
+                  <h4 className="font-semibold mb-2">Competitive Positioning</h4>
+                  <p className="text-slate-700">{aiAdvice.competitive_positioning}</p>
+                </div>
+              )}
+
+              {/* Risks & Opportunities */}
+              {aiAdvice.risks_opportunities && (
+                <div>
+                  <h4 className="font-semibold mb-2">Risks & Opportunities</h4>
+                  <p className="text-slate-700">{aiAdvice.risks_opportunities}</p>
+                </div>
+              )}
+
+              {/* Suggested OKRs */}
+              {aiAdvice.suggested_okrs && aiAdvice.suggested_okrs.length > 0 && (
+                <div>
+                  <h4 className="font-semibold mb-3">Suggested OKRs</h4>
+                  <div className="space-y-3">
+                    {aiAdvice.suggested_okrs.map((okr: any, index: number) => (
+                      <Card key={index} className="p-4">
+                        <h5 className="font-medium mb-2">{okr.objective}</h5>
+                        {okr.key_results && (
+                          <ul className="space-y-1 ml-4">
+                            {okr.key_results.map((kr: string, krIndex: number) => (
+                              <li key={krIndex} className="text-slate-600 text-sm">• {kr}</li>
+                            ))}
+                          </ul>
+                        )}
+                      </Card>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          <DialogFooter>
+            <Button onClick={() => setShowAIAdvice(false)}>Close</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

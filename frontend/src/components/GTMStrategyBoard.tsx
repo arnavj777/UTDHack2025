@@ -6,16 +6,22 @@ import { Badge } from './ui/badge';
 import { Input } from './ui/input';
 import { Textarea } from './ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from './ui/dialog';
 import { Sparkles, Target, Users, DollarSign, Megaphone, Calendar, TrendingUp, Plus, Edit, Trash2 } from 'lucide-react';
 import { gtmStrategyService } from '../services/gtmService';
 import { GTMStrategy } from '../types/GTMStrategy';
 import { ApiError } from '../services/api';
+import { aiService } from '../services/aiService';
+import { toast } from './ui/use-toast';
 
 export function GTMStrategyBoard() {
   const navigate = useNavigate();
   const [gtmStrategies, setGtmStrategies] = useState<GTMStrategy[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [gettingStrategy, setGettingStrategy] = useState(false);
+  const [showAIStrategy, setShowAIStrategy] = useState(false);
+  const [aiStrategy, setAiStrategy] = useState<any>(null);
 
   useEffect(() => {
     loadGTMStrategies();
@@ -51,6 +57,33 @@ export function GTMStrategyBoard() {
       }
     }
   };
+
+  const handleGetGTMStrategy = async () => {
+    try {
+      setGettingStrategy(true);
+      const response = await aiService.getGTMStrategy('Product', 'Product managers');
+      const strategy = response.data || response;
+      
+      setAiStrategy(strategy);
+      setShowAIStrategy(true);
+      
+      toast({
+        title: "AI GTM Strategy Generated",
+        description: "View the full strategy in the dialog",
+      });
+    } catch (err: any) {
+      console.error('Error getting GTM strategy:', err);
+      const errorMessage = err instanceof ApiError ? err.message : (err.message || 'Failed to get GTM strategy. Please try again.');
+      toast({
+        title: "Error",
+        description: errorMessage,
+        variant: "destructive",
+      });
+    } finally {
+      setGettingStrategy(false);
+    }
+  };
+
   const channels = [
     { name: 'Email Marketing', priority: 'High', cost: '$5K', reach: '50K', roi: '320%' },
     { name: 'Social Media', priority: 'High', cost: '$8K', reach: '200K', roi: '280%' },
@@ -76,9 +109,15 @@ export function GTMStrategyBoard() {
           <p className="text-slate-600">Plan and execute your product launch strategy</p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" className="gap-2">
+          <Button 
+            variant="outline" 
+            className="gap-2" 
+            type="button"
+            onClick={handleGetGTMStrategy}
+            disabled={gettingStrategy}
+          >
             <Sparkles className="w-4 h-4" />
-            AI Strategy Recommendations
+            {gettingStrategy ? 'Generating...' : 'AI Strategy Recommendations'}
           </Button>
           <Button className="gap-2" onClick={() => navigate('/workspace/gtm-strategy/create')}>
             <Plus className="w-4 h-4" />
@@ -411,6 +450,65 @@ export function GTMStrategyBoard() {
           </Card>
         </div>
       </div>
+
+      {/* AI GTM Strategy Dialog */}
+      <Dialog open={showAIStrategy} onOpenChange={setShowAIStrategy}>
+        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Sparkles className="w-5 h-5 text-blue-600" />
+              AI GTM Strategy Recommendations
+            </DialogTitle>
+            <DialogDescription>
+              AI-powered go-to-market strategy recommendations
+            </DialogDescription>
+          </DialogHeader>
+          
+          {aiStrategy && (
+            <div className="space-y-6 py-4">
+              {aiStrategy.pricing_strategy && (
+                <div>
+                  <h4 className="font-semibold mb-2">Pricing Strategy</h4>
+                  <p className="text-slate-700">{aiStrategy.pricing_strategy}</p>
+                </div>
+              )}
+
+              {aiStrategy.channels && (
+                <div>
+                  <h4 className="font-semibold mb-2">Marketing Channels</h4>
+                  <p className="text-slate-700">{aiStrategy.channels}</p>
+                </div>
+              )}
+
+              {aiStrategy.messaging && (
+                <div>
+                  <h4 className="font-semibold mb-2">Messaging</h4>
+                  <p className="text-slate-700">{aiStrategy.messaging}</p>
+                </div>
+              )}
+
+              {aiStrategy.recommendations && (
+                <div>
+                  <h4 className="font-semibold mb-2">Recommendations</h4>
+                  {Array.isArray(aiStrategy.recommendations) ? (
+                    <ul className="space-y-1">
+                      {aiStrategy.recommendations.map((rec: string, index: number) => (
+                        <li key={index} className="text-slate-700">• {rec}</li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="text-slate-700">{aiStrategy.recommendations}</p>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+
+          <DialogFooter>
+            <Button onClick={() => setShowAIStrategy(false)}>Close</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

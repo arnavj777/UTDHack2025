@@ -9,12 +9,15 @@ import { Sparkles, CheckCircle, AlertTriangle, Clock, FileText, Plus, Edit, Tras
 import { launchChecklistService } from '../services/gtmService';
 import { LaunchChecklist } from '../types/LaunchChecklist';
 import { ApiError } from '../services/api';
+import { aiService } from '../services/aiService';
+import { toast } from './ui/use-toast';
 
 export function LaunchReadinessChecklist() {
   const navigate = useNavigate();
   const [launchChecklists, setLaunchChecklists] = useState<LaunchChecklist[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [gettingChecklist, setGettingChecklist] = useState(false);
 
   useEffect(() => {
     loadLaunchChecklists();
@@ -50,6 +53,30 @@ export function LaunchReadinessChecklist() {
       }
     }
   };
+
+  const handleGetLaunchChecklist = async () => {
+    try {
+      setGettingChecklist(true);
+      const response = await aiService.getLaunchChecklist('SaaS Product');
+      const checklist = response.data || response;
+      
+      toast({
+        title: "AI Launch Checklist",
+        description: `${checklist.categories?.length || 0} categories generated`,
+      });
+    } catch (err: any) {
+      console.error('Error getting launch checklist:', err);
+      const errorMessage = err instanceof ApiError ? err.message : (err.message || 'Failed to get launch checklist. Please try again.');
+      toast({
+        title: "Error",
+        description: errorMessage,
+        variant: "destructive",
+      });
+    } finally {
+      setGettingChecklist(false);
+    }
+  };
+
   const categories = [
     {
       name: 'Quality Assurance',
@@ -162,9 +189,15 @@ export function LaunchReadinessChecklist() {
           <p className="text-slate-600">Track all launch requirements and ensure nothing is missed</p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" className="gap-2">
+          <Button 
+            variant="outline" 
+            className="gap-2" 
+            type="button"
+            onClick={handleGetLaunchChecklist}
+            disabled={gettingChecklist}
+          >
             <Sparkles className="w-4 h-4" />
-            AI Risk Assessment
+            {gettingChecklist ? 'Generating...' : 'AI Risk Assessment'}
           </Button>
           <Button className="gap-2" onClick={() => navigate('/workspace/launch-checklist/create')}>
             <Plus className="w-4 h-4" />

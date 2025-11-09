@@ -9,12 +9,15 @@ import { Sparkles, TrendingUp, TrendingDown, Users, DollarSign, Activity, AlertC
 import { metricService } from '../services/analyticsService';
 import { Metric } from '../types/Metric';
 import { ApiError } from '../services/api';
+import { aiService } from '../services/aiService';
+import { toast } from './ui/use-toast';
 
 export function MetricsDashboard() {
   const navigate = useNavigate();
   const [metrics, setMetrics] = useState<Metric[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [gettingInsights, setGettingInsights] = useState(false);
 
   useEffect(() => {
     loadMetrics();
@@ -50,6 +53,30 @@ export function MetricsDashboard() {
       }
     }
   };
+
+  const handleGetMetricsInsights = async () => {
+    try {
+      setGettingInsights(true);
+      const response = await aiService.getMetricsInsights(metrics);
+      const insights = response.data || response;
+      
+      toast({
+        title: "AI Metrics Insights",
+        description: insights.insights?.[0] || 'Insights generated successfully',
+      });
+    } catch (err: any) {
+      console.error('Error getting metrics insights:', err);
+      const errorMessage = err instanceof ApiError ? err.message : (err.message || 'Failed to get metrics insights. Please try again.');
+      toast({
+        title: "Error",
+        description: errorMessage,
+        variant: "destructive",
+      });
+    } finally {
+      setGettingInsights(false);
+    }
+  };
+
   const kpis = [
     {
       metric: 'Active Users',
@@ -188,9 +215,14 @@ export function MetricsDashboard() {
             <RefreshCw className="w-4 h-4" />
             Refresh
           </Button>
-          <Button className="gap-2">
+          <Button 
+            className="gap-2" 
+            type="button"
+            onClick={handleGetMetricsInsights}
+            disabled={gettingInsights}
+          >
             <Sparkles className="w-4 h-4" />
-            AI Insights
+            {gettingInsights ? 'Analyzing...' : 'AI Insights'}
           </Button>
         </div>
       </div>

@@ -72,5 +72,23 @@ urlpatterns = [
     path('personas/<int:pk>/', views.user_persona_detail, name='user_persona_detail'),
     path('research/', views.research_document_list_create, name='research_document_list_create'),
     path('research/<int:pk>/', views.research_document_detail, name='research_document_detail'),
+    
+    # AI endpoints
+    path('ai/generate-ideas/', views.ai_generate_ideas_view, name='ai_generate_ideas'),
+    path('ai/strategy-advice/', views.ai_strategy_advice_view, name='ai_strategy_advice'),
+    path('ai/market-analysis/', views.ai_market_analysis_view, name='ai_market_analysis'),
+    path('ai/roadmap-prioritization/', views.ai_roadmap_prioritization_view, name='ai_roadmap_prioritization'),
+    path('ai/backlog-grooming/', views.ai_backlog_grooming_view, name='ai_backlog_grooming'),
+    path('ai/generate-prd/', views.ai_generate_prd_view, name='ai_generate_prd'),
+    path('ai/sprint-planning/', views.ai_sprint_planning_view, name='ai_sprint_planning'),
+    path('ai/gtm-strategy/', views.ai_gtm_strategy_view, name='ai_gtm_strategy'),
+    path('ai/generate-content/', views.ai_generate_content_view, name='ai_generate_content'),
+    path('ai/launch-checklist/', views.ai_launch_checklist_view, name='ai_launch_checklist'),
+    path('ai/metrics-insights/', views.ai_metrics_insights_view, name='ai_metrics_insights'),
+    path('ai/customer-feedback-analysis/', views.ai_customer_feedback_analysis_view, name='ai_customer_feedback_analysis'),
+    path('ai/competitor-analysis/', views.ai_competitor_analysis_view, name='ai_competitor_analysis'),
+    path('ai/persona-insights/', views.ai_persona_insights_view, name='ai_persona_insights'),
+    path('ai/research-insights/', views.ai_research_insights_view, name='ai_research_insights'),
+    path('ai/assistant/', views.ai_assistant_view, name='ai_assistant'),
 ]
 

@@ -253,3 +253,6 @@ if not EMAIL_HOST_USER or not EMAIL_HOST_PASSWORD:
     print("⚠️  Email not configured. Emails will be printed to console.")
     print("   To send real emails, set EMAIL_HOST_USER and EMAIL_HOST_PASSWORD environment variables.")
     print("   For Gmail: Create an App Password at https://myaccount.google.com/apppasswords")
+
+# Gemini AI Configuration
+GEMINI_API_KEY = os.getenv('GEMINI_API_KEY', 'sk-fcd213333f3245f9b376a42f39dd6573')

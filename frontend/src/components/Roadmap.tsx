@@ -5,10 +5,13 @@ import { Button } from './ui/button';
 import { Badge } from './ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from './ui/dialog';
 import { Sparkles, Plus, Calendar, Filter, Layout, Edit, Trash2 } from 'lucide-react';
 import { roadmapService } from '../services/developmentService';
 import { Roadmap as RoadmapType } from '../types/Roadmap';
 import { ApiError } from '../services/api';
+import { aiService } from '../services/aiService';
+import { toast } from './ui/use-toast';
 
 export function Roadmap() {
   const navigate = useNavigate();
@@ -16,6 +19,9 @@ export function Roadmap() {
   const [selectedRoadmap, setSelectedRoadmap] = useState<RoadmapType | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [prioritizing, setPrioritizing] = useState(false);
+  const [showAIPrioritization, setShowAIPrioritization] = useState(false);
+  const [aiPrioritization, setAiPrioritization] = useState<any>(null);
 
   useEffect(() => {
     loadRoadmaps();
@@ -60,6 +66,33 @@ export function Roadmap() {
       } else {
         setError('Failed to delete roadmap. Please try again.');
       }
+    }
+  };
+
+  const handlePrioritizeRoadmap = async () => {
+    try {
+      setPrioritizing(true);
+      const initiatives = selectedRoadmap?.data?.initiatives || [];
+      const response = await aiService.prioritizeRoadmap(initiatives);
+      const prioritization = response.data || response;
+      
+      setAiPrioritization(prioritization);
+      setShowAIPrioritization(true);
+      
+      toast({
+        title: "AI Roadmap Prioritization Generated",
+        description: "View the full prioritization in the dialog",
+      });
+    } catch (err: any) {
+      console.error('Error prioritizing roadmap:', err);
+      const errorMessage = err instanceof ApiError ? err.message : (err.message || 'Failed to prioritize roadmap. Please try again.');
+      toast({
+        title: "Error",
+        description: errorMessage,
+        variant: "destructive",
+      });
+    } finally {
+      setPrioritizing(false);
     }
   };
 
@@ -187,9 +220,15 @@ export function Roadmap() {
           <p className="text-slate-600">Plan and track your product initiatives over time</p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" className="gap-2">
+          <Button 
+            variant="outline" 
+            className="gap-2" 
+            type="button"
+            onClick={handlePrioritizeRoadmap}
+            disabled={prioritizing || !selectedRoadmap}
+          >
             <Sparkles className="w-4 h-4" />
-            AI Prioritization
+            {prioritizing ? 'Prioritizing...' : 'AI Prioritization'}
           </Button>
           <Button className="gap-2" type="button" onClick={() => navigate('/workspace/roadmap/create')}>
             <Plus className="w-4 h-4" />
@@ -507,6 +546,77 @@ export function Roadmap() {
           )}
         </TabsContent>
       </Tabs>
+
+      {/* AI Prioritization Dialog */}
+      <Dialog open={showAIPrioritization} onOpenChange={setShowAIPrioritization}>
+        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Sparkles className="w-5 h-5 text-blue-600" />
+              AI Roadmap Prioritization
+            </DialogTitle>
+            <DialogDescription>
+              AI-powered prioritization recommendations for your roadmap initiatives
+            </DialogDescription>
+          </DialogHeader>
+          
+          {aiPrioritization && (
+            <div className="space-y-6 py-4">
+              {/* Prioritized Initiatives */}
+              {aiPrioritization.prioritized_initiatives && aiPrioritization.prioritized_initiatives.length > 0 && (
+                <div>
+                  <h4 className="font-semibold mb-3">Prioritized Initiatives</h4>
+                  <div className="space-y-3">
+                    {aiPrioritization.prioritized_initiatives.map((initiative: any, index: number) => (
+                      <Card key={index} className="p-4">
+                        <div className="flex items-start gap-3">
+                          <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold shrink-0">
+                            {initiative.priority || index + 1}
+                          </div>
+                          <div className="flex-1">
+                            <h5 className="font-medium mb-1">{initiative.name}</h5>
+                            {initiative.reasoning && (
+                              <p className="text-sm text-slate-600">{initiative.reasoning}</p>
+                            )}
+                          </div>
+                        </div>
+                      </Card>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Impact vs Effort Analysis */}
+              {aiPrioritization.impact_effort_analysis && (
+                <div>
+                  <h4 className="font-semibold mb-2">Impact vs Effort Analysis</h4>
+                  <p className="text-slate-700">{aiPrioritization.impact_effort_analysis}</p>
+                </div>
+              )}
+
+              {/* Dependencies */}
+              {aiPrioritization.dependencies && (
+                <div>
+                  <h4 className="font-semibold mb-2">Dependencies & Sequencing</h4>
+                  <p className="text-slate-700">{aiPrioritization.dependencies}</p>
+                </div>
+              )}
+
+              {/* Timeline */}
+              {aiPrioritization.timeline && (
+                <div>
+                  <h4 className="font-semibold mb-2">Timeline Recommendations</h4>
+                  <p className="text-slate-700">{aiPrioritization.timeline}</p>
+                </div>
+              )}
+            </div>
+          )}
+
+          <DialogFooter>
+            <Button onClick={() => setShowAIPrioritization(false)}>Close</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

@@ -10,6 +10,8 @@ import { Lightbulb, Sparkles, Plus, ThumbsUp, MessageSquare, TrendingUp, Filter,
 import { ideaService } from '../services/strategyService';
 import { Idea } from '../types/Idea';
 import { ApiError } from '../services/api';
+import { aiService } from '../services/aiService';
+import { toast } from './ui/use-toast';
 
 export function IdeaRepository() {
   const navigate = useNavigate();
@@ -18,6 +20,7 @@ export function IdeaRepository() {
   const [error, setError] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
+  const [generatingIdeas, setGeneratingIdeas] = useState(false);
 
   useEffect(() => {
     loadIdeas();
@@ -51,6 +54,56 @@ export function IdeaRepository() {
       } else {
         setError('Failed to delete idea. Please try again.');
       }
+    }
+  };
+
+  const handleGenerateIdeas = async () => {
+    try {
+      setGeneratingIdeas(true);
+      setError('');
+      const response = await aiService.generateIdeas('Product management platform', 5);
+      
+      // Handle response - it might be wrapped in data or be an array directly
+      const ideasArray = Array.isArray(response) ? response : (response.data || response);
+      
+      if (!Array.isArray(ideasArray)) {
+        throw new Error('Invalid response format from AI service');
+      }
+      
+      // Create ideas from AI response
+      for (const ideaData of ideasArray) {
+        try {
+          await ideaService.create({
+            title: ideaData.title || 'Untitled Idea',
+            description: ideaData.description || '',
+            status: 'new',
+            impact_score: ideaData.impact === 'High' ? 8 : ideaData.impact === 'Medium' ? 5 : 3,
+            effort_score: ideaData.effort === 'High' ? 8 : ideaData.effort === 'Medium' ? 5 : 3,
+            tags: ideaData.tags ? (typeof ideaData.tags === 'string' ? ideaData.tags.split(',').map((t: string) => t.trim()) : ideaData.tags) : [],
+            data: { source: 'AI Generated', ...ideaData }
+          });
+        } catch (createErr) {
+          console.error('Error creating idea:', createErr);
+          // Continue with other ideas even if one fails
+        }
+      }
+      
+      await loadIdeas();
+      toast({
+        title: "Success",
+        description: `Generated ${ideasArray.length} new ideas!`,
+      });
+    } catch (err: any) {
+      console.error('Error generating ideas:', err);
+      const errorMessage = err instanceof ApiError ? err.message : (err.message || 'Failed to generate ideas. Please try again.');
+      setError(errorMessage);
+      toast({
+        title: "Error",
+        description: errorMessage,
+        variant: "destructive",
+      });
+    } finally {
+      setGeneratingIdeas(false);
     }
   };
 
@@ -176,9 +229,15 @@ export function IdeaRepository() {
           <p className="text-slate-600">Capture, prioritize, and track product ideas from all sources</p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" className="gap-2">
+          <Button 
+            variant="outline" 
+            className="gap-2" 
+            type="button"
+            onClick={handleGenerateIdeas}
+            disabled={generatingIdeas}
+          >
             <Sparkles className="w-4 h-4" />
-            Generate Ideas with AI
+            {generatingIdeas ? 'Generating...' : 'Generate Ideas with AI'}
           </Button>
           <Button className="gap-2" type="button" onClick={() => navigate('/workspace/ideas/create')}>
             <Plus className="w-4 h-4" />

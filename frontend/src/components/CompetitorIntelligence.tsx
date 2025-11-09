@@ -8,12 +8,15 @@ import { Sparkles, TrendingUp, TrendingDown, AlertCircle, DollarSign, Plus, Edit
 import { competitorIntelService } from '../services/researchService';
 import { CompetitorIntel } from '../types/CompetitorIntel';
 import { ApiError } from '../services/api';
+import { aiService } from '../services/aiService';
+import { toast } from './ui/use-toast';
 
 export function CompetitorIntelligence() {
   const navigate = useNavigate();
   const [competitorIntels, setCompetitorIntels] = useState<CompetitorIntel[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [analyzing, setAnalyzing] = useState(false);
 
   useEffect(() => {
     loadCompetitorIntels();
@@ -49,6 +52,30 @@ export function CompetitorIntelligence() {
       }
     }
   };
+
+  const handleAnalyzeCompetitors = async () => {
+    try {
+      setAnalyzing(true);
+      const response = await aiService.analyzeCompetitors(competitorIntels);
+      const analysis = response.data || response;
+      
+      toast({
+        title: "AI Competitor Analysis",
+        description: analysis.positioning || 'Analysis generated successfully',
+      });
+    } catch (err: any) {
+      console.error('Error analyzing competitors:', err);
+      const errorMessage = err instanceof ApiError ? err.message : (err.message || 'Failed to analyze competitors. Please try again.');
+      toast({
+        title: "Error",
+        description: errorMessage,
+        variant: "destructive",
+      });
+    } finally {
+      setAnalyzing(false);
+    }
+  };
+
   const competitors = [
     {
       name: 'Chime',
@@ -144,9 +171,15 @@ export function CompetitorIntelligence() {
             <Plus className="w-4 h-4" />
             Add Competitor Intel
           </Button>
-          <Button variant="outline" className="gap-2">
+          <Button 
+            variant="outline" 
+            className="gap-2" 
+            type="button"
+            onClick={handleAnalyzeCompetitors}
+            disabled={analyzing || competitorIntels.length === 0}
+          >
             <Sparkles className="w-4 h-4" />
-            AI Analysis
+            {analyzing ? 'Analyzing...' : 'AI Analysis'}
           </Button>
         </div>
       </div>

@@ -16,6 +16,7 @@ export function ResearchVault() {
   const [researchDocs, setResearchDocs] = useState<ResearchDocument[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [gettingInsights, setGettingInsights] = useState(false);
 
   useEffect(() => {
     loadResearchDocs();
@@ -51,6 +52,30 @@ export function ResearchVault() {
       }
     }
   };
+
+  const handleGetResearchInsights = async () => {
+    try {
+      setGettingInsights(true);
+      const response = await aiService.getResearchInsights('Research query', researchDocs);
+      const insights = response.data || response;
+      
+      toast({
+        title: "AI Research Insights",
+        description: insights.answer || 'Insights generated successfully',
+      });
+    } catch (err: any) {
+      console.error('Error getting research insights:', err);
+      const errorMessage = err instanceof ApiError ? err.message : (err.message || 'Failed to get research insights. Please try again.');
+      toast({
+        title: "Error",
+        description: errorMessage,
+        variant: "destructive",
+      });
+    } finally {
+      setGettingInsights(false);
+    }
+  };
+
   const mockResearch = [
     {
       title: 'Q4 2025 Mobile Banking Trends Report',
@@ -148,9 +173,15 @@ export function ResearchVault() {
           <p className="text-slate-600">Centralized repository for all product research and insights</p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" className="gap-2">
+          <Button 
+            variant="outline" 
+            className="gap-2" 
+            type="button"
+            onClick={handleGetResearchInsights}
+            disabled={gettingInsights}
+          >
             <Sparkles className="w-4 h-4" />
-            AI Research Assistant
+            {gettingInsights ? 'Analyzing...' : 'AI Research Assistant'}
           </Button>
           <Button className="gap-2" onClick={() => navigate('/workspace/research/create')}>
             <Plus className="w-4 h-4" />

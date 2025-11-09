@@ -17,6 +17,14 @@ from .models import (
     AIAgent, Workflow,
     CustomerFeedback, CompetitorIntel, UserPersona, ResearchDocument
 )
+from .ai_service import (
+    generate_ideas, generate_strategy_advice, generate_market_analysis,
+    generate_roadmap_prioritization, generate_backlog_grooming, generate_prd,
+    generate_sprint_planning, generate_gtm_strategy, generate_content,
+    generate_launch_checklist, generate_metrics_insights,
+    generate_customer_feedback_analysis, generate_competitor_analysis,
+    generate_persona_insights, generate_research_insights, generate_ai_assistant_response
+)
 import json
 import os
 
@@ -915,20 +923,37 @@ def serialize_model(instance):
 def product_strategy_list_create_view(request):
     """List all product strategies or create a new one"""
     if request.method == 'GET':
-        strategies = ProductStrategy.objects.filter(user=request.user)
+        # Ensure user is authenticated
+        if not request.user.is_authenticated:
+            return Response({
+                'error': 'Authentication required'
+            }, status=status.HTTP_401_UNAUTHORIZED)
+        
+        # Filter strategies by authenticated user (ensures users only see their own data)
+        strategies = ProductStrategy.objects.filter(user=request.user).order_by('-updated_at')
         return Response({
             'data': [serialize_model(s) for s in strategies],
             'message': 'Product strategies retrieved successfully'
         }, status=status.HTTP_200_OK)
     else:  # POST
         try:
+            # Ensure user is authenticated
+            if not request.user.is_authenticated:
+                return Response({
+                    'error': 'Authentication required'
+                }, status=status.HTTP_401_UNAUTHORIZED)
+            
+            # Create strategy with authenticated user (ensures data persists across sessions)
             strategy = ProductStrategy.objects.create(
-                user=request.user,
+                user=request.user,  # Always set to authenticated user
                 title=request.data.get('title', 'Untitled Strategy'),
                 description=request.data.get('description', ''),
                 data=request.data.get('data', {}),
                 status=request.data.get('status', 'draft')
             )
+            # Force save to ensure it's persisted to database
+            strategy.save()
+            
             return Response({
                 'data': serialize_model(strategy),
                 'message': 'Product strategy created successfully'
@@ -957,13 +982,29 @@ def product_strategy_detail_view(request, pk):
         }, status=status.HTTP_200_OK)
     elif request.method in ['PUT', 'PATCH']:
         try:
+            # Ensure user is authenticated and owns this strategy
+            if not request.user.is_authenticated:
+                return Response({
+                    'error': 'Authentication required'
+                }, status=status.HTTP_401_UNAUTHORIZED)
+            
+            # Ensure user field is never changed (data belongs to authenticated user)
             strategy.title = request.data.get('title', strategy.title)
             strategy.description = request.data.get('description', strategy.description)
             if 'data' in request.data:
                 strategy.data = request.data['data']
             if 'status' in request.data:
                 strategy.status = request.data['status']
+            
+            # Ensure user is still set correctly (safety check)
+            if strategy.user != request.user:
+                return Response({
+                    'error': 'Unauthorized: You can only modify your own strategies'
+                }, status=status.HTTP_403_FORBIDDEN)
+            
+            # Save changes to database (ensures persistence across sessions)
             strategy.save()
+            
             return Response({
                 'data': serialize_model(strategy),
                 'message': 'Product strategy updated successfully'
@@ -987,15 +1028,28 @@ def create_list_create_view(model_class, model_name):
     @permission_classes([IsAuthenticated])
     def view(request):
         if request.method == 'GET':
-            items = model_class.objects.filter(user=request.user)
+            # Ensure user is authenticated
+            if not request.user.is_authenticated:
+                return Response({
+                    'error': 'Authentication required'
+                }, status=status.HTTP_401_UNAUTHORIZED)
+            
+            # Filter items by authenticated user (ensures users only see their own data)
+            items = model_class.objects.filter(user=request.user).order_by('-updated_at')
             return Response({
                 'data': [serialize_model(item) for item in items],
                 'message': f'{model_name}s retrieved successfully'
             }, status=status.HTTP_200_OK)
         else:  # POST
             try:
+                # Ensure user is authenticated
+                if not request.user.is_authenticated:
+                    return Response({
+                        'error': 'Authentication required'
+                    }, status=status.HTTP_401_UNAUTHORIZED)
+                
                 item_data = {
-                    'user': request.user,
+                    'user': request.user,  # Always set user to authenticated user
                     'title': request.data.get('title', f'Untitled {model_name}'),
                     'description': request.data.get('description', ''),
                     'data': request.data.get('data', {})
@@ -1006,7 +1060,11 @@ def create_list_create_view(model_class, model_name):
                         if field.name in request.data:
                             item_data[field.name] = request.data[field.name]
                 
+                # Create item with authenticated user (ensures data persists across sessions)
                 item = model_class.objects.create(**item_data)
+                # Force save to ensure it's persisted to database
+                item.save()
+                
                 return Response({
                     'data': serialize_model(item),
                     'message': f'{model_name} created successfully'
@@ -1023,11 +1081,18 @@ def create_detail_view(model_class, model_name):
     @api_view(['GET', 'PUT', 'PATCH', 'DELETE'])
     @permission_classes([IsAuthenticated])
     def view(request, pk):
+        # Ensure user is authenticated
+        if not request.user.is_authenticated:
+            return Response({
+                'error': 'Authentication required'
+            }, status=status.HTTP_401_UNAUTHORIZED)
+        
         try:
+            # Get item that belongs to authenticated user (ensures data persistence per user)
             item = model_class.objects.get(pk=pk, user=request.user)
         except model_class.DoesNotExist:
             return Response({
-                'error': f'{model_name} not found'
+                'error': f'{model_name} not found or you do not have permission to access it'
             }, status=status.HTTP_404_NOT_FOUND)
         
         if request.method == 'GET':
@@ -1037,11 +1102,27 @@ def create_detail_view(model_class, model_name):
             }, status=status.HTTP_200_OK)
         elif request.method in ['PUT', 'PATCH']:
             try:
+                # Ensure user is authenticated and owns this item
+                if not request.user.is_authenticated:
+                    return Response({
+                        'error': 'Authentication required'
+                    }, status=status.HTTP_401_UNAUTHORIZED)
+                
+                # Ensure user field is never changed (data belongs to authenticated user)
                 for field in model_class._meta.get_fields():
                     if field.name not in ['id', 'user', 'created_at', 'updated_at']:
                         if field.name in request.data:
                             setattr(item, field.name, request.data[field.name])
+                
+                # Ensure user is still set correctly (safety check)
+                if item.user != request.user:
+                    return Response({
+                        'error': 'Unauthorized: You can only modify your own items'
+                    }, status=status.HTTP_403_FORBIDDEN)
+                
+                # Save changes to database (ensures persistence across sessions)
                 item.save()
+                
                 return Response({
                     'data': serialize_model(item),
                     'message': f'{model_name} updated successfully'
@@ -1098,3 +1179,285 @@ user_persona_list_create = create_list_create_view(UserPersona, 'User Persona')
 user_persona_detail = create_detail_view(UserPersona, 'User Persona')
 research_document_list_create = create_list_create_view(ResearchDocument, 'Research Document')
 research_document_detail = create_detail_view(ResearchDocument, 'Research Document')
+
+
+# AI Endpoints
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def ai_generate_ideas_view(request):
+    """Generate product ideas using AI"""
+    try:
+        context = request.data.get('context')
+        count = request.data.get('count', 5)
+        ideas = generate_ideas(context=context, count=count)
+        return Response({
+            'data': ideas,
+            'message': 'Ideas generated successfully'
+        }, status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response({
+            'error': str(e)
+        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def ai_strategy_advice_view(request):
+    """Generate product strategy advice"""
+    try:
+        vision_statement = request.data.get('vision_statement')
+        okrs = request.data.get('okrs')
+        advice = generate_strategy_advice(vision_statement=vision_statement, okrs=okrs)
+        return Response({
+            'data': advice,
+            'message': 'Strategy advice generated successfully'
+        }, status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response({
+            'error': str(e)
+        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def ai_market_analysis_view(request):
+    """Generate market sizing analysis"""
+    try:
+        industry = request.data.get('industry')
+        target_market = request.data.get('target_market')
+        analysis = generate_market_analysis(industry=industry, target_market=target_market)
+        return Response({
+            'data': analysis,
+            'message': 'Market analysis generated successfully'
+        }, status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response({
+            'error': str(e)
+        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def ai_roadmap_prioritization_view(request):
+    """Generate roadmap prioritization"""
+    try:
+        initiatives = request.data.get('initiatives')
+        prioritization = generate_roadmap_prioritization(initiatives=initiatives)
+        return Response({
+            'data': prioritization,
+            'message': 'Roadmap prioritization generated successfully'
+        }, status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response({
+            'error': str(e)
+        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def ai_backlog_grooming_view(request):
+    """Generate backlog grooming suggestions"""
+    try:
+        backlog_items = request.data.get('backlog_items')
+        grooming = generate_backlog_grooming(backlog_items=backlog_items)
+        return Response({
+            'data': grooming,
+            'message': 'Backlog grooming suggestions generated successfully'
+        }, status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response({
+            'error': str(e)
+        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def ai_generate_prd_view(request):
+    """Generate PRD document"""
+    try:
+        product_name = request.data.get('product_name')
+        features = request.data.get('features')
+        prd = generate_prd(product_name=product_name, features=features)
+        return Response({
+            'data': prd,
+            'message': 'PRD generated successfully'
+        }, status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response({
+            'error': str(e)
+        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def ai_sprint_planning_view(request):
+    """Generate sprint planning suggestions"""
+    try:
+        backlog_items = request.data.get('backlog_items')
+        team_capacity = request.data.get('team_capacity')
+        planning = generate_sprint_planning(backlog_items=backlog_items, team_capacity=team_capacity)
+        return Response({
+            'data': planning,
+            'message': 'Sprint planning generated successfully'
+        }, status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response({
+            'error': str(e)
+        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def ai_gtm_strategy_view(request):
+    """Generate GTM strategy"""
+    try:
+        product_name = request.data.get('product_name')
+        target_audience = request.data.get('target_audience')
+        strategy = generate_gtm_strategy(product_name=product_name, target_audience=target_audience)
+        return Response({
+            'data': strategy,
+            'message': 'GTM strategy generated successfully'
+        }, status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response({
+            'error': str(e)
+        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def ai_generate_content_view(request):
+    """Generate marketing/content"""
+    try:
+        content_type = request.data.get('content_type')
+        topic = request.data.get('topic')
+        content = generate_content(content_type=content_type, topic=topic)
+        return Response({
+            'data': content,
+            'message': 'Content generated successfully'
+        }, status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response({
+            'error': str(e)
+        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def ai_launch_checklist_view(request):
+    """Generate launch checklist"""
+    try:
+        product_type = request.data.get('product_type')
+        checklist = generate_launch_checklist(product_type=product_type)
+        return Response({
+            'data': checklist,
+            'message': 'Launch checklist generated successfully'
+        }, status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response({
+            'error': str(e)
+        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def ai_metrics_insights_view(request):
+    """Generate metrics insights"""
+    try:
+        metrics_data = request.data.get('metrics_data')
+        insights = generate_metrics_insights(metrics_data=metrics_data)
+        return Response({
+            'data': insights,
+            'message': 'Metrics insights generated successfully'
+        }, status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response({
+            'error': str(e)
+        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def ai_customer_feedback_analysis_view(request):
+    """Analyze customer feedback"""
+    try:
+        feedback_items = request.data.get('feedback_items')
+        analysis = generate_customer_feedback_analysis(feedback_items=feedback_items)
+        return Response({
+            'data': analysis,
+            'message': 'Customer feedback analysis generated successfully'
+        }, status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response({
+            'error': str(e)
+        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def ai_competitor_analysis_view(request):
+    """Generate competitor analysis"""
+    try:
+        competitors = request.data.get('competitors')
+        analysis = generate_competitor_analysis(competitors=competitors)
+        return Response({
+            'data': analysis,
+            'message': 'Competitor analysis generated successfully'
+        }, status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response({
+            'error': str(e)
+        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def ai_persona_insights_view(request):
+    """Generate persona insights"""
+    try:
+        persona_data = request.data.get('persona_data')
+        insights = generate_persona_insights(persona_data=persona_data)
+        return Response({
+            'data': insights,
+            'message': 'Persona insights generated successfully'
+        }, status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response({
+            'error': str(e)
+        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def ai_research_insights_view(request):
+    """Generate research insights"""
+    try:
+        query = request.data.get('query')
+        research_data = request.data.get('research_data')
+        insights = generate_research_insights(query=query, research_data=research_data)
+        return Response({
+            'data': insights,
+            'message': 'Research insights generated successfully'
+        }, status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response({
+            'error': str(e)
+        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def ai_assistant_view(request):
+    """General AI assistant"""
+    try:
+        query = request.data.get('query')
+        context = request.data.get('context')
+        response = generate_ai_assistant_response(query=query, context=context)
+        return Response({
+            'data': response,
+            'message': 'AI assistant response generated successfully'
+        }, status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response({
+            'error': str(e)
+        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

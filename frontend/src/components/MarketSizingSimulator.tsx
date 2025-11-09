@@ -7,10 +7,13 @@ import { Label } from './ui/label';
 import { Slider } from './ui/slider';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
 import { Badge } from './ui/badge';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from './ui/dialog';
 import { Sparkles, TrendingUp, DollarSign, Users, Target, Download, Plus, Edit, Trash2 } from 'lucide-react';
 import { marketSizingService } from '../services/strategyService';
 import { MarketSizing } from '../types/MarketSizing';
 import { ApiError } from '../services/api';
+import { aiService } from '../services/aiService';
+import { toast } from './ui/use-toast';
 
 export function MarketSizingSimulator() {
   const navigate = useNavigate();
@@ -22,6 +25,9 @@ export function MarketSizingSimulator() {
   const [som, setSom] = useState(12);
   const [marketShare, setMarketShare] = useState([3]);
   const [avgRevenue, setAvgRevenue] = useState(120);
+  const [gettingAnalysis, setGettingAnalysis] = useState(false);
+  const [showAIAnalysis, setShowAIAnalysis] = useState(false);
+  const [aiAnalysis, setAiAnalysis] = useState<any>(null);
 
   useEffect(() => {
     loadMarketSizings();
@@ -60,6 +66,32 @@ export function MarketSizingSimulator() {
 
   const calculatedRevenue = (som * 1000000 * (marketShare[0] / 100) * avgRevenue) / 1000000;
 
+  const handleGetMarketAnalysis = async () => {
+    try {
+      setGettingAnalysis(true);
+      const response = await aiService.getMarketAnalysis('SaaS/Product Management Tools', 'Product managers, product teams, startups');
+      const analysis = response.data || response;
+      
+      setAiAnalysis(analysis);
+      setShowAIAnalysis(true);
+      
+      toast({
+        title: "AI Market Analysis Generated",
+        description: "View the full analysis in the dialog",
+      });
+    } catch (err: any) {
+      console.error('Error getting market analysis:', err);
+      const errorMessage = err instanceof ApiError ? err.message : (err.message || 'Failed to get market analysis. Please try again.');
+      toast({
+        title: "Error",
+        description: errorMessage,
+        variant: "destructive",
+      });
+    } finally {
+      setGettingAnalysis(false);
+    }
+  };
+
   return (
     <div className="space-y-6 max-w-7xl">
       {/* Header */}
@@ -69,9 +101,15 @@ export function MarketSizingSimulator() {
           <p className="text-slate-600">Calculate TAM, SAM, SOM and forecast revenue scenarios</p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" className="gap-2">
+          <Button 
+            variant="outline" 
+            className="gap-2" 
+            type="button"
+            onClick={handleGetMarketAnalysis}
+            disabled={gettingAnalysis}
+          >
             <Sparkles className="w-4 h-4" />
-            AI Market Analysis
+            {gettingAnalysis ? 'Analyzing...' : 'AI Market Analysis'}
           </Button>
           <Button className="gap-2" type="button" onClick={() => navigate('/workspace/market-sizing/create')}>
             <Plus className="w-4 h-4" />
@@ -396,6 +434,86 @@ export function MarketSizingSimulator() {
           </Card>
         </div>
       </div>
+
+      {/* AI Market Analysis Dialog */}
+      <Dialog open={showAIAnalysis} onOpenChange={setShowAIAnalysis}>
+        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Sparkles className="w-5 h-5 text-blue-600" />
+              AI Market Analysis
+            </DialogTitle>
+            <DialogDescription>
+              Comprehensive market sizing analysis with TAM, SAM, and SOM estimates
+            </DialogDescription>
+          </DialogHeader>
+          
+          {aiAnalysis && (
+            <div className="space-y-6 py-4">
+              {/* Market Sizing Metrics */}
+              <div className="grid grid-cols-3 gap-4">
+                <Card className="p-4">
+                  <div className="text-sm text-slate-600 mb-1">TAM</div>
+                  <div className="text-2xl font-bold">${aiAnalysis.tam}B</div>
+                  <div className="text-xs text-slate-500 mt-1">Total Addressable Market</div>
+                </Card>
+                <Card className="p-4">
+                  <div className="text-sm text-slate-600 mb-1">SAM</div>
+                  <div className="text-2xl font-bold">${aiAnalysis.sam}B</div>
+                  <div className="text-xs text-slate-500 mt-1">Serviceable Addressable Market</div>
+                </Card>
+                <Card className="p-4">
+                  <div className="text-sm text-slate-600 mb-1">SOM</div>
+                  <div className="text-2xl font-bold">${aiAnalysis.som}B</div>
+                  <div className="text-xs text-slate-500 mt-1">Serviceable Obtainable Market</div>
+                </Card>
+              </div>
+
+              {/* Growth Trends */}
+              {aiAnalysis.growth_trends && (
+                <div>
+                  <h4 className="font-semibold mb-2">Growth Trends</h4>
+                  <p className="text-slate-700">{aiAnalysis.growth_trends}</p>
+                </div>
+              )}
+
+              {/* Market Segments */}
+              {aiAnalysis.segments && aiAnalysis.segments.length > 0 && (
+                <div>
+                  <h4 className="font-semibold mb-3">Market Segments</h4>
+                  <div className="space-y-2">
+                    {aiAnalysis.segments.map((segment: any, index: number) => (
+                      <Card key={index} className="p-4">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <h5 className="font-medium">{segment.name}</h5>
+                            <p className="text-sm text-slate-600">Size: {segment.size}</p>
+                          </div>
+                          <Badge variant={segment.growth === 'High' ? 'default' : segment.growth === 'Medium' ? 'secondary' : 'outline'}>
+                            {segment.growth} Growth
+                          </Badge>
+                        </div>
+                      </Card>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Competitive Landscape */}
+              {aiAnalysis.competitive_landscape && (
+                <div>
+                  <h4 className="font-semibold mb-2">Competitive Landscape</h4>
+                  <p className="text-slate-700">{aiAnalysis.competitive_landscape}</p>
+                </div>
+              )}
+            </div>
+          )}
+
+          <DialogFooter>
+            <Button onClick={() => setShowAIAnalysis(false)}>Close</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

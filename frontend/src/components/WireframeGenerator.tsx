@@ -194,20 +194,183 @@ export function WireframeGenerator() {
     }
   };
 
-  // Calculate accessibility scores from wireframe data
-  const accessibilityScores = wireframe ? [
-    { category: 'Color Contrast', score: Math.min(100, wireframe.accessibility_score + 10), status: wireframe.accessibility_score >= 80 ? 'pass' : 'warning' },
-    { category: 'Touch Target Size', score: deviceType === 'mobile' ? Math.min(100, wireframe.accessibility_score + 5) : 88, status: 'pass' },
-    { category: 'Text Readability', score: Math.max(60, wireframe.accessibility_score - 10), status: wireframe.accessibility_score >= 70 ? 'pass' : 'warning' },
-    { category: 'Screen Reader Support', score: 100, status: 'pass' },
-    { category: 'Keyboard Navigation', score: Math.max(60, wireframe.accessibility_score - 5), status: wireframe.accessibility_score >= 70 ? 'pass' : 'warning' }
-  ] : [
-    { category: 'Color Contrast', score: 95, status: 'pass' },
-    { category: 'Touch Target Size', score: 88, status: 'pass' },
-    { category: 'Text Readability', score: 72, status: 'warning' },
-    { category: 'Screen Reader Support', score: 100, status: 'pass' },
-    { category: 'Keyboard Navigation', score: 65, status: 'warning' }
-  ];
+  // Realistic accessibility scoring model
+  const calculateAccessibilityScores = (wf: WireframeData | null, device: string, fid: number) => {
+    if (!wf) {
+      // Default scores when no wireframe (ranging from 10-85)
+      return {
+        overall: 70,
+        categories: [
+          { category: 'Color Contrast', score: 75, status: 'pass' },
+          { category: 'Touch Target Size', score: 70, status: 'pass' },
+          { category: 'Text Readability', score: 65, status: 'warning' },
+          { category: 'Screen Reader Support', score: 72, status: 'pass' },
+          { category: 'Keyboard Navigation', score: 58, status: 'warning' }
+        ]
+      };
+    }
+
+    const components = wf.components || [];
+    const hasButton = components.includes('button') || components.includes('Button');
+    const hasForm = components.includes('form') || components.includes('Form') || components.includes('input') || components.includes('Input');
+    const hasHeader = components.includes('header') || components.includes('Header') || components.includes('nav') || components.includes('Nav');
+    const hasTable = components.includes('table') || components.includes('Table');
+    const hasImage = components.includes('image') || components.includes('Image');
+    const hasText = components.includes('text') || components.includes('Text') || components.includes('textblock') || components.includes('Text Block');
+    
+    // Base scores for each category (ranging from 10-85)
+    let colorContrast = 45;
+    let touchTargetSize = 50;
+    let textReadability = 45;
+    let screenReaderSupport = 40;
+    let keyboardNavigation = 42;
+
+    // Color Contrast scoring (based on fidelity and components)
+    if (fid >= 80) {
+      colorContrast = 80; // High fidelity usually has better contrast
+    } else if (fid >= 50) {
+      colorContrast = 65;
+    } else {
+      colorContrast = 50; // Low fidelity may have contrast issues
+    }
+    if (hasText && fid >= 60) {
+      colorContrast += 5; // Text elements with good fidelity
+    }
+    if (hasButton && fid >= 70) {
+      colorContrast += 3; // Buttons with good contrast
+    }
+    if (!hasText && !hasButton) {
+      colorContrast -= 10; // No text or buttons = lower score
+    }
+    colorContrast = Math.min(85, Math.max(10, colorContrast));
+
+    // Touch Target Size scoring (device-dependent)
+    if (device === 'mobile') {
+      if (hasButton) {
+        touchTargetSize = fid >= 70 ? 82 : fid >= 50 ? 70 : 55;
+      } else {
+        touchTargetSize = 25; // No buttons = much lower score on mobile
+      }
+      if (hasForm && fid >= 60) {
+        touchTargetSize += 5; // Form inputs with good sizing
+      }
+    } else if (device === 'tablet') {
+      touchTargetSize = hasButton ? (fid >= 60 ? 75 : 60) : 45;
+    } else {
+      // Desktop - less critical but still important
+      touchTargetSize = hasButton ? (fid >= 50 ? 70 : 58) : 50;
+    }
+    touchTargetSize = Math.min(85, Math.max(10, touchTargetSize));
+
+    // Text Readability scoring
+    if (hasText) {
+      textReadability = fid >= 70 ? 78 : fid >= 50 ? 65 : 52;
+      if (fid >= 80) {
+        textReadability += 5; // High fidelity = better typography
+      }
+    } else {
+      textReadability = 20; // No text elements = much lower score
+    }
+    if (hasHeader && fid >= 60) {
+      textReadability += 4; // Headers improve readability
+    }
+    textReadability = Math.min(85, Math.max(10, textReadability));
+
+    // Screen Reader Support scoring
+    if (hasHeader) {
+      screenReaderSupport += 12; // Headers provide structure
+    }
+    if (hasButton) {
+      screenReaderSupport += 10; // Buttons are usually accessible
+    }
+    if (hasForm) {
+      screenReaderSupport += 8; // Forms may have labels
+      if (fid >= 60) {
+        screenReaderSupport += 6; // Higher fidelity forms have better labels
+      }
+    }
+    if (hasImage && fid >= 70) {
+      screenReaderSupport += 4; // Images may have alt text at higher fidelity
+    }
+    if (hasTable) {
+      screenReaderSupport -= 8; // Tables can be challenging for screen readers
+    }
+    // Base accessibility practices
+    screenReaderSupport += 10;
+    if (!hasHeader && !hasButton && !hasForm) {
+      screenReaderSupport -= 15; // No semantic elements = much lower score
+    }
+    screenReaderSupport = Math.min(85, Math.max(10, screenReaderSupport));
+
+    // Keyboard Navigation scoring
+    if (hasButton) {
+      keyboardNavigation += 12; // Buttons are keyboard accessible
+    }
+    if (hasForm) {
+      keyboardNavigation += 10; // Forms support keyboard navigation
+      if (fid >= 60) {
+        keyboardNavigation += 6; // Better form structure
+      }
+    }
+    if (hasHeader) {
+      keyboardNavigation += 8; // Headers often contain navigation
+    }
+    if (hasTable) {
+      keyboardNavigation -= 10; // Tables can be difficult to navigate
+    }
+    // Base keyboard support
+    keyboardNavigation += 8;
+    if (!hasButton && !hasForm && !hasHeader) {
+      keyboardNavigation -= 12; // No interactive elements = much lower score
+    }
+    keyboardNavigation = Math.min(85, Math.max(10, keyboardNavigation));
+
+    const categories = [
+      { 
+        category: 'Color Contrast', 
+        score: Math.round(colorContrast), 
+        status: colorContrast >= 80 ? 'pass' : colorContrast >= 60 ? 'warning' : 'fail' 
+      },
+      { 
+        category: 'Touch Target Size', 
+        score: Math.round(touchTargetSize), 
+        status: touchTargetSize >= 80 ? 'pass' : touchTargetSize >= 60 ? 'warning' : 'fail' 
+      },
+      { 
+        category: 'Text Readability', 
+        score: Math.round(textReadability), 
+        status: textReadability >= 75 ? 'pass' : textReadability >= 60 ? 'warning' : 'fail' 
+      },
+      { 
+        category: 'Screen Reader Support', 
+        score: Math.round(screenReaderSupport), 
+        status: screenReaderSupport >= 80 ? 'pass' : screenReaderSupport >= 60 ? 'warning' : 'fail' 
+      },
+      { 
+        category: 'Keyboard Navigation', 
+        score: Math.round(keyboardNavigation), 
+        status: keyboardNavigation >= 75 ? 'pass' : keyboardNavigation >= 60 ? 'warning' : 'fail' 
+      }
+    ];
+
+    // Calculate overall score (weighted average)
+    const weights = {
+      'Color Contrast': 0.20,
+      'Touch Target Size': 0.20,
+      'Text Readability': 0.20,
+      'Screen Reader Support': 0.20,
+      'Keyboard Navigation': 0.20
+    };
+
+    const overall = Math.round(
+      categories.reduce((sum, cat) => sum + (cat.score * weights[cat.category as keyof typeof weights]), 0)
+    );
+
+    return { overall, categories };
+  };
+
+  const accessibilityData = calculateAccessibilityScores(wireframe, deviceType, fidelity[0]);
+  const accessibilityScores = accessibilityData.categories;
 
   return (
     <div className="space-y-6 max-w-7xl">
@@ -447,9 +610,9 @@ export function WireframeGenerator() {
             </div>
             
             <div className="text-center mb-6">
-              <div className="text-4xl mb-2">{wireframe?.accessibility_score || 85}/100</div>
-              <Badge variant={wireframe && wireframe.accessibility_score >= 80 ? 'secondary' : 'destructive'}>
-                {wireframe && wireframe.accessibility_score >= 80 ? 'Good' : wireframe && wireframe.accessibility_score >= 60 ? 'Fair' : 'Needs Improvement'}
+              <div className="text-4xl mb-2">{accessibilityData.overall}/100</div>
+              <Badge variant={accessibilityData.overall >= 80 ? 'secondary' : accessibilityData.overall >= 60 ? 'default' : 'destructive'}>
+                {accessibilityData.overall >= 80 ? 'Good' : accessibilityData.overall >= 60 ? 'Fair' : 'Needs Improvement'}
               </Badge>
             </div>
 
