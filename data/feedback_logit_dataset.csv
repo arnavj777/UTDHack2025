@@ -1,0 +1,1251 @@
+change_type,module_area,impact_level,affected_users_pct,sentiment_score,feedback_length,competitor_mentions,historical_bug_rate,days_since_release,rating_avg,prior_issue_count,is_mobile,is_enterprise_tenant,decision_yes
+Bug Fix,Performance,Critical,22,0.13,76,0,0.17,15,4.1,10,1,0,1
+Bug Fix,Payments,High,56,0.24,116,0,0.28,9,3.7,0,1,0,1
+Bug Fix,Analytics,Medium,40,0.25,104,0,0.07,20,4.0,7,0,0,1
+Feature,Performance,Medium,72,0.26,61,1,0.14,3,4.1,8,1,0,1
+Feature,Analytics,Medium,31,0.08,89,0,0.19,1,3.9,8,0,1,0
+Feature,UI,Medium,54,-0.01,116,0,0.08,7,3.7,5,1,1,1
+Feature,Performance,High,49,0.14,79,0,0.14,29,3.8,11,1,0,0
+Refactor,Search,Medium,29,0.58,163,0,0.14,1,4.3,11,1,0,0
+Bug Fix,Analytics,Low,40,-0.27,122,0,0.11,2,4.6,11,0,0,1
+Feature,Onboarding,Medium,39,0.47,128,0,0.19,3,4.0,11,1,1,1
+Bug Fix,Payments,Medium,37,0.72,43,1,0.06,1,3.8,0,0,1,1
+Feature,Notifications,Medium,15,0.45,106,0,0.13,5,4.0,13,0,0,1
+Refactor,Authentication,Low,40,-0.28,140,0,0.12,7,3.7,14,1,0,0
+Feature,Payments,High,55,0.2,80,1,0.2,7,3.8,9,1,1,1
+Bug Fix,Authentication,Critical,59,0.5,109,0,0.12,18,4.3,7,1,1,1
+Feature,Authentication,Critical,10,0.04,143,1,0.18,5,4.3,8,1,1,1
+Feature,Analytics,Medium,19,-0.31,73,0,0.15,12,3.9,8,1,1,0
+Feature,Authentication,Medium,25,0.03,91,0,0.13,6,3.6,8,1,0,0
+Feature,Authentication,High,47,0.32,115,0,0.11,9,4.0,11,1,1,1
+Bug Fix,UI,Low,44,0.62,113,0,0.16,15,4.1,5,1,1,0
+Bug Fix,Performance,Medium,29,0.49,73,0,0.11,6,4.5,12,1,1,1
+Feature,UI,Critical,56,-0.26,32,1,0.07,26,4.3,14,1,0,1
+Bug Fix,Payments,Medium,48,-0.09,108,0,0.09,17,3.8,6,1,1,1
+Feature,Notifications,High,35,0.49,60,0,0.14,12,3.5,7,1,0,1
+Bug Fix,Search,High,18,0.11,132,0,0.09,17,4.0,7,0,0,1
+Bug Fix,Authentication,High,33,-0.0,153,0,0.22,26,3.9,16,1,1,1
+Bug Fix,Notifications,High,54,-0.58,120,0,0.26,1,4.3,11,1,0,1
+Bug Fix,Onboarding,High,51,0.35,116,1,0.13,13,3.8,5,1,1,1
+Feature,Notifications,Medium,41,0.34,30,0,0.18,2,3.4,12,1,0,0
+Feature,Onboarding,Critical,43,0.31,98,0,0.21,1,4.0,10,0,0,0
+Bug Fix,Performance,Medium,56,0.34,71,0,0.21,3,3.5,4,1,0,1
+Refactor,Authentication,Low,33,0.42,115,1,0.23,15,3.7,3,0,0,0
+Feature,Performance,Medium,3,0.13,70,1,0.13,26,4.2,8,0,0,1
+Feature,Notifications,Medium,35,0.43,70,0,0.2,7,3.9,4,1,1,1
+Feature,Performance,Critical,22,0.39,111,0,0.21,3,3.9,9,1,1,0
+Feature,Performance,High,62,0.1,92,0,0.24,15,4.2,13,1,0,1
+Bug Fix,Payments,Low,35,0.34,48,0,0.09,4,4.0,9,1,0,0
+Feature,Notifications,Medium,25,-0.15,30,0,0.18,18,3.9,10,0,0,0
+Bug Fix,Payments,Critical,69,0.4,127,1,0.24,13,3.5,21,1,1,1
+Refactor,UI,Low,24,0.54,109,1,0.18,12,3.8,6,1,0,0
+Feature,Performance,Medium,23,0.2,127,0,0.15,13,4.3,17,1,0,0
+Bug Fix,Search,High,64,0.83,55,0,0.14,16,4.4,0,1,0,1
+Feature,Performance,Medium,33,-0.06,65,0,0.1,12,4.0,7,0,0,0
+Feature,Payments,Medium,40,0.03,151,0,0.12,6,3.9,17,1,0,0
+Feature,Performance,Low,58,-0.19,40,0,0.18,12,4.0,14,1,0,1
+Refactor,Search,High,52,0.15,65,0,0.15,9,3.8,7,1,0,0
+Bug Fix,UI,Critical,46,0.49,59,1,0.18,16,4.2,17,1,0,1
+Refactor,Authentication,Low,49,-0.01,112,0,0.11,8,4.7,16,1,0,0
+Bug Fix,Payments,Medium,29,0.07,78,0,0.12,11,3.7,5,0,0,1
+Feature,UI,High,31,0.45,75,0,0.14,16,3.7,9,1,1,1
+Feature,Payments,Medium,59,0.7,169,0,0.03,24,4.0,5,0,0,1
+Feature,UI,Medium,61,0.02,138,0,0.11,1,4.1,18,0,1,1
+Feature,Search,High,31,0.29,111,0,0.14,10,3.8,9,0,1,0
+Bug Fix,Analytics,Medium,53,0.04,97,1,0.16,20,4.1,13,1,1,1
+Feature,Performance,Critical,40,0.24,92,0,0.16,10,4.1,17,0,0,0
+Feature,Analytics,High,37,-0.06,86,0,0.09,14,4.1,11,1,0,0
+Feature,Notifications,Medium,54,0.35,94,0,0.17,17,4.1,12,1,0,1
+Feature,Search,Low,8,-0.02,139,0,0.14,8,3.8,2,0,1,0
+Feature,Onboarding,High,50,0.46,114,0,0.12,23,4.1,5,0,0,1
+Bug Fix,Authentication,Medium,32,0.33,61,0,0.03,4,4.2,5,0,0,1
+Bug Fix,UI,Low,31,-0.33,52,1,0.22,12,4.0,4,0,0,0
+Refactor,Search,High,39,-0.16,74,0,0.22,21,4.2,12,1,1,1
+Bug Fix,Search,Critical,67,0.42,83,0,0.12,14,3.7,8,1,0,1
+Refactor,Performance,Medium,71,0.17,106,0,0.19,1,4.5,17,1,0,1
+Bug Fix,Notifications,High,30,-0.26,108,0,0.32,7,4.4,9,1,0,1
+Feature,Analytics,Medium,33,-0.06,76,1,0.03,18,4.3,9,0,1,1
+Bug Fix,Notifications,High,26,-0.0,102,0,0.07,17,4.0,3,0,0,1
+Bug Fix,Search,Medium,16,-0.13,86,0,0.19,12,3.9,11,1,1,1
+Feature,Onboarding,High,35,0.41,84,0,0.1,14,4.0,5,0,0,1
+Feature,Authentication,High,35,0.54,117,0,0.04,24,4.3,8,1,1,1
+Feature,Authentication,Medium,40,-0.14,91,1,0.15,2,4.0,4,1,0,1
+Bug Fix,Authentication,High,27,0.09,104,1,0.22,17,4.1,24,1,0,1
+Feature,Payments,Low,41,0.35,90,0,0.18,22,3.7,2,1,1,0
+Refactor,UI,Medium,21,-0.4,61,0,0.13,4,4.2,2,0,0,0
+Bug Fix,Performance,Critical,33,0.08,100,0,0.09,7,3.7,10,0,1,1
+Feature,Analytics,High,33,0.07,88,0,0.18,15,4.1,7,1,0,0
+Refactor,Search,Low,30,0.51,57,0,0.16,20,4.0,7,1,0,0
+Feature,UI,Medium,22,0.32,130,0,0.14,12,3.9,12,1,1,0
+Feature,Authentication,Medium,15,-0.1,41,0,0.21,18,3.9,6,0,0,0
+Bug Fix,Authentication,Medium,20,0.9,30,0,0.14,8,4.0,6,0,1,0
+Feature,Performance,Medium,25,0.26,50,0,0.12,5,4.1,12,1,0,0
+Feature,Analytics,Medium,39,0.05,139,0,0.09,2,4.4,9,1,1,0
+Bug Fix,Analytics,Medium,68,0.18,95,0,0.04,4,4.3,7,0,0,1
+Feature,Onboarding,Low,58,0.88,89,0,0.21,12,4.2,9,1,0,1
+Refactor,Payments,Low,12,0.13,30,0,0.19,4,3.9,11,1,1,0
+Refactor,Payments,Medium,37,0.02,89,0,0.1,27,4.0,5,1,0,0
+Feature,Onboarding,Medium,56,0.0,95,0,0.15,12,3.9,0,0,0,1
+Feature,Analytics,Critical,70,-0.08,83,0,0.16,10,4.3,11,1,0,1
+Feature,Onboarding,High,25,0.4,30,0,0.12,4,4.3,12,0,0,0
+Bug Fix,Analytics,Medium,36,0.03,77,0,0.23,11,4.6,11,1,1,1
+Feature,UI,Medium,55,0.41,30,0,0.16,17,4.1,5,1,0,1
+Bug Fix,Payments,Medium,32,0.02,95,0,0.2,1,4.2,18,1,1,1
+Bug Fix,Authentication,Critical,22,0.05,94,0,0.05,19,4.0,7,1,0,1
+Feature,UI,Medium,37,0.5,124,0,0.03,7,4.1,13,1,0,1
+Feature,Search,Medium,36,0.7,82,0,0.1,9,3.3,13,0,0,1
+Feature,Notifications,Medium,39,0.0,30,1,0.13,12,4.3,7,0,0,1
+Feature,Authentication,Medium,47,0.23,52,0,0.17,22,4.6,11,1,0,0
+Refactor,Payments,Medium,46,-0.06,79,0,0.19,1,4.0,7,1,1,0
+Feature,Analytics,Medium,26,0.17,103,0,0.22,5,4.2,15,0,1,0
+Bug Fix,Notifications,Critical,32,-0.01,122,0,0.08,24,4.2,14,1,1,1
+Bug Fix,Performance,High,40,0.28,94,1,0.2,14,3.7,4,1,1,1
+Bug Fix,Search,Critical,49,0.11,93,0,0.11,1,4.3,8,1,1,1
+Feature,Analytics,High,10,0.7,127,0,0.12,17,4.4,8,1,1,1
+Bug Fix,UI,Critical,47,0.28,97,0,0.2,12,3.8,3,1,0,1
+Feature,Notifications,Medium,34,-0.27,103,0,0.13,3,4.1,11,0,1,0
+Bug Fix,Payments,High,10,0.82,73,1,0.06,14,4.6,8,1,0,1
+Bug Fix,Search,High,40,0.04,82,0,0.21,10,3.9,4,1,0,1
+Feature,Performance,Medium,34,0.22,77,0,0.18,10,4.7,13,1,0,0
+Feature,Performance,Medium,40,0.06,127,0,0.15,11,4.3,5,0,0,0
+Feature,Search,Medium,38,0.29,117,0,0.1,10,4.0,7,0,1,0
+Refactor,Analytics,Low,42,0.44,166,0,0.12,22,4.2,4,1,1,0
+Feature,Analytics,Low,15,0.31,72,0,0.27,1,4.7,7,1,0,0
+Bug Fix,Authentication,Critical,56,0.61,67,0,0.03,11,4.1,2,0,1,1
+Bug Fix,Payments,Low,40,0.4,116,1,0.15,1,3.8,14,1,1,0
+Bug Fix,Onboarding,High,62,-0.13,94,0,0.12,6,4.0,4,1,0,1
+Bug Fix,Onboarding,High,0,0.28,114,1,0.17,15,3.9,14,0,0,1
+Feature,Search,Critical,54,0.19,131,0,0.22,2,4.1,11,0,0,1
+Bug Fix,Notifications,High,50,0.34,147,1,0.11,10,3.8,6,1,1,1
+Refactor,Payments,High,58,-0.0,34,0,0.21,15,4.2,8,0,1,0
+Refactor,Payments,Low,11,-0.08,66,0,0.16,15,4.4,6,1,1,0
+Bug Fix,Performance,High,72,0.05,97,0,0.17,13,4.0,16,0,1,1
+Refactor,Authentication,Low,41,0.36,71,0,0.11,1,4.3,13,1,0,0
+Bug Fix,Performance,Medium,48,0.72,76,0,0.19,5,4.2,4,0,1,1
+Feature,Notifications,Medium,14,-0.0,89,0,0.15,28,4.2,8,0,0,0
+Bug Fix,Performance,Critical,48,0.03,145,0,0.17,15,4.0,3,0,0,1
+Bug Fix,Analytics,High,46,0.14,41,0,0.14,1,3.9,13,1,0,1
+Bug Fix,Onboarding,Low,58,0.24,108,0,0.13,16,4.0,16,1,1,0
+Feature,Onboarding,Medium,35,0.6,54,0,0.15,5,4.0,9,0,0,1
+Refactor,UI,Medium,51,0.01,91,0,0.09,1,4.7,4,0,0,0
+Feature,Onboarding,High,45,0.32,30,0,0.2,19,4.6,5,0,1,0
+Feature,UI,High,19,-0.27,100,0,0.16,5,4.6,10,1,1,0
+Refactor,Analytics,Medium,32,0.13,30,0,0.08,1,3.9,3,1,0,0
+Bug Fix,Payments,High,58,-0.06,94,0,0.2,1,4.0,13,0,0,1
+Feature,Notifications,Low,38,-0.07,40,0,0.11,6,3.9,3,0,0,0
+Feature,Analytics,High,67,0.05,30,0,0.14,9,4.0,8,1,0,1
+Feature,Analytics,Critical,43,0.23,130,0,0.12,9,4.4,6,1,0,0
+Refactor,Notifications,Medium,46,0.31,64,0,0.17,20,3.8,17,0,1,0
+Feature,Notifications,High,27,0.2,115,0,0.03,8,3.7,17,1,0,0
+Feature,Analytics,High,49,0.04,68,0,0.12,1,3.6,6,1,0,0
+Feature,Onboarding,High,28,0.23,143,0,0.2,6,4.1,7,1,0,0
+Feature,Onboarding,Critical,46,0.1,75,0,0.18,1,4.2,2,1,0,0
+Bug Fix,Analytics,Medium,52,0.58,34,0,0.15,7,3.9,8,0,1,1
+Feature,Payments,Medium,25,0.5,112,0,0.18,13,4.1,13,1,1,1
+Refactor,Search,Low,28,0.38,63,0,0.03,30,3.9,8,1,0,0
+Feature,Authentication,Medium,29,0.18,92,1,0.07,1,4.2,0,1,0,1
+Feature,UI,Medium,32,0.25,107,0,0.21,11,3.8,10,0,0,0
+Bug Fix,Analytics,High,56,0.28,30,1,0.08,5,4.3,0,1,0,1
+Feature,Payments,Low,37,0.29,170,1,0.09,28,4.3,8,1,1,1
+Feature,Payments,Medium,14,-0.02,85,0,0.1,27,4.0,9,0,0,0
+Feature,Search,High,20,-0.14,60,0,0.07,17,4.3,6,1,1,0
+Bug Fix,Notifications,Low,57,0.6,111,0,0.03,12,3.8,13,0,0,0
+Bug Fix,Analytics,Low,17,0.17,84,0,0.11,12,4.1,0,1,0,0
+Refactor,Analytics,Low,37,0.04,119,0,0.21,15,3.9,6,1,1,1
+Feature,Performance,Medium,40,0.25,61,0,0.16,17,4.3,15,1,0,0
+Refactor,Notifications,Low,47,-0.12,76,0,0.06,16,4.5,10,0,0,0
+Feature,Analytics,Low,46,0.16,32,0,0.14,22,4.1,18,0,1,0
+Feature,UI,High,54,0.2,77,0,0.03,1,4.3,17,1,1,1
+Feature,Authentication,Critical,26,0.26,68,0,0.14,10,4.0,5,1,1,1
+Bug Fix,Notifications,High,73,0.41,99,1,0.19,25,3.8,9,1,1,1
+Feature,UI,Low,28,0.28,119,1,0.2,8,4.2,0,1,0,1
+Feature,Search,Medium,2,-0.03,81,1,0.32,5,3.7,14,1,0,1
+Feature,Notifications,Low,50,0.23,63,0,0.21,7,4.5,7,1,1,1
+Bug Fix,Notifications,Medium,0,-0.03,101,0,0.19,4,4.0,12,1,0,0
+Refactor,Search,Medium,48,0.77,37,0,0.22,16,3.8,10,1,0,0
+Bug Fix,UI,Medium,29,0.2,142,0,0.04,1,3.9,10,1,1,1
+Feature,UI,Medium,54,0.11,39,1,0.19,15,4.1,9,1,1,1
+Refactor,Authentication,Low,56,0.1,51,0,0.07,10,3.9,11,1,0,0
+Refactor,Analytics,Medium,46,-0.08,109,0,0.14,17,3.9,4,0,1,0
+Feature,Onboarding,High,57,0.11,79,0,0.13,14,3.7,3,0,0,1
+Refactor,Analytics,Medium,60,0.57,83,1,0.16,13,3.7,6,1,0,0
+Feature,Payments,High,45,0.13,53,0,0.13,5,4.1,6,1,1,1
+Refactor,Authentication,Medium,43,0.31,62,0,0.11,21,4.3,9,1,0,0
+Feature,Authentication,Medium,46,0.46,53,0,0.04,1,3.7,12,1,1,1
+Refactor,Performance,Medium,35,0.65,115,0,0.19,16,4.3,8,1,0,1
+Bug Fix,Onboarding,High,37,0.19,63,0,0.08,19,4.2,0,0,1,1
+Bug Fix,Authentication,Critical,47,-0.08,31,0,0.15,19,3.6,2,1,0,1
+Refactor,Analytics,Low,54,0.2,96,0,0.13,12,3.9,6,1,0,0
+Feature,Notifications,Medium,27,0.33,89,0,0.15,18,3.8,7,1,0,0
+Feature,Performance,Medium,71,0.18,125,0,0.14,11,3.8,3,0,0,1
+Bug Fix,UI,High,42,0.19,115,0,0.2,17,3.6,10,1,1,1
+Bug Fix,UI,High,34,-0.0,30,0,0.12,14,4.2,9,1,0,1
+Refactor,Notifications,Low,33,0.22,94,0,0.19,10,4.2,5,0,1,0
+Feature,Analytics,Medium,84,-0.03,118,0,0.15,15,4.3,2,0,0,1
+Bug Fix,Onboarding,Critical,41,-0.32,52,0,0.09,12,4.1,7,1,0,1
+Feature,Notifications,High,34,-0.17,176,0,0.1,13,4.6,10,1,1,0
+Bug Fix,Authentication,Critical,38,0.03,122,1,0.2,4,3.9,5,1,0,1
+Feature,Authentication,Low,27,0.41,148,0,0.16,13,4.1,8,1,0,1
+Feature,Payments,Critical,0,0.44,116,0,0.22,7,3.9,3,1,1,1
+Bug Fix,Notifications,High,39,0.22,63,0,0.12,14,4.4,0,0,0,1
+Bug Fix,UI,High,54,0.46,30,1,0.12,12,3.6,8,1,0,1
+Feature,Authentication,Medium,36,0.01,184,1,0.05,14,3.9,11,1,1,1
+Bug Fix,Analytics,Medium,74,0.12,72,0,0.21,18,3.9,4,0,0,1
+Bug Fix,Payments,Medium,27,0.31,100,0,0.16,20,4.0,1,1,0,1
+Feature,Notifications,Medium,14,0.74,93,0,0.06,15,4.2,8,0,0,1
+Feature,Performance,Medium,38,0.07,102,0,0.09,7,4.0,6,0,0,0
+Feature,Performance,Low,80,0.42,124,0,0.11,10,4.0,10,1,0,1
+Feature,Authentication,Medium,60,0.07,111,0,0.07,15,3.9,9,0,1,1
+Refactor,Performance,Medium,60,0.28,59,0,0.19,11,4.0,11,0,0,0
+Refactor,Onboarding,Low,20,0.1,82,0,0.12,15,3.7,8,0,0,0
+Refactor,Search,Medium,28,0.1,127,0,0.03,22,4.3,7,1,1,0
+Feature,UI,Low,36,0.89,160,0,0.22,14,4.2,2,0,0,1
+Feature,Payments,Medium,35,0.54,98,0,0.23,1,3.9,9,0,1,1
+Refactor,Analytics,Low,25,0.05,99,0,0.14,23,4.0,5,0,1,0
+Feature,Payments,Medium,6,0.13,59,0,0.09,14,4.1,0,1,0,0
+Feature,Search,Low,40,0.05,63,0,0.17,6,3.9,5,0,1,0
+Feature,Authentication,Medium,30,0.19,98,0,0.09,9,4.3,9,1,0,0
+Bug Fix,Payments,High,51,0.2,97,0,0.15,1,4.0,13,0,1,1
+Bug Fix,Analytics,Medium,39,0.23,95,0,0.15,22,4.1,11,1,0,1
+Feature,UI,High,68,-0.37,112,0,0.23,27,3.7,0,1,1,1
+Bug Fix,Search,Medium,25,0.23,69,0,0.14,17,4.3,8,0,1,1
+Feature,UI,Low,64,0.24,136,0,0.16,20,3.9,4,1,0,1
+Refactor,Notifications,Low,33,0.16,58,0,0.17,18,4.0,6,1,0,0
+Feature,Payments,Medium,2,0.08,143,0,0.19,22,3.8,12,0,0,0
+Bug Fix,Notifications,High,77,0.36,92,0,0.04,10,3.8,11,0,1,1
+Bug Fix,UI,High,11,-0.04,84,1,0.1,22,4.2,8,1,0,1
+Bug Fix,Performance,Critical,56,0.0,61,1,0.08,21,4.0,9,1,0,1
+Feature,Performance,Medium,59,0.03,117,0,0.06,12,4.1,5,0,1,1
+Bug Fix,Authentication,Critical,3,0.15,92,0,0.11,20,4.4,1,0,1,1
+Refactor,Authentication,Low,58,0.11,100,0,0.17,8,4.2,4,0,0,0
+Feature,Performance,Medium,54,0.41,94,0,0.03,20,3.9,9,0,0,1
+Refactor,Authentication,High,47,0.32,119,0,0.14,5,3.4,17,1,1,0
+Bug Fix,Authentication,Medium,46,-0.15,131,0,0.11,5,4.0,7,0,0,1
+Feature,Onboarding,Medium,19,0.01,93,0,0.05,26,4.4,9,1,1,0
+Bug Fix,UI,High,1,0.19,122,0,0.19,13,3.8,4,1,1,1
+Refactor,Search,Medium,27,0.5,94,0,0.16,21,4.1,8,1,1,0
+Refactor,Analytics,Low,13,-0.41,54,0,0.21,11,4.2,7,1,0,1
+Feature,UI,Medium,54,-0.04,113,1,0.12,16,3.9,0,1,0,1
+Feature,UI,Medium,36,-0.03,80,0,0.23,4,4.4,1,0,0,0
+Bug Fix,Notifications,Medium,25,0.35,114,0,0.03,1,3.9,4,1,0,1
+Refactor,Authentication,Medium,34,0.9,141,0,0.16,25,4.2,3,0,0,0
+Feature,Authentication,High,55,0.25,86,0,0.11,13,4.4,6,0,0,1
+Bug Fix,Performance,Medium,37,0.03,153,0,0.09,12,3.8,16,1,0,1
+Feature,Notifications,Low,37,0.02,79,0,0.15,11,4.2,10,0,1,0
+Bug Fix,UI,Critical,44,-0.19,124,0,0.2,17,4.1,4,0,1,1
+Feature,Search,Critical,31,0.17,108,0,0.15,28,3.8,5,1,0,0
+Bug Fix,UI,Medium,40,0.79,110,0,0.16,6,3.8,12,1,1,1
+Bug Fix,UI,High,20,0.66,110,0,0.14,1,4.0,13,0,1,1
+Feature,Authentication,Medium,63,0.81,109,0,0.18,6,4.1,0,1,0,1
+Bug Fix,UI,Medium,56,0.2,124,0,0.15,12,4.0,8,0,1,1
+Refactor,Analytics,Medium,43,0.13,158,0,0.06,14,3.9,9,1,0,0
+Feature,Payments,Medium,57,0.22,101,0,0.16,1,4.2,6,0,0,1
+Bug Fix,Notifications,Medium,62,-0.25,87,0,0.13,27,3.8,12,1,0,1
+Feature,Onboarding,Medium,20,0.15,67,0,0.13,16,3.7,8,1,0,0
+Feature,Authentication,Medium,38,0.22,192,0,0.15,1,4.1,2,1,1,1
+Refactor,Payments,Low,41,0.69,176,1,0.15,6,3.8,10,0,1,0
+Bug Fix,UI,Medium,63,0.21,61,0,0.1,11,4.1,0,1,0,1
+Bug Fix,Payments,Medium,23,-0.31,98,0,0.12,8,4.1,5,1,1,1
+Bug Fix,Search,Medium,25,0.16,67,0,0.07,12,4.1,5,1,0,1
+Feature,Notifications,Low,39,-0.35,77,1,0.11,13,4.2,0,0,0,1
+Feature,Search,Medium,10,0.08,39,0,0.16,13,4.1,7,0,0,0
+Bug Fix,Notifications,Medium,50,0.45,144,0,0.12,10,4.6,8,1,0,1
+Bug Fix,Payments,Critical,75,0.1,39,0,0.17,10,4.3,4,1,1,1
+Feature,Onboarding,Medium,36,-0.1,30,1,0.06,27,4.2,10,0,1,1
+Bug Fix,Notifications,High,54,0.35,145,0,0.23,13,3.5,13,1,0,1
+Bug Fix,Authentication,High,52,0.44,83,1,0.17,1,3.8,2,1,0,1
+Feature,Authentication,Medium,48,-0.1,96,0,0.15,1,3.3,5,1,0,0
+Feature,Authentication,Medium,48,0.19,91,0,0.26,8,3.5,19,1,1,1
+Bug Fix,Notifications,High,21,-0.01,88,0,0.1,22,4.0,15,1,1,1
+Feature,Search,Low,29,0.77,89,0,0.17,25,4.1,17,0,1,1
+Feature,Analytics,High,36,0.32,70,0,0.16,14,4.2,4,0,0,0
+Feature,Payments,Medium,39,-0.04,151,0,0.11,17,4.0,15,1,0,0
+Feature,Search,Medium,31,0.08,135,0,0.17,11,4.1,5,1,1,0
+Feature,Authentication,High,14,0.2,80,0,0.14,7,3.9,7,0,1,1
+Bug Fix,Onboarding,Medium,26,0.03,129,0,0.13,15,4.2,11,0,0,1
+Bug Fix,Analytics,Critical,34,0.24,89,0,0.24,23,3.9,8,1,1,1
+Refactor,Performance,Medium,51,0.34,98,0,0.11,10,4.1,8,1,1,1
+Feature,Performance,Medium,35,0.31,167,0,0.16,2,4.2,12,1,0,0
+Bug Fix,Notifications,Low,21,0.11,116,0,0.07,8,3.8,11,0,0,0
+Refactor,Analytics,Low,57,0.17,115,1,0.04,6,4.0,6,1,1,0
+Feature,Authentication,Medium,34,0.65,130,0,0.06,22,4.4,12,1,0,1
+Bug Fix,Payments,High,48,0.11,145,0,0.13,1,4.0,9,0,0,1
+Feature,Search,High,45,0.45,101,0,0.11,1,4.5,6,0,1,1
+Refactor,UI,Low,39,-0.2,118,0,0.25,13,4.4,8,1,1,0
+Bug Fix,Onboarding,High,18,-0.0,63,0,0.23,1,3.8,8,1,0,1
+Feature,Performance,Medium,50,0.09,63,0,0.17,13,4.3,8,1,0,1
+Bug Fix,Notifications,Critical,37,0.33,122,0,0.13,20,4.0,18,0,0,1
+Bug Fix,Payments,High,36,-0.28,117,0,0.12,15,4.1,14,0,0,1
+Feature,Notifications,High,11,0.16,115,0,0.19,19,3.9,4,1,1,0
+Bug Fix,Performance,Medium,30,0.07,95,0,0.12,14,4.0,12,0,0,1
+Feature,UI,Critical,73,-0.21,117,0,0.13,25,4.2,6,0,0,1
+Feature,UI,Medium,45,0.1,108,0,0.14,7,3.9,12,1,1,0
+Feature,Payments,Critical,43,-0.06,69,0,0.18,3,4.6,5,1,0,0
+Feature,Authentication,High,39,0.24,141,1,0.24,24,4.5,5,1,0,1
+Refactor,UI,Medium,29,0.15,84,0,0.26,20,4.3,7,1,1,0
+Bug Fix,Analytics,Medium,34,-0.08,86,0,0.08,1,4.1,13,0,0,1
+Bug Fix,Onboarding,Medium,56,-0.27,106,1,0.09,10,4.1,17,1,0,1
+Feature,Notifications,High,44,0.08,65,1,0.23,8,4.3,13,1,0,1
+Refactor,Performance,Medium,35,0.4,61,1,0.12,7,3.6,14,1,1,1
+Bug Fix,Analytics,Critical,48,0.0,95,0,0.12,24,4.4,0,0,0,1
+Feature,Notifications,Critical,12,-0.06,76,0,0.05,23,4.1,1,0,0,0
+Feature,UI,High,73,0.3,63,0,0.12,5,3.8,3,0,0,1
+Feature,Notifications,Low,42,0.05,30,1,0.22,15,4.3,7,0,0,1
+Bug Fix,Search,Low,35,-0.09,101,0,0.22,15,4.1,4,1,0,0
+Refactor,UI,High,27,0.26,159,0,0.13,5,4.0,3,1,0,0
+Refactor,Onboarding,Medium,41,0.34,122,0,0.28,22,4.1,13,1,0,0
+Feature,Payments,Low,54,0.03,93,0,0.14,14,4.2,9,1,1,1
+Feature,Onboarding,Critical,68,0.33,122,0,0.23,2,4.1,10,0,0,1
+Refactor,Search,Medium,33,-0.0,111,1,0.21,9,4.1,17,0,0,0
+Refactor,Performance,Medium,40,-0.26,164,1,0.15,19,4.1,11,1,1,1
+Feature,Search,High,50,0.04,150,0,0.16,16,4.2,2,1,0,1
+Refactor,UI,Low,49,-0.32,67,0,0.03,1,3.6,13,1,0,0
+Refactor,UI,Medium,37,-0.12,104,0,0.32,27,3.5,13,0,0,0
+Refactor,Analytics,Low,51,0.13,149,1,0.04,19,4.0,4,1,0,0
+Feature,Performance,Medium,72,0.22,116,0,0.18,13,4.1,6,0,0,1
+Feature,Authentication,Critical,50,0.24,143,0,0.06,25,3.5,13,0,1,1
+Refactor,Performance,Low,19,0.13,49,0,0.23,22,4.2,10,0,0,1
+Bug Fix,Notifications,High,57,0.06,72,0,0.2,11,4.4,13,1,0,1
+Feature,Performance,Medium,59,0.3,113,0,0.16,1,3.8,11,0,1,1
+Bug Fix,Authentication,High,31,0.25,90,0,0.11,2,4.3,10,0,0,1
+Refactor,Performance,Medium,67,-0.03,74,0,0.18,14,4.1,14,1,0,1
+Feature,Notifications,Medium,30,-0.22,109,1,0.14,16,3.9,2,0,0,1
+Feature,Payments,Critical,6,-0.37,93,0,0.14,5,4.3,9,1,0,0
+Feature,Payments,Medium,43,0.33,138,0,0.14,19,4.0,9,0,0,0
+Refactor,Analytics,Low,60,0.63,32,0,0.27,11,3.7,0,1,1,1
+Feature,UI,High,49,-0.41,186,0,0.03,19,3.7,3,0,0,0
+Feature,UI,Critical,56,0.3,78,0,0.21,1,4.0,8,1,0,1
+Feature,Authentication,Medium,44,0.05,152,0,0.19,1,3.6,11,0,0,0
+Bug Fix,UI,High,47,-0.34,48,0,0.18,1,3.8,4,1,0,1
+Refactor,Analytics,Medium,38,0.55,87,0,0.18,4,4.3,10,0,1,0
+Feature,Payments,Low,46,0.29,92,0,0.13,20,4.3,15,0,0,0
+Bug Fix,Performance,Medium,11,-0.11,60,0,0.07,9,4.5,15,1,0,1
+Bug Fix,Notifications,Critical,33,0.68,85,0,0.11,21,4.1,16,1,1,1
+Refactor,Analytics,Low,39,0.35,101,1,0.15,12,4.1,10,0,0,0
+Feature,Authentication,Medium,66,-0.01,48,0,0.17,9,4.3,2,0,0,1
+Bug Fix,Analytics,Critical,40,0.17,113,0,0.15,21,4.0,0,1,0,1
+Bug Fix,Payments,High,27,0.37,119,0,0.13,19,4.5,10,0,0,1
+Feature,Search,Medium,29,0.45,86,0,0.13,11,4.3,10,0,0,1
+Refactor,Authentication,Medium,52,0.08,58,0,0.07,19,4.0,14,0,0,0
+Refactor,Payments,Low,25,-0.26,115,0,0.19,7,4.5,4,0,0,0
+Refactor,UI,Low,34,0.07,68,0,0.14,1,4.1,18,0,1,0
+Feature,Performance,High,48,0.14,152,0,0.14,6,4.4,5,1,1,0
+Refactor,Payments,Low,0,0.27,152,0,0.09,16,4.2,5,1,1,0
+Refactor,Analytics,Low,27,-0.37,111,0,0.2,13,3.9,14,1,0,1
+Feature,Performance,Low,24,0.37,109,0,0.14,20,4.3,15,0,0,0
+Bug Fix,Notifications,Medium,44,-0.06,80,0,0.26,2,3.7,1,1,0,1
+Bug Fix,Payments,Medium,56,0.16,54,0,0.23,11,3.9,13,1,0,1
+Bug Fix,Search,Critical,18,0.34,82,0,0.23,8,4.1,11,0,0,1
+Bug Fix,Authentication,Low,49,0.49,143,0,0.15,8,4.3,8,0,0,0
+Feature,UI,Medium,7,0.67,86,0,0.2,12,4.2,5,0,1,1
+Feature,UI,Medium,0,0.07,121,0,0.08,24,4.0,11,1,0,0
+Refactor,Notifications,Low,47,-0.01,73,0,0.22,22,4.1,7,1,1,0
+Feature,Onboarding,High,69,-0.07,126,0,0.11,16,3.9,1,1,0,1
+Refactor,Analytics,Medium,52,-0.07,51,1,0.17,8,3.5,8,1,0,0
+Bug Fix,Notifications,Medium,52,-0.14,85,0,0.16,1,4.5,12,1,0,1
+Feature,Onboarding,Medium,30,0.08,101,1,0.06,1,3.9,5,0,1,1
+Refactor,Authentication,Medium,27,0.14,122,1,0.12,1,3.7,7,1,1,0
+Refactor,Authentication,Low,72,0.43,44,0,0.03,16,4.1,9,0,0,0
+Feature,Analytics,High,21,0.05,118,0,0.18,12,4.3,4,1,0,0
+Feature,Performance,Low,56,-0.2,146,0,0.05,2,4.0,14,1,0,1
+Feature,Authentication,Low,28,0.42,95,0,0.24,22,3.9,12,0,0,1
+Bug Fix,Performance,High,34,0.28,113,0,0.19,8,4.0,10,1,0,1
+Refactor,Onboarding,Low,46,0.1,125,1,0.11,18,4.1,16,1,0,0
+Feature,Performance,High,39,-0.06,79,0,0.14,9,4.2,0,0,0,0
+Bug Fix,Onboarding,Critical,31,0.5,130,0,0.1,9,4.2,17,1,0,1
+Bug Fix,Notifications,Critical,57,0.45,177,0,0.24,12,4.0,6,1,1,1
+Bug Fix,UI,High,49,-0.26,101,0,0.19,7,3.8,16,0,0,1
+Bug Fix,Onboarding,Critical,44,0.05,141,0,0.17,18,3.8,12,1,0,1
+Feature,Notifications,High,48,0.03,33,0,0.17,22,3.9,18,0,0,0
+Feature,Payments,Medium,36,0.3,175,0,0.13,1,4.1,4,0,0,0
+Feature,Analytics,High,14,0.72,38,0,0.16,24,4.3,2,1,0,1
+Feature,UI,Medium,33,0.06,87,0,0.12,5,4.0,5,0,0,0
+Feature,Onboarding,Low,20,-0.31,68,0,0.03,22,3.8,4,0,1,0
+Refactor,Notifications,Low,32,0.24,120,1,0.15,24,4.4,10,1,0,0
+Feature,Search,Low,29,0.34,55,0,0.2,13,4.2,8,1,0,0
+Feature,Onboarding,Low,29,-0.32,103,0,0.1,26,4.3,8,1,0,0
+Feature,Search,Medium,30,0.41,125,1,0.2,3,4.1,12,1,0,1
+Refactor,Authentication,Low,40,0.27,97,0,0.25,9,3.9,12,1,0,0
+Bug Fix,Notifications,High,19,0.67,91,0,0.04,1,3.6,0,1,0,1
+Bug Fix,Search,Medium,34,0.08,117,1,0.15,10,4.0,10,1,0,1
+Feature,Payments,Medium,18,0.04,92,0,0.19,7,4.0,5,1,0,0
+Feature,Authentication,Medium,27,0.27,100,0,0.27,21,3.9,14,0,0,0
+Bug Fix,Payments,High,47,0.32,86,0,0.1,4,4.4,15,1,0,1
+Feature,UI,Medium,22,0.13,100,1,0.18,16,3.8,4,1,1,1
+Feature,Onboarding,High,3,0.07,65,0,0.06,9,4.2,8,0,1,0
+Bug Fix,Analytics,Low,57,0.14,74,0,0.21,10,3.8,9,0,1,0
+Feature,Payments,High,39,0.01,168,0,0.14,7,3.7,12,0,0,0
+Bug Fix,Search,Low,64,-0.23,111,1,0.17,30,3.7,9,0,0,1
+Bug Fix,Performance,Low,44,0.19,125,0,0.06,12,4.4,8,1,0,0
+Bug Fix,Onboarding,High,32,0.26,96,0,0.25,20,4.5,6,0,0,1
+Feature,Notifications,Medium,26,-0.34,159,0,0.07,1,3.8,15,1,0,0
+Refactor,UI,High,41,-0.51,81,0,0.11,15,4.1,6,1,1,0
+Bug Fix,Authentication,High,41,0.17,79,0,0.15,12,4.1,8,1,0,1
+Feature,Analytics,Low,56,0.55,93,0,0.09,13,4.0,9,1,1,1
+Bug Fix,Search,Low,72,0.64,121,0,0.18,7,4.0,6,1,1,0
+Bug Fix,Performance,High,29,0.39,71,0,0.03,8,3.7,12,1,0,1
+Bug Fix,Onboarding,Critical,14,0.45,85,0,0.12,30,4.1,14,1,0,1
+Feature,UI,Critical,53,0.6,120,1,0.22,19,4.0,11,1,1,1
+Refactor,Payments,High,60,0.22,65,0,0.09,10,3.8,6,1,0,0
+Feature,Search,Medium,44,0.5,95,1,0.18,11,4.4,6,1,1,1
+Feature,Performance,High,52,-0.08,95,0,0.03,12,4.4,9,1,0,1
+Bug Fix,UI,High,33,0.03,121,1,0.12,8,3.9,0,1,1,1
+Bug Fix,Performance,High,0,-0.25,86,0,0.12,17,4.4,6,0,1,1
+Bug Fix,UI,Critical,28,0.44,93,0,0.1,17,4.5,8,0,1,1
+Feature,Payments,Medium,0,0.45,103,0,0.24,18,4.0,6,0,1,1
+Refactor,Onboarding,Medium,23,0.25,110,1,0.24,2,4.2,8,1,0,0
+Bug Fix,Authentication,High,5,-0.29,95,0,0.1,3,4.0,6,1,1,1
+Feature,Analytics,Medium,44,0.23,66,0,0.21,1,4.1,3,1,0,0
+Feature,Search,Medium,35,0.32,30,0,0.3,2,4.4,6,1,1,0
+Refactor,Payments,Low,54,0.23,121,1,0.18,20,4.2,14,1,0,0
+Bug Fix,Payments,Critical,35,0.05,101,1,0.19,15,3.9,7,0,1,1
+Feature,Payments,High,32,0.28,95,1,0.1,5,3.9,7,1,0,1
+Bug Fix,UI,High,39,0.09,79,0,0.21,9,3.7,5,0,0,1
+Bug Fix,Payments,High,32,0.54,115,0,0.16,3,4.3,5,0,1,1
+Feature,Notifications,High,8,0.4,78,0,0.07,24,4.0,5,0,0,0
+Refactor,Onboarding,Low,53,0.18,90,0,0.06,10,3.9,10,0,0,0
+Bug Fix,Payments,Critical,25,0.1,125,0,0.25,21,3.6,7,1,0,1
+Refactor,Analytics,Low,49,0.2,150,0,0.13,1,4.5,7,1,1,0
+Feature,Notifications,Low,62,0.74,63,0,0.04,17,4.3,11,1,1,1
+Bug Fix,UI,Low,25,0.12,123,0,0.09,5,4.0,0,0,0,0
+Bug Fix,Onboarding,High,64,-0.29,100,0,0.14,6,4.2,6,1,1,1
+Bug Fix,Onboarding,Medium,55,0.59,130,0,0.18,1,3.8,9,0,1,1
+Feature,Performance,High,49,0.51,54,0,0.11,18,3.8,7,1,1,1
+Bug Fix,UI,Critical,22,0.15,30,0,0.19,21,3.9,4,0,0,1
+Bug Fix,Analytics,High,30,0.36,96,0,0.15,1,3.9,8,0,0,1
+Refactor,UI,Low,52,-0.15,79,0,0.12,7,4.4,1,1,0,0
+Bug Fix,Notifications,High,69,0.22,111,0,0.23,25,4.0,1,0,1,1
+Feature,Analytics,Medium,35,-0.17,66,0,0.11,1,4.0,5,0,0,0
+Bug Fix,Authentication,Medium,3,0.19,83,0,0.08,1,4.1,10,0,0,0
+Feature,Search,Medium,24,0.2,128,0,0.11,14,4.4,3,1,1,0
+Bug Fix,Performance,High,44,-0.07,133,0,0.26,6,3.6,1,1,0,1
+Bug Fix,Performance,Low,26,-0.01,44,0,0.15,13,3.8,8,1,0,0
+Refactor,Analytics,Medium,45,0.7,99,0,0.13,24,4.1,9,1,0,0
+Refactor,Notifications,Low,24,-0.1,104,0,0.16,26,3.7,5,1,1,0
+Bug Fix,Notifications,Critical,55,-0.32,70,0,0.04,7,4.2,8,1,0,1
+Feature,Notifications,High,30,0.5,168,0,0.1,10,4.2,9,1,1,1
+Bug Fix,Payments,High,30,0.86,45,0,0.03,18,4.3,9,1,1,1
+Refactor,Performance,Low,62,0.19,58,0,0.12,5,3.8,6,1,0,1
+Refactor,UI,Medium,20,0.49,69,0,0.25,8,4.2,13,1,1,0
+Feature,Performance,High,40,0.12,98,0,0.11,24,3.5,8,0,0,0
+Feature,Authentication,Low,38,-0.05,138,0,0.21,29,4.0,3,0,1,0
+Bug Fix,Payments,High,64,-0.08,97,0,0.25,4,4.0,17,1,1,1
+Bug Fix,Payments,Low,50,0.14,152,0,0.23,10,4.5,11,0,0,0
+Refactor,Authentication,High,25,-0.06,74,1,0.13,1,4.2,2,0,0,0
+Bug Fix,Payments,Low,35,0.28,104,0,0.13,3,3.6,8,1,0,0
+Refactor,Onboarding,Low,21,0.43,66,0,0.03,20,4.1,5,0,0,0
+Feature,Onboarding,High,30,0.25,111,1,0.1,9,3.8,0,1,0,1
+Bug Fix,Authentication,High,63,-0.21,71,0,0.05,3,4.2,9,0,1,1
+Feature,UI,Medium,53,0.14,118,1,0.06,1,4.3,7,0,1,1
+Bug Fix,Notifications,Critical,51,0.29,80,1,0.13,13,4.2,12,0,0,1
+Bug Fix,Onboarding,Medium,31,0.05,141,0,0.28,18,3.8,4,0,0,1
+Refactor,Payments,Medium,27,0.3,30,0,0.09,13,4.0,11,1,1,0
+Feature,Notifications,Low,31,0.07,127,1,0.16,28,4.1,16,1,1,1
+Feature,Onboarding,Low,58,0.26,93,0,0.13,2,4.5,7,0,0,1
+Bug Fix,UI,Medium,39,0.69,69,1,0.1,1,4.0,11,0,1,1
+Feature,Payments,Low,12,0.05,70,0,0.23,19,4.1,8,0,1,0
+Bug Fix,Authentication,High,53,0.3,112,0,0.18,15,4.2,12,0,0,1
+Feature,UI,Critical,30,0.08,115,0,0.19,12,3.8,10,0,1,0
+Bug Fix,Notifications,Medium,34,-0.13,136,1,0.03,17,4.0,10,1,1,1
+Feature,Authentication,Medium,8,-0.26,48,0,0.18,9,4.1,4,1,1,1
+Bug Fix,Performance,Medium,39,0.36,50,1,0.09,7,4.6,15,1,0,1
+Bug Fix,UI,Medium,55,0.17,147,0,0.22,28,4.1,15,1,0,1
+Feature,Payments,Medium,39,0.18,85,0,0.12,11,4.3,0,0,0,0
+Refactor,Onboarding,Low,44,-0.17,77,0,0.17,8,4.1,6,1,0,0
+Feature,UI,Medium,42,0.49,84,0,0.14,15,3.7,11,1,0,1
+Feature,Notifications,Low,2,0.49,78,0,0.12,10,3.7,0,0,0,1
+Feature,Payments,Medium,24,0.19,158,1,0.21,6,4.3,3,1,1,1
+Refactor,Search,Low,45,-0.06,157,1,0.15,23,4.1,2,0,1,0
+Refactor,Payments,Medium,85,-0.01,96,0,0.24,9,4.3,13,0,0,0
+Feature,Performance,High,47,0.38,30,0,0.03,2,4.1,13,1,0,0
+Bug Fix,UI,Medium,30,-0.12,106,0,0.17,23,4.4,8,1,1,1
+Refactor,Performance,Medium,28,0.14,94,0,0.12,6,4.0,17,0,0,0
+Refactor,UI,Medium,64,0.31,51,0,0.17,9,4.2,3,0,0,0
+Bug Fix,UI,Low,74,0.36,108,0,0.03,9,4.4,7,0,0,0
+Feature,Authentication,Medium,23,0.29,63,0,0.06,2,4.0,15,0,1,1
+Feature,Authentication,Medium,42,0.21,56,1,0.22,19,3.7,3,0,0,1
+Bug Fix,Search,High,9,-0.18,83,1,0.06,12,4.0,12,0,0,1
+Feature,Notifications,High,12,-0.09,184,0,0.11,9,4.3,12,1,0,0
+Bug Fix,Authentication,Critical,56,0.43,69,0,0.2,9,4.3,8,0,1,1
+Feature,Payments,Critical,67,-0.02,111,0,0.17,5,4.3,7,1,1,1
+Feature,Search,Low,62,0.7,135,0,0.27,14,3.9,11,1,1,1
+Feature,Authentication,Critical,33,-0.12,60,0,0.12,26,3.7,4,1,0,0
+Feature,Payments,Medium,46,0.06,135,0,0.03,10,4.1,3,1,0,0
+Refactor,Payments,Low,27,0.43,49,1,0.2,15,3.8,3,1,1,0
+Feature,Analytics,Medium,28,0.9,109,0,0.16,13,4.3,4,1,0,1
+Feature,Onboarding,High,24,-0.02,64,0,0.18,11,4.5,8,0,0,0
+Bug Fix,Performance,Medium,48,-0.06,123,0,0.14,11,4.1,13,1,0,1
+Bug Fix,UI,Medium,47,0.38,44,0,0.06,15,4.2,6,1,0,1
+Feature,Performance,High,27,0.78,60,0,0.17,11,4.2,6,0,0,1
+Bug Fix,Performance,Medium,36,-0.11,117,0,0.15,7,4.4,5,1,1,1
+Feature,Search,High,80,0.32,101,0,0.03,15,3.2,2,0,1,1
+Feature,Performance,High,51,-0.08,104,0,0.19,1,3.9,2,1,1,1
+Feature,Search,High,36,0.26,128,0,0.13,13,4.1,9,1,1,0
+Bug Fix,Authentication,Low,46,0.04,118,0,0.09,13,3.7,13,0,1,0
+Feature,Payments,High,59,0.41,42,1,0.03,24,4.2,7,0,0,1
+Refactor,Onboarding,Low,57,-0.22,115,0,0.04,27,4.1,1,1,0,0
+Bug Fix,Authentication,Critical,40,-0.01,104,0,0.29,1,3.8,4,0,0,1
+Bug Fix,Performance,High,51,-0.15,63,0,0.04,5,4.1,2,1,1,1
+Refactor,UI,High,35,0.33,79,0,0.07,13,4.4,4,0,0,0
+Refactor,Payments,Low,28,0.12,118,0,0.07,9,3.9,3,0,0,0
+Feature,Notifications,High,51,-0.01,84,0,0.07,13,4.0,10,0,0,1
+Bug Fix,UI,Critical,61,0.16,146,0,0.03,5,3.7,9,1,0,1
+Feature,Notifications,Low,37,0.48,85,0,0.07,21,4.3,11,0,0,1
+Feature,Performance,Medium,43,0.14,96,0,0.17,10,4.4,2,0,1,0
+Feature,Payments,Medium,56,0.18,89,1,0.13,5,3.9,1,1,1,1
+Refactor,Search,Low,33,0.54,76,0,0.1,30,3.9,16,1,0,0
+Refactor,Performance,Low,51,0.42,111,0,0.09,17,4.4,16,0,1,0
+Refactor,Authentication,Medium,53,0.32,71,0,0.17,8,4.4,13,1,0,0
+Bug Fix,Payments,Medium,41,0.17,104,1,0.14,9,4.5,13,0,0,1
+Bug Fix,UI,Medium,60,0.08,108,0,0.15,1,4.0,9,0,0,1
+Feature,Notifications,Medium,34,0.07,137,0,0.18,8,4.0,9,0,0,0
+Bug Fix,Payments,Medium,42,0.23,194,1,0.11,1,4.2,8,1,1,1
+Feature,UI,Medium,28,0.3,99,1,0.14,2,4.0,13,0,0,1
+Feature,Onboarding,High,27,0.1,65,0,0.07,4,4.0,2,1,0,0
+Feature,Search,Low,36,0.38,126,0,0.11,2,4.2,9,1,0,0
+Feature,Authentication,Medium,62,0.06,88,0,0.03,10,3.7,3,0,0,1
+Refactor,UI,Medium,28,0.26,156,0,0.11,1,4.0,17,1,0,0
+Bug Fix,Authentication,Medium,18,0.59,68,0,0.03,13,4.5,11,1,1,0
+Feature,Onboarding,Medium,37,0.1,86,0,0.14,6,3.9,4,1,0,0
+Feature,UI,Critical,40,-0.03,30,1,0.1,1,4.3,10,1,0,1
+Bug Fix,Onboarding,Critical,24,0.54,109,0,0.12,2,4.1,11,1,0,1
+Feature,Payments,Medium,25,0.46,111,0,0.12,18,4.5,6,0,1,1
+Refactor,Onboarding,Medium,35,0.11,32,0,0.2,4,3.7,18,0,0,0
+Bug Fix,Authentication,High,32,0.74,137,0,0.16,19,4.2,0,1,0,1
+Bug Fix,Authentication,High,52,-0.02,124,0,0.22,8,3.9,12,1,0,1
+Bug Fix,UI,Medium,49,0.04,120,0,0.11,1,3.9,8,0,0,1
+Bug Fix,Notifications,High,23,0.46,125,1,0.11,15,4.2,14,0,0,1
+Refactor,Notifications,Medium,38,0.25,85,0,0.08,21,4.3,0,1,0,0
+Refactor,Analytics,Low,29,0.19,48,1,0.25,5,4.4,8,0,1,1
+Refactor,Authentication,Medium,70,0.23,30,0,0.3,13,3.8,12,1,1,0
+Bug Fix,Analytics,Low,46,0.01,83,0,0.09,16,4.2,9,1,0,0
+Bug Fix,Analytics,High,51,-0.55,84,1,0.13,9,3.4,5,1,0,1
+Bug Fix,Notifications,Critical,18,0.66,116,0,0.18,6,4.5,12,0,0,1
+Feature,Performance,Medium,62,-0.09,166,0,0.2,20,4.0,15,1,1,1
+Bug Fix,Analytics,Medium,55,-0.05,175,0,0.2,7,4.0,11,1,0,1
+Refactor,UI,Low,41,-0.37,52,0,0.18,25,3.9,11,0,1,0
+Bug Fix,Payments,Medium,29,0.07,94,0,0.09,1,4.2,10,1,1,1
+Feature,Payments,Critical,47,0.09,35,0,0.13,1,4.1,10,1,0,0
+Refactor,Onboarding,Low,38,0.77,102,0,0.14,1,4.2,0,0,1,0
+Bug Fix,Onboarding,Critical,35,-0.02,106,1,0.19,22,4.5,20,0,0,1
+Bug Fix,Analytics,Medium,32,0.11,123,0,0.14,8,4.3,13,0,0,1
+Feature,Performance,Low,46,-0.2,125,0,0.18,4,4.4,16,1,0,0
+Bug Fix,Authentication,Medium,57,0.08,144,0,0.18,18,4.7,3,0,0,1
+Feature,Payments,High,75,0.43,62,0,0.07,20,4.1,12,0,1,1
+Refactor,Onboarding,High,22,-0.0,100,1,0.1,11,4.0,12,1,1,0
+Feature,UI,Medium,52,0.24,106,0,0.11,1,4.1,0,0,1,1
+Refactor,Analytics,High,47,-0.31,92,0,0.12,13,4.0,6,1,1,0
+Feature,UI,High,63,0.86,61,0,0.14,7,3.5,9,0,1,1
+Bug Fix,Onboarding,High,39,0.16,94,0,0.17,14,4.4,9,1,1,1
+Bug Fix,Payments,Medium,47,-0.01,103,0,0.1,25,3.4,8,1,0,1
+Bug Fix,Notifications,High,26,-0.07,67,0,0.19,13,4.5,0,0,0,1
+Feature,UI,Medium,57,0.31,67,0,0.16,16,3.9,8,1,0,1
+Bug Fix,Notifications,Medium,56,0.41,117,0,0.23,18,4.2,4,0,0,1
+Refactor,Analytics,Medium,9,0.53,139,0,0.1,30,3.9,11,1,0,0
+Refactor,UI,Medium,46,-0.06,81,0,0.14,18,4.0,23,0,1,0
+Refactor,Search,Low,34,-0.01,39,0,0.19,8,3.8,15,1,1,0
+Feature,Notifications,Critical,46,0.04,70,1,0.03,17,4.1,13,1,0,1
+Bug Fix,Performance,High,23,0.66,103,1,0.28,1,4.2,8,1,1,1
+Feature,Notifications,Critical,36,0.44,199,0,0.12,1,4.2,14,1,0,1
+Feature,Authentication,Low,57,0.04,141,1,0.19,20,4.2,7,1,0,1
+Refactor,Onboarding,Low,12,0.29,74,0,0.16,16,4.3,11,1,0,0
+Feature,Search,Medium,6,-0.22,100,0,0.12,8,4.0,6,0,0,0
+Feature,Notifications,Low,26,0.01,130,1,0.19,9,4.0,10,1,1,1
+Feature,Search,Medium,37,0.31,178,1,0.14,20,4.6,9,0,0,1
+Refactor,Search,Low,64,0.0,61,0,0.19,11,3.5,7,1,0,0
+Bug Fix,Performance,Medium,14,0.23,130,0,0.17,2,4.3,5,1,1,0
+Bug Fix,Onboarding,Medium,16,0.11,159,0,0.18,9,3.7,11,1,0,0
+Feature,Analytics,Critical,95,0.01,112,0,0.09,21,3.9,4,1,0,1
+Bug Fix,Performance,Critical,21,0.04,87,0,0.07,9,3.8,7,1,1,1
+Feature,Notifications,Medium,49,0.43,95,1,0.19,1,3.9,7,1,1,1
+Bug Fix,Authentication,High,32,0.16,110,0,0.09,4,4.0,8,1,1,1
+Bug Fix,Authentication,High,1,-0.21,58,0,0.18,14,4.1,5,0,1,1
+Refactor,Onboarding,Low,18,0.77,146,0,0.1,1,4.0,6,1,0,0
+Feature,Onboarding,Medium,31,0.18,127,1,0.19,21,4.4,13,0,1,1
+Feature,Authentication,Medium,15,0.15,104,0,0.15,1,4.3,15,1,0,0
+Bug Fix,Notifications,High,16,-0.09,83,1,0.16,7,4.2,2,0,0,1
+Bug Fix,Performance,High,30,-0.07,71,0,0.19,8,3.9,8,0,0,1
+Bug Fix,UI,High,42,-0.12,150,1,0.22,22,4.5,15,1,1,1
+Feature,Performance,High,62,-0.05,123,0,0.11,5,4.0,13,0,0,1
+Feature,UI,Medium,26,0.17,86,0,0.11,19,3.8,3,0,0,0
+Bug Fix,Onboarding,Critical,45,0.12,125,0,0.14,6,3.9,4,1,1,1
+Refactor,UI,Low,45,-0.28,105,1,0.11,1,3.8,0,1,0,0
+Bug Fix,Search,Medium,11,0.6,73,0,0.08,11,3.9,8,0,0,0
+Bug Fix,UI,High,46,0.59,30,0,0.09,17,4.4,20,1,0,1
+Bug Fix,Notifications,High,49,-0.02,70,0,0.11,19,4.0,13,1,0,1
+Feature,Onboarding,Medium,43,0.08,75,0,0.24,22,4.1,6,0,0,0
+Feature,Authentication,Critical,42,0.12,44,0,0.11,19,3.9,10,0,1,1
+Feature,Performance,High,28,0.36,101,0,0.25,27,3.9,7,0,0,0
+Bug Fix,Performance,High,41,-0.03,162,1,0.2,22,4.0,3,0,0,1
+Feature,Payments,Medium,25,0.26,96,1,0.11,13,3.9,13,1,1,1
+Feature,UI,Medium,41,0.33,75,0,0.12,6,4.0,12,1,1,0
+Refactor,Search,Medium,33,0.45,113,0,0.1,9,4.6,1,1,1,0
+Bug Fix,Onboarding,High,33,0.42,67,0,0.22,7,3.7,9,1,1,1
+Refactor,Payments,Medium,39,0.23,84,0,0.14,7,3.9,7,1,0,0
+Refactor,Search,Medium,29,0.34,62,0,0.03,7,4.0,1,0,0,0
+Feature,Payments,Critical,33,-0.27,143,0,0.13,20,3.8,9,0,1,1
+Bug Fix,UI,High,11,0.25,91,0,0.03,5,4.1,13,0,1,1
+Bug Fix,UI,Medium,67,0.1,198,1,0.27,14,3.9,9,0,0,1
+Bug Fix,Payments,Medium,60,0.3,130,1,0.24,13,3.9,0,1,1,1
+Feature,Analytics,Critical,53,0.14,49,0,0.28,15,4.0,6,0,1,1
+Bug Fix,Performance,High,61,0.29,80,0,0.08,22,3.9,8,1,1,1
+Feature,Analytics,Medium,24,0.41,105,0,0.17,12,3.9,9,0,0,1
+Refactor,Authentication,High,25,0.25,96,0,0.21,16,4.1,14,0,0,0
+Bug Fix,Onboarding,High,46,0.09,113,0,0.08,1,4.0,6,0,0,1
+Feature,Authentication,High,43,0.01,137,0,0.17,12,4.2,3,0,0,0
+Bug Fix,Payments,High,40,0.02,59,1,0.17,4,4.1,7,1,1,1
+Feature,Notifications,High,19,0.49,85,0,0.14,30,3.6,5,0,1,1
+Bug Fix,Notifications,High,46,0.01,107,1,0.26,20,4.2,8,0,0,1
+Bug Fix,Notifications,Medium,32,0.12,97,0,0.2,4,4.3,16,1,1,1
+Bug Fix,Payments,High,17,0.26,69,1,0.11,24,4.1,6,1,0,1
+Feature,Notifications,Medium,39,0.09,63,0,0.16,1,4.2,14,1,0,0
+Refactor,Payments,Medium,26,0.54,38,1,0.12,8,3.9,6,1,0,0
+Bug Fix,Performance,High,62,-0.04,117,0,0.23,4,4.2,8,0,1,1
+Feature,Notifications,Medium,47,0.73,161,1,0.15,11,3.9,11,1,0,1
+Bug Fix,Performance,Medium,23,0.34,80,0,0.23,24,3.9,9,1,1,0
+Refactor,Authentication,Medium,42,0.35,30,0,0.14,13,4.5,4,0,0,0
+Refactor,Search,Low,46,-0.46,55,0,0.15,1,4.2,10,0,0,0
+Feature,UI,High,61,0.18,125,0,0.11,26,4.0,10,1,1,1
+Bug Fix,Payments,Medium,34,0.13,95,0,0.14,17,4.0,10,0,0,1
+Feature,Notifications,High,52,0.26,115,0,0.21,22,3.8,3,1,0,1
+Refactor,Onboarding,Medium,64,0.3,114,0,0.11,19,3.9,7,0,1,0
+Bug Fix,Authentication,Critical,57,0.21,135,0,0.06,8,3.8,2,1,0,1
+Feature,Onboarding,High,54,-0.29,122,0,0.13,24,4.2,9,0,0,1
+Feature,UI,High,20,0.09,96,0,0.17,18,3.8,6,1,1,0
+Feature,Onboarding,Medium,56,0.34,89,0,0.08,13,3.8,11,0,1,1
+Refactor,Payments,Low,0,-0.0,113,1,0.18,10,3.6,13,0,1,0
+Refactor,Payments,Medium,81,0.0,34,0,0.21,10,3.4,10,0,1,0
+Refactor,Payments,Medium,36,0.72,106,0,0.18,18,4.1,6,1,0,0
+Bug Fix,Performance,Critical,56,0.57,111,0,0.03,10,4.4,14,0,0,1
+Refactor,Performance,Medium,35,0.23,160,0,0.09,18,4.3,12,0,1,0
+Bug Fix,UI,High,45,0.11,165,0,0.11,11,3.9,7,0,1,1
+Bug Fix,UI,High,36,0.33,118,1,0.1,13,4.3,7,1,1,1
+Feature,Authentication,Medium,48,0.23,118,0,0.1,20,3.8,16,0,0,0
+Bug Fix,UI,High,48,0.27,105,0,0.03,4,3.8,11,1,0,1
+Bug Fix,Payments,High,53,-0.31,53,0,0.11,5,4.0,7,1,0,1
+Refactor,Onboarding,Low,22,0.44,66,1,0.13,4,4.5,16,0,0,0
+Refactor,Performance,High,24,0.22,93,0,0.03,23,4.0,22,1,0,0
+Bug Fix,Analytics,High,46,0.64,83,0,0.16,14,4.1,0,0,0,1
+Feature,Onboarding,High,57,0.43,126,1,0.19,8,3.7,12,1,1,1
+Feature,Performance,Medium,50,0.33,83,0,0.11,15,4.4,4,1,1,1
+Feature,Onboarding,Low,4,-0.06,125,0,0.17,12,4.2,19,1,0,0
+Refactor,Search,Medium,45,0.22,85,1,0.18,22,4.1,6,1,0,0
+Refactor,Notifications,Low,87,0.11,128,0,0.03,10,3.9,7,1,1,0
+Refactor,Payments,Medium,51,0.04,109,0,0.15,14,4.2,0,1,1,0
+Feature,UI,Medium,40,0.09,137,0,0.12,12,4.3,16,1,1,0
+Feature,UI,High,0,0.33,30,0,0.21,20,3.7,14,1,0,0
+Refactor,Authentication,Medium,43,0.34,99,0,0.11,11,4.4,19,1,1,0
+Refactor,Performance,Low,27,0.44,115,0,0.12,5,3.7,10,0,1,0
+Refactor,Performance,Medium,53,0.29,111,0,0.2,1,4.0,13,0,1,1
+Bug Fix,Analytics,Low,47,-0.47,96,0,0.18,22,3.5,14,0,1,1
+Refactor,Notifications,Low,22,-0.07,38,0,0.19,15,3.7,12,1,0,0
+Feature,Search,High,32,-0.17,139,0,0.2,20,4.0,17,1,0,0
+Refactor,Notifications,High,14,0.51,70,0,0.14,13,3.7,3,0,1,0
+Feature,Analytics,High,69,0.02,86,0,0.03,4,4.2,12,0,0,1
+Feature,Onboarding,High,61,0.53,120,0,0.19,2,4.0,14,1,0,1
+Feature,Analytics,Medium,23,0.17,104,0,0.11,30,3.9,11,0,0,0
+Refactor,Notifications,Medium,63,0.32,112,0,0.13,8,3.8,5,1,0,0
+Feature,Onboarding,High,39,0.18,137,0,0.18,14,3.5,2,1,0,0
+Refactor,Notifications,Medium,71,0.62,128,0,0.07,14,4.2,3,0,0,0
+Feature,Notifications,Medium,55,0.27,136,1,0.16,14,4.2,14,0,1,1
+Bug Fix,Analytics,High,45,0.36,79,1,0.11,4,4.0,8,0,1,1
+Bug Fix,Search,Medium,44,0.38,51,0,0.09,9,4.2,11,1,1,1
+Feature,Onboarding,Low,66,-0.16,121,0,0.03,1,4.0,0,0,1,1
+Refactor,Analytics,Low,76,0.61,56,0,0.09,10,4.2,8,1,1,0
+Feature,Onboarding,High,48,0.48,107,0,0.31,7,4.1,6,0,1,1
+Bug Fix,Onboarding,Medium,60,0.32,127,0,0.12,13,4.2,6,1,1,1
+Feature,Authentication,Medium,15,-0.26,52,1,0.15,17,3.9,6,1,0,1
+Refactor,Analytics,Low,33,0.3,91,0,0.15,18,3.9,18,0,1,0
+Bug Fix,Performance,Critical,84,0.35,133,0,0.15,13,4.2,2,0,0,1
+Refactor,UI,Low,33,0.55,116,1,0.12,3,4.3,4,1,1,0
+Feature,Onboarding,High,58,0.23,134,0,0.14,16,4.7,7,0,1,1
+Feature,Notifications,Low,50,0.35,46,0,0.17,20,4.1,5,1,1,1
+Bug Fix,Search,Medium,42,-0.11,153,1,0.12,29,4.0,9,0,0,1
+Bug Fix,Payments,Low,40,-0.59,130,1,0.21,21,4.2,7,1,0,1
+Refactor,Analytics,Low,6,0.09,66,0,0.2,7,4.3,3,1,0,1
+Refactor,Analytics,Low,81,0.05,45,0,0.16,16,3.9,8,0,0,0
+Feature,Notifications,High,32,0.22,154,1,0.15,22,3.9,10,1,1,1
+Feature,UI,Medium,25,0.15,113,1,0.21,16,3.4,8,0,0,1
+Refactor,Search,Low,60,-0.01,116,0,0.15,4,3.7,13,0,0,0
+Feature,Search,Medium,8,0.42,120,0,0.22,24,4.2,15,0,0,1
+Feature,Performance,Medium,44,-0.28,45,0,0.19,25,3.8,10,0,0,0
+Feature,Analytics,Critical,66,0.28,79,0,0.23,1,4.3,0,1,0,1
+Bug Fix,Search,High,10,0.01,97,1,0.22,19,4.1,7,0,1,1
+Refactor,UI,Low,31,0.58,108,0,0.16,8,4.0,14,1,0,0
+Feature,Notifications,High,58,0.02,120,0,0.2,15,3.9,14,0,1,1
+Bug Fix,Performance,High,64,0.1,68,0,0.15,1,4.5,14,1,0,1
+Feature,Performance,High,61,-0.13,61,0,0.2,9,3.9,18,1,0,1
+Feature,Notifications,Medium,11,0.56,39,1,0.12,4,4.1,8,1,0,1
+Refactor,Payments,Low,39,0.12,106,0,0.04,22,4.0,16,0,1,0
+Refactor,Payments,Medium,47,0.25,142,1,0.03,7,4.7,10,0,0,0
+Refactor,Onboarding,Low,47,-0.12,124,0,0.08,18,3.9,12,0,0,0
+Bug Fix,Analytics,Medium,52,0.18,124,0,0.18,19,4.1,14,0,1,1
+Bug Fix,Authentication,Medium,71,-0.05,103,0,0.03,20,3.5,16,1,0,1
+Feature,Notifications,High,28,0.28,56,0,0.19,15,3.8,8,0,1,0
+Refactor,Onboarding,Low,59,0.85,85,0,0.16,2,3.5,12,0,1,0
+Bug Fix,Performance,Critical,19,0.56,143,0,0.19,13,4.5,4,0,1,1
+Refactor,Onboarding,Low,47,0.25,85,0,0.15,24,4.3,12,1,1,0
+Bug Fix,Performance,Critical,34,0.37,143,0,0.1,23,4.4,8,1,1,1
+Feature,UI,Medium,12,0.16,93,1,0.13,14,3.9,10,1,0,1
+Bug Fix,Payments,Medium,77,0.24,142,0,0.07,13,4.1,9,1,1,1
+Feature,UI,Low,50,-0.05,187,1,0.25,3,3.7,16,0,0,1
+Feature,UI,Medium,45,0.09,121,0,0.23,23,3.7,11,1,0,0
+Refactor,Analytics,Low,49,0.01,30,0,0.28,20,3.9,13,1,0,1
+Feature,Authentication,Critical,24,-0.37,110,0,0.16,12,3.7,14,1,0,0
+Bug Fix,Payments,Medium,43,0.0,146,1,0.22,2,4.2,10,1,0,1
+Feature,Payments,Low,41,0.74,102,0,0.16,1,4.0,4,0,0,1
+Feature,Authentication,Medium,52,0.34,50,1,0.18,19,3.8,8,0,1,1
+Feature,Performance,High,25,-0.27,79,0,0.15,1,3.5,5,1,0,0
+Bug Fix,UI,Medium,40,-0.16,94,0,0.14,7,3.8,14,1,0,1
+Feature,Notifications,Medium,54,0.34,85,0,0.11,14,4.1,6,1,0,1
+Bug Fix,Authentication,High,65,-0.06,97,1,0.26,10,4.4,1,0,0,1
+Feature,Authentication,Medium,65,0.22,64,0,0.12,7,4.2,6,1,1,1
+Bug Fix,UI,Medium,33,0.04,107,0,0.19,18,4.4,10,1,0,1
+Refactor,Analytics,Low,15,0.21,51,0,0.13,24,3.6,14,0,1,0
+Bug Fix,Search,High,19,0.02,67,0,0.12,15,3.9,7,1,0,1
+Feature,Analytics,High,22,0.03,80,0,0.13,20,4.0,0,1,0,0
+Feature,Onboarding,Critical,47,0.25,71,0,0.12,13,4.0,5,1,0,0
+Feature,Authentication,Medium,17,-0.1,86,0,0.18,17,4.2,8,0,0,0
+Refactor,Onboarding,Low,50,0.06,95,0,0.18,17,3.9,7,1,0,0
+Feature,Search,High,34,0.34,79,0,0.08,19,4.0,8,0,0,0
+Feature,Performance,High,60,-0.13,159,0,0.08,5,4.2,8,0,0,1
+Refactor,Payments,Medium,25,-0.16,112,0,0.05,9,4.3,8,1,0,0
+Bug Fix,Notifications,High,21,-0.06,80,0,0.14,16,4.1,13,1,1,1
+Bug Fix,Notifications,Low,33,0.59,39,0,0.21,18,4.0,8,1,1,0
+Feature,Analytics,Low,21,0.22,156,0,0.09,16,4.1,8,0,0,0
+Feature,Authentication,Low,49,0.49,134,0,0.23,6,3.9,4,0,0,1
+Feature,Onboarding,Critical,71,0.08,107,0,0.22,3,4.1,8,1,0,1
+Feature,Search,High,43,0.46,145,0,0.08,16,3.9,13,1,0,1
+Feature,Onboarding,Low,54,0.01,74,1,0.15,11,4.0,15,1,0,1
+Refactor,Analytics,Low,50,0.25,84,0,0.11,3,4.0,4,1,0,0
+Feature,Analytics,Medium,47,0.22,113,0,0.14,18,4.3,3,1,1,0
+Feature,Performance,Medium,40,-0.08,68,0,0.13,10,3.9,7,0,1,0
+Feature,UI,Medium,26,0.48,136,0,0.16,26,4.3,3,0,0,1
+Feature,Performance,High,43,0.63,122,0,0.17,16,3.8,10,1,0,1
+Feature,Search,Medium,58,-0.2,46,0,0.19,3,4.3,0,1,1,1
+Bug Fix,Authentication,Medium,17,0.35,32,0,0.06,1,3.2,10,1,1,0
+Bug Fix,Authentication,Medium,7,-0.31,98,1,0.16,30,3.8,8,0,0,1
+Refactor,Notifications,Low,43,0.37,76,0,0.07,3,4.2,12,1,1,0
+Bug Fix,UI,Low,9,0.07,94,0,0.1,8,4.0,3,0,0,0
+Feature,Search,Medium,11,0.43,107,0,0.17,20,4.3,14,1,0,1
+Bug Fix,Performance,High,55,0.01,80,0,0.19,14,3.8,7,0,0,1
+Refactor,UI,Medium,55,-0.09,118,0,0.1,9,4.0,7,0,0,0
+Bug Fix,Analytics,Medium,61,0.67,100,0,0.21,21,4.1,14,1,0,1
+Bug Fix,Performance,Critical,47,0.47,30,0,0.13,18,4.1,2,1,0,1
+Bug Fix,Search,Critical,22,0.28,60,0,0.06,10,4.0,5,0,0,1
+Feature,Search,Low,34,0.38,111,0,0.03,2,4.1,4,1,1,0
+Bug Fix,UI,Medium,65,0.33,106,0,0.08,16,4.3,17,0,0,1
+Feature,Performance,Low,34,0.66,51,1,0.16,17,4.6,4,1,0,1
+Bug Fix,Search,Medium,71,-0.22,172,0,0.28,1,4.0,3,1,0,1
+Feature,Onboarding,High,54,-0.11,134,1,0.1,22,4.0,7,0,0,1
+Bug Fix,Search,High,46,-0.01,71,1,0.11,21,4.3,6,0,1,1
+Bug Fix,Notifications,Critical,26,-0.17,149,1,0.19,1,3.9,10,0,1,1
+Bug Fix,Performance,Low,46,0.51,102,0,0.2,14,3.9,7,1,0,0
+Feature,UI,Low,37,-0.2,54,0,0.14,1,4.1,6,0,0,0
+Bug Fix,UI,Critical,46,0.21,116,0,0.18,14,4.0,12,0,0,1
+Feature,Analytics,Critical,17,0.15,94,1,0.09,29,4.2,13,1,0,1
+Feature,Notifications,High,46,0.2,66,0,0.12,19,4.4,14,1,0,0
+Feature,UI,Low,29,-0.21,123,0,0.07,6,4.3,7,0,0,0
+Feature,Authentication,Medium,41,0.02,115,0,0.15,23,4.1,10,1,1,1
+Feature,Search,High,29,0.16,119,0,0.18,1,3.9,11,1,0,0
+Bug Fix,Notifications,Medium,0,0.75,131,0,0.1,10,4.0,21,1,0,0
+Feature,UI,Low,7,-0.11,55,0,0.11,16,4.3,12,1,0,0
+Bug Fix,Onboarding,Low,38,0.37,120,0,0.15,16,4.3,7,1,0,0
+Feature,Analytics,High,45,-0.02,85,0,0.06,17,3.8,11,0,0,0
+Feature,Notifications,Low,52,0.26,62,1,0.2,7,4.1,9,1,1,1
+Refactor,Analytics,High,16,-0.04,46,0,0.18,1,3.8,8,1,0,0
+Feature,Authentication,High,32,0.34,43,0,0.15,17,4.1,10,0,0,0
+Feature,Notifications,Medium,29,0.22,101,0,0.08,15,4.4,4,1,1,0
+Bug Fix,Payments,High,21,0.1,137,0,0.13,8,4.2,9,1,0,1
+Bug Fix,Authentication,Critical,55,0.52,101,0,0.24,1,3.8,16,1,0,1
+Refactor,UI,Medium,20,-0.12,142,0,0.17,6,4.2,3,0,0,0
+Bug Fix,UI,Medium,66,-0.2,110,1,0.23,14,4.0,7,0,0,1
+Feature,Notifications,Low,37,0.38,79,0,0.21,12,3.5,14,0,0,0
+Bug Fix,Authentication,Low,50,-0.0,69,0,0.17,24,4.0,17,0,0,0
+Feature,UI,Medium,52,0.27,118,0,0.1,13,3.8,6,1,1,1
+Feature,Notifications,Medium,45,0.25,108,0,0.13,10,4.6,12,0,0,0
+Feature,UI,High,22,-0.27,128,0,0.15,1,4.0,15,0,1,0
+Feature,UI,Medium,40,0.05,152,1,0.12,25,4.2,11,1,1,1
+Feature,Authentication,Medium,59,0.14,82,0,0.09,3,3.8,2,1,0,1
+Bug Fix,Notifications,High,53,0.06,55,0,0.13,8,4.1,3,1,0,1
+Bug Fix,Payments,Medium,36,-0.34,120,0,0.18,11,3.8,15,1,0,1
+Feature,Performance,Medium,24,0.61,106,0,0.13,21,4.1,9,1,0,1
+Feature,Notifications,Medium,23,0.33,98,0,0.09,7,3.9,11,1,0,0
+Bug Fix,Onboarding,High,49,0.08,132,0,0.18,1,4.0,2,1,0,1
+Feature,Onboarding,Low,44,0.04,35,1,0.14,10,3.5,12,0,0,1
+Bug Fix,Analytics,High,27,-0.3,86,0,0.04,17,3.9,9,1,0,1
+Feature,Onboarding,High,43,0.01,128,0,0.1,6,4.3,8,0,1,0
+Bug Fix,Payments,Medium,17,-0.01,101,0,0.23,1,4.2,10,0,0,0
+Refactor,Analytics,High,57,-0.27,134,0,0.1,11,3.9,12,0,0,0
+Bug Fix,Analytics,Medium,33,-0.23,136,0,0.2,30,4.3,8,0,0,1
+Feature,UI,Medium,31,0.22,104,0,0.05,27,4.0,6,0,1,0
+Feature,Search,Critical,33,0.12,30,1,0.07,9,4.4,7,1,0,1
+Bug Fix,Notifications,High,62,0.67,168,0,0.08,17,4.0,10,0,0,1
+Bug Fix,Authentication,Medium,22,0.08,65,0,0.12,15,3.7,10,1,0,0
+Refactor,Search,Low,42,0.34,88,0,0.19,15,4.0,6,1,1,0
+Feature,Search,Medium,66,0.55,105,0,0.18,12,3.9,6,1,1,1
+Feature,Search,Medium,66,0.42,97,0,0.14,4,3.8,10,1,0,1
+Feature,Notifications,High,33,0.2,67,0,0.07,15,4.0,6,0,0,0
+Feature,Onboarding,Medium,23,0.47,75,1,0.22,14,3.9,6,1,0,1
+Feature,Payments,Low,69,0.65,105,0,0.13,12,4.0,24,0,1,1
+Bug Fix,Authentication,Medium,24,0.19,55,0,0.09,16,3.9,10,0,0,0
+Feature,Notifications,Critical,31,0.24,145,1,0.09,1,4.1,7,1,0,1
+Bug Fix,UI,Medium,77,0.22,53,1,0.17,4,3.8,11,1,1,1
+Feature,Payments,Medium,51,0.08,85,0,0.1,7,3.9,9,1,0,1
+Refactor,Notifications,Low,46,-0.25,30,0,0.16,1,4.0,12,0,1,0
+Bug Fix,Payments,Critical,26,0.25,98,0,0.16,13,4.3,12,1,0,1
+Refactor,Authentication,Low,43,0.31,99,1,0.29,20,4.0,2,0,1,0
+Feature,Performance,Medium,17,0.26,57,0,0.11,3,4.3,5,0,0,0
+Bug Fix,Notifications,Medium,31,0.3,52,0,0.07,15,4.6,8,0,0,1
+Feature,Authentication,Medium,68,0.09,122,1,0.21,21,4.0,7,1,0,1
+Feature,Notifications,High,20,-0.53,93,0,0.13,15,3.8,8,1,1,0
+Feature,UI,Medium,43,-0.43,118,1,0.16,7,4.3,9,0,1,1
+Feature,Search,Critical,53,-0.03,74,0,0.04,13,4.1,11,0,0,1
+Refactor,Notifications,Low,53,0.63,86,0,0.15,11,4.3,1,0,0,0
+Feature,Analytics,Critical,64,-0.02,118,0,0.24,1,4.2,6,0,0,1
+Feature,Payments,Medium,19,-0.21,182,0,0.05,30,4.1,19,1,0,0
+Feature,Onboarding,High,20,0.45,82,0,0.13,17,4.4,3,1,0,1
+Bug Fix,Performance,Critical,84,-0.17,107,0,0.12,7,3.8,5,0,0,1
+Bug Fix,Notifications,Low,23,0.5,82,0,0.25,21,4.3,10,1,1,0
+Refactor,Authentication,Low,31,0.69,118,0,0.22,1,4.0,11,0,0,0
+Feature,UI,High,51,0.28,94,0,0.08,4,4.3,9,1,0,1
+Feature,Notifications,High,50,0.1,48,0,0.13,13,4.3,12,1,1,1
+Bug Fix,Performance,High,41,0.57,132,0,0.22,10,4.2,15,0,0,1
+Bug Fix,Authentication,Critical,33,0.4,123,0,0.17,19,4.0,10,0,0,1
+Bug Fix,Search,High,44,0.05,120,0,0.14,7,3.9,9,0,0,1
+Bug Fix,Notifications,Critical,22,0.26,77,0,0.13,11,4.1,6,1,1,1
+Feature,UI,Medium,42,0.21,113,1,0.19,4,3.8,11,1,0,1
+Feature,UI,Medium,35,0.14,124,0,0.06,6,4.4,0,0,0,0
+Feature,Notifications,Low,59,0.13,103,1,0.16,30,3.6,5,0,0,1
+Bug Fix,Performance,High,72,0.05,82,0,0.12,27,4.2,12,1,0,1
+Feature,Onboarding,Medium,49,-0.13,96,0,0.2,22,3.9,10,0,0,0
+Feature,Analytics,Medium,65,0.43,30,0,0.1,20,4.1,11,1,0,1
+Bug Fix,UI,Low,69,0.22,113,0,0.09,5,3.9,0,1,0,0
+Feature,Analytics,High,40,0.44,143,0,0.13,11,4.6,12,1,1,1
+Feature,Notifications,High,26,0.42,135,0,0.12,1,4.1,9,1,0,1
+Refactor,Notifications,Low,32,0.29,106,0,0.08,8,3.8,11,1,0,0
+Feature,Performance,Medium,47,0.21,89,1,0.26,6,3.9,14,0,1,1
+Feature,Authentication,High,36,0.18,154,0,0.15,30,4.4,6,1,0,0
+Feature,Payments,Medium,28,0.06,105,1,0.08,27,4.0,7,1,0,1
+Bug Fix,Onboarding,High,47,0.27,30,1,0.17,3,4.4,6,1,1,1
+Refactor,Search,Low,34,-0.26,68,1,0.1,16,4.0,4,0,0,0
+Feature,Search,Medium,7,-0.31,73,0,0.14,19,4.4,5,1,0,0
+Feature,Notifications,High,36,-0.04,104,1,0.13,5,3.9,5,0,1,1
+Feature,Performance,Low,40,0.31,85,1,0.03,17,3.9,7,1,0,1
+Bug Fix,Onboarding,Critical,0,0.07,30,0,0.18,9,4.1,4,1,0,1
+Refactor,Payments,Low,68,0.28,81,0,0.21,14,3.6,8,0,0,0
+Bug Fix,Notifications,High,29,0.44,53,1,0.1,30,4.3,17,0,0,1
+Bug Fix,Search,Medium,67,0.23,121,0,0.21,18,3.9,12,1,1,1
+Feature,UI,Medium,34,-0.03,44,0,0.15,13,4.3,8,0,0,0
+Refactor,Performance,Medium,48,0.48,127,0,0.13,9,4.0,10,1,1,1
+Feature,Notifications,High,12,0.38,91,0,0.09,10,3.4,5,0,0,0
+Bug Fix,UI,Medium,57,-0.09,100,0,0.09,8,4.2,17,0,0,1
+Feature,Onboarding,Medium,0,0.15,92,0,0.12,3,3.9,8,1,0,0
+Feature,Notifications,Medium,3,-0.29,71,0,0.06,10,4.1,14,1,1,0
+Feature,UI,Medium,33,-0.05,67,1,0.17,3,3.8,5,0,0,1
+Feature,UI,High,29,0.25,87,0,0.22,20,3.9,15,1,0,0
+Bug Fix,UI,Medium,33,0.0,90,1,0.11,13,4.1,12,0,0,1
+Feature,UI,Critical,31,-0.06,32,0,0.13,10,3.9,6,1,1,0
+Bug Fix,Authentication,Medium,51,0.17,62,0,0.16,12,4.0,10,1,0,1
+Refactor,Search,Medium,38,0.09,95,0,0.12,12,3.8,18,1,1,0
+Feature,Authentication,Critical,30,0.14,47,0,0.13,2,4.1,10,1,1,1
+Bug Fix,Onboarding,Critical,48,0.45,130,0,0.1,20,4.2,10,1,0,1
+Bug Fix,Search,Medium,42,-0.06,68,0,0.13,15,3.8,4,1,1,1
+Feature,Payments,Medium,43,0.32,113,0,0.11,20,4.4,11,0,0,0
+Feature,Notifications,Medium,40,-0.17,93,0,0.25,17,4.3,3,1,0,0
+Feature,Analytics,Critical,37,0.21,95,1,0.11,24,3.9,1,1,1,1
+Feature,Analytics,Medium,15,-0.12,101,0,0.12,20,3.9,5,1,0,0
+Feature,Onboarding,Medium,0,0.75,60,0,0.22,5,4.0,3,0,1,1
+Feature,Search,Medium,34,0.22,134,0,0.09,15,3.9,13,0,0,0
+Refactor,Analytics,High,39,-0.04,30,1,0.17,21,4.5,13,1,0,0
+Refactor,Onboarding,Low,15,0.31,130,0,0.18,19,4.4,8,0,0,0
+Refactor,Notifications,High,49,0.26,105,1,0.09,7,3.7,4,0,0,0
+Bug Fix,Onboarding,Low,21,0.16,112,1,0.14,15,4.0,13,1,1,0
+Bug Fix,Search,Medium,21,0.38,119,0,0.12,24,3.8,18,1,1,0
+Bug Fix,UI,Medium,24,0.47,128,0,0.19,21,3.8,14,0,1,0
+Bug Fix,Performance,Low,35,0.12,108,0,0.1,18,3.9,12,1,0,0
+Feature,Onboarding,High,42,0.39,39,0,0.17,5,4.1,6,1,1,0
+Feature,Search,Medium,23,0.36,126,0,0.22,10,3.9,12,1,0,0
+Feature,Analytics,Medium,32,0.19,106,1,0.12,12,4.2,16,1,1,1
+Feature,Notifications,High,9,0.19,99,1,0.17,13,4.2,10,1,0,1
+Feature,Performance,Medium,46,0.35,88,0,0.12,11,4.1,9,1,0,0
+Feature,Notifications,Low,33,0.56,122,1,0.11,1,3.9,5,0,1,1
+Bug Fix,Analytics,Low,67,0.3,110,1,0.22,7,3.8,13,1,0,0
+Refactor,Search,Low,0,0.11,109,0,0.03,12,4.4,18,1,0,0
+Bug Fix,Authentication,High,29,0.09,56,0,0.07,1,4.1,6,0,0,1
+Refactor,Notifications,Medium,60,0.6,43,0,0.2,17,3.9,9,1,0,0
+Refactor,Payments,Low,61,0.14,126,1,0.04,15,4.1,1,0,1,0
+Feature,Onboarding,High,47,0.06,70,0,0.06,13,4.2,9,1,0,0
+Refactor,Analytics,Low,75,0.05,111,0,0.08,9,4.2,9,0,0,0
+Refactor,UI,Low,22,0.12,111,1,0.19,5,4.2,3,1,1,0
+Feature,Onboarding,Medium,31,0.38,92,1,0.16,13,4.1,16,0,1,1
+Refactor,Authentication,Low,53,0.01,128,1,0.19,11,3.9,7,1,0,0
+Feature,Performance,Low,22,0.49,94,0,0.04,8,3.8,1,0,0,1
+Feature,Performance,Low,54,0.41,79,0,0.19,12,4.5,10,1,1,1
+Bug Fix,Authentication,Critical,45,0.67,152,1,0.31,15,4.3,14,1,0,1
+Refactor,UI,Medium,29,0.77,113,0,0.24,14,4.3,4,0,0,0
+Feature,Performance,Critical,17,0.44,60,0,0.14,9,4.0,5,0,1,1
+Feature,Search,Critical,8,0.29,96,0,0.13,10,4.0,11,1,0,0
+Refactor,Payments,Low,33,0.35,101,0,0.22,1,3.9,6,0,1,0
+Feature,Search,High,38,0.14,137,0,0.06,15,4.4,0,0,1,0
+Feature,UI,High,54,-0.07,118,0,0.13,17,4.0,5,0,0,1
+Feature,Analytics,High,0,0.68,77,0,0.08,10,4.5,15,1,0,1
+Bug Fix,Authentication,Critical,8,0.04,121,0,0.15,14,4.0,9,1,1,1
+Bug Fix,UI,Medium,32,0.14,58,0,0.12,6,3.5,13,0,0,1
+Refactor,Analytics,Medium,37,0.37,77,0,0.11,26,4.0,5,1,1,0
+Bug Fix,UI,Medium,45,0.25,83,0,0.08,4,4.0,13,0,0,1
+Feature,Search,Critical,31,0.53,73,0,0.14,19,3.7,1,1,1,1
+Feature,UI,Critical,59,0.45,63,0,0.15,21,3.7,1,1,0,1
+Refactor,Search,Low,23,-0.18,109,0,0.09,30,4.0,21,1,0,0
+Bug Fix,Authentication,Medium,78,-0.08,68,0,0.06,11,4.3,7,1,0,1
+Refactor,Notifications,Low,45,0.29,92,0,0.15,11,4.1,6,1,0,0
+Bug Fix,Search,High,60,0.47,70,0,0.03,18,4.0,0,0,0,1
+Bug Fix,Authentication,Critical,44,0.07,30,0,0.18,6,4.7,15,1,1,1
+Bug Fix,Analytics,High,46,-0.03,45,1,0.17,16,3.9,10,0,1,1
+Refactor,Notifications,Medium,28,0.23,105,1,0.15,16,4.3,6,1,0,0
+Refactor,Payments,Medium,22,0.2,74,0,0.03,24,4.4,4,1,1,0
+Feature,Analytics,High,55,0.09,55,0,0.08,17,3.6,18,1,1,1
+Feature,Performance,Medium,44,0.42,115,0,0.13,5,4.3,0,0,0,1
+Refactor,Search,Medium,36,-0.22,149,0,0.05,20,4.3,4,1,1,0
+Bug Fix,Notifications,Medium,52,-0.03,150,1,0.03,1,3.5,7,1,0,1
+Feature,Performance,Critical,54,0.7,96,0,0.15,14,4.2,9,0,1,1
+Refactor,Authentication,High,44,0.8,161,0,0.15,18,4.1,6,1,1,0
+Feature,UI,Medium,59,-0.66,90,0,0.06,16,4.5,2,0,0,1
+Bug Fix,Analytics,Critical,40,0.52,156,1,0.22,9,4.1,5,1,0,1
+Refactor,Payments,Low,41,0.11,165,0,0.14,10,3.8,4,1,0,0
+Feature,Notifications,Low,59,-0.08,30,0,0.11,1,3.7,9,0,0,1
+Feature,UI,High,29,-0.15,71,0,0.07,5,4.1,3,1,0,0
+Bug Fix,Performance,Medium,53,-0.31,85,0,0.11,12,3.9,12,1,0,1
+Refactor,Authentication,Low,37,-0.07,102,0,0.11,12,4.0,11,1,0,0
+Bug Fix,Onboarding,High,22,0.35,87,0,0.12,3,4.1,17,1,0,1
+Feature,Search,Medium,74,0.38,85,0,0.2,11,4.2,9,1,0,1
+Refactor,Authentication,Low,42,0.07,100,0,0.13,1,3.5,11,1,0,0
+Feature,Payments,High,34,0.51,99,0,0.18,12,3.9,5,1,1,1
+Feature,Onboarding,Medium,52,0.04,122,1,0.23,3,4.3,1,0,0,1
+Feature,Performance,Medium,38,0.73,173,0,0.17,12,3.9,6,0,1,1
+Refactor,Performance,Low,15,-0.03,90,1,0.17,24,4.0,2,0,1,0
+Feature,Authentication,Medium,56,0.28,161,0,0.08,19,3.8,3,0,1,1
+Bug Fix,Authentication,Medium,49,0.56,86,0,0.07,5,4.0,6,1,1,1
+Bug Fix,Analytics,Medium,27,0.39,78,0,0.13,10,4.1,13,1,0,1
+Bug Fix,Search,High,33,0.56,89,1,0.12,4,4.4,15,1,0,1
+Feature,Performance,Medium,36,-0.15,125,0,0.16,23,4.1,18,1,1,0
+Feature,UI,Medium,37,0.04,85,0,0.18,7,4.1,9,1,1,0
+Bug Fix,Authentication,High,55,0.44,53,0,0.12,1,4.2,0,0,0,1
+Bug Fix,Notifications,Medium,8,0.26,89,0,0.16,2,3.9,7,1,0,0
+Bug Fix,Analytics,Low,25,-0.09,70,0,0.26,11,4.1,9,1,1,0
+Feature,Search,Medium,12,0.18,88,0,0.19,3,3.9,11,0,0,0
+Feature,Search,Low,33,-0.17,155,0,0.2,8,4.5,18,0,0,0
+Feature,Search,Low,21,0.11,98,0,0.08,4,3.9,12,0,0,0
+Refactor,Performance,Medium,28,0.41,128,1,0.05,1,3.9,5,1,1,0
+Feature,Search,Medium,46,0.05,99,0,0.09,18,4.0,10,1,1,0
+Refactor,Performance,High,11,-0.0,97,0,0.19,3,4.1,10,1,0,0
+Feature,Search,Low,30,-0.16,69,0,0.18,16,4.7,7,1,0,0
+Bug Fix,Authentication,High,30,0.17,64,0,0.22,13,3.7,7,0,1,1
+Bug Fix,Onboarding,High,13,0.09,79,0,0.08,15,3.7,11,1,1,1
+Bug Fix,Authentication,High,29,-0.11,87,0,0.07,20,3.7,3,1,0,1
+Refactor,Authentication,Medium,44,0.38,162,0,0.1,14,3.8,10,1,0,0
+Refactor,Performance,High,28,-0.05,81,0,0.13,18,4.0,10,0,0,0
+Bug Fix,Performance,Critical,44,0.18,113,0,0.08,1,4.2,15,1,0,1
+Feature,Search,Critical,46,0.32,166,1,0.11,11,4.1,10,0,0,1
+Refactor,Search,Low,13,-0.4,120,0,0.12,14,3.9,8,1,0,0
+Feature,Search,High,28,0.02,128,0,0.17,25,4.3,7,1,0,0
+Feature,Onboarding,Medium,27,-0.15,110,0,0.12,13,4.2,10,1,0,0
+Bug Fix,Performance,High,95,0.9,110,0,0.26,10,4.3,10,0,1,1
+Bug Fix,Payments,High,37,0.17,82,0,0.19,7,4.3,19,0,0,1
+Bug Fix,Analytics,Critical,43,-0.16,74,0,0.1,25,4.3,11,1,0,1
+Feature,Notifications,Critical,38,0.03,90,0,0.07,21,4.1,0,0,0,0
+Feature,Onboarding,Medium,56,0.38,84,0,0.07,21,4.0,7,0,0,1
+Bug Fix,Payments,High,55,0.37,63,0,0.17,8,4.2,9,0,0,1
+Refactor,UI,Low,46,0.18,136,1,0.24,5,4.2,14,1,1,0
+Feature,Notifications,High,38,0.12,160,0,0.12,14,4.1,19,0,0,0
+Bug Fix,Onboarding,High,65,0.36,119,0,0.21,1,3.7,21,1,0,1
+Bug Fix,UI,Medium,61,0.25,62,0,0.18,22,3.7,10,1,0,1
+Bug Fix,Performance,Medium,58,0.11,70,1,0.13,11,4.2,8,1,1,1
+Refactor,Payments,Low,66,-0.0,90,0,0.19,4,4.1,12,1,0,0
+Bug Fix,Payments,Medium,41,0.04,108,0,0.04,30,4.0,15,1,0,1
+Feature,Performance,High,66,0.04,59,1,0.14,16,4.2,5,0,0,1
+Feature,Search,Low,20,-0.22,84,1,0.12,17,3.5,10,0,0,1
+Feature,Onboarding,High,39,-0.14,145,0,0.14,18,3.7,6,0,0,0
+Feature,Onboarding,High,30,-0.2,96,1,0.1,25,3.7,8,1,0,1
+Bug Fix,Payments,Critical,45,0.23,127,1,0.17,12,3.8,3,0,0,1
+Feature,Analytics,Medium,0,0.35,54,0,0.12,13,4.2,12,0,0,0
+Bug Fix,Analytics,High,46,0.18,99,1,0.07,13,3.5,2,0,0,1
+Bug Fix,Performance,Critical,43,0.15,31,0,0.15,4,3.8,9,1,1,1
+Bug Fix,Notifications,High,32,0.79,101,0,0.12,9,4.5,8,0,1,1
+Refactor,Performance,Medium,47,0.15,85,0,0.2,14,3.6,11,0,0,1
+Bug Fix,Payments,Critical,52,-0.28,78,0,0.14,16,3.8,10,1,0,1
+Feature,Authentication,High,51,0.41,74,0,0.11,5,4.0,12,1,0,1
+Feature,Notifications,Medium,24,0.34,61,0,0.15,18,3.5,4,1,0,0
+Feature,Notifications,Medium,18,0.35,113,0,0.21,26,4.5,7,1,0,0
+Bug Fix,Payments,Medium,44,-0.45,85,0,0.05,25,4.0,6,0,1,1
+Feature,Onboarding,High,30,0.38,90,0,0.03,1,4.1,11,1,0,0
+Feature,Authentication,Medium,35,0.17,126,0,0.2,8,3.8,7,1,1,1
+Feature,Onboarding,Medium,47,0.14,53,0,0.25,18,4.0,2,1,0,0
+Bug Fix,Search,Medium,24,-0.25,68,1,0.14,12,4.6,5,0,0,1
+Bug Fix,UI,Medium,34,0.33,49,0,0.14,2,4.1,0,1,1,1
+Feature,Analytics,Critical,43,0.01,86,1,0.09,12,3.8,9,0,0,1
+Feature,Onboarding,High,21,-0.15,142,1,0.07,11,4.2,11,0,0,1
+Feature,Notifications,High,51,0.24,80,0,0.17,1,3.9,8,1,0,1
+Feature,Notifications,Medium,61,0.67,37,0,0.08,5,4.0,12,1,0,1
+Feature,Authentication,High,22,0.02,129,0,0.14,6,4.0,9,1,0,0
+Bug Fix,Notifications,Critical,32,0.01,138,0,0.15,16,4.2,12,0,1,1
+Bug Fix,Analytics,Critical,42,-0.12,95,0,0.11,1,4.1,11,1,0,1
+Refactor,Performance,Medium,53,-0.36,92,0,0.12,17,3.9,9,0,1,0
+Feature,Onboarding,Medium,24,0.3,124,0,0.19,20,4.0,13,0,0,0
+Feature,Notifications,Medium,49,0.32,152,1,0.18,9,3.8,2,1,1,1
+Bug Fix,Notifications,Critical,53,-0.17,148,1,0.04,1,4.3,4,0,0,1
+Refactor,Authentication,Low,61,0.49,100,0,0.17,22,4.3,10,1,1,0
+Feature,Onboarding,Medium,30,0.28,158,0,0.15,16,4.0,6,1,1,0
+Feature,Onboarding,Low,48,-0.14,61,0,0.14,12,3.8,8,0,0,0
+Bug Fix,Authentication,Medium,29,0.04,146,0,0.03,14,4.6,9,1,0,1
+Bug Fix,Payments,Low,59,-0.14,130,1,0.12,14,3.4,15,1,0,0
+Feature,Payments,High,36,0.2,113,1,0.1,16,3.8,6,1,1,1
+Feature,Analytics,Critical,21,0.43,95,1,0.2,13,4.5,12,1,1,1
+Refactor,Performance,Medium,50,0.22,109,0,0.19,13,4.2,17,1,0,1
+Feature,Analytics,Medium,20,-0.13,94,1,0.11,18,3.9,13,0,1,1
+Feature,Search,High,43,-0.1,76,0,0.09,12,3.9,15,1,1,0
+Bug Fix,Analytics,Medium,21,-0.01,64,0,0.11,12,4.3,22,1,1,0
+Feature,Onboarding,Medium,48,0.11,56,0,0.13,20,3.5,3,1,0,0
+Bug Fix,UI,Medium,62,-0.29,108,0,0.23,7,3.7,15,1,0,1
+Bug Fix,Payments,Critical,42,-0.09,95,1,0.16,1,3.7,7,0,1,1
+Bug Fix,Authentication,Medium,18,-0.05,57,0,0.21,22,4.3,6,1,0,0
+Feature,Search,Critical,53,-0.15,137,0,0.13,22,4.0,5,0,1,1
+Bug Fix,UI,High,31,-0.34,125,0,0.17,22,3.9,10,1,0,1
+Refactor,UI,Low,55,0.32,140,0,0.26,5,4.1,3,1,0,0
+Feature,Notifications,Medium,11,-0.0,92,0,0.13,4,4.2,4,1,1,0
+Feature,Authentication,Critical,23,0.0,70,1,0.18,9,4.1,17,0,1,1
+Refactor,Notifications,Low,34,0.72,91,0,0.17,10,4.1,3,1,0,0
+Bug Fix,Payments,High,35,0.18,69,0,0.22,16,4.0,14,1,0,1
+Bug Fix,Payments,High,38,0.59,68,0,0.17,1,3.8,8,1,1,1
+Bug Fix,Authentication,Medium,9,0.18,140,0,0.13,19,3.9,0,1,1,0
+Refactor,Notifications,Medium,28,0.45,132,1,0.13,20,4.0,4,1,0,0
+Bug Fix,UI,Low,39,-0.59,69,1,0.1,19,4.2,7,0,1,0
+Bug Fix,Search,Medium,16,0.17,47,0,0.16,11,3.9,7,1,1,0
+Feature,Onboarding,Medium,45,-0.3,94,1,0.09,2,4.1,12,0,0,1
+Refactor,Analytics,Medium,22,0.43,46,0,0.16,3,4.0,11,0,1,0
+Bug Fix,Performance,Low,18,0.04,63,0,0.19,13,4.3,12,0,0,0
+Feature,UI,Medium,33,-0.05,161,0,0.24,1,4.4,9,1,0,0
+Feature,Performance,Low,57,0.1,114,0,0.18,14,3.9,8,0,0,1
+Refactor,Analytics,Low,47,0.83,127,0,0.08,7,3.9,0,0,1,0
+Feature,UI,High,50,0.01,130,0,0.12,10,3.7,19,0,1,1
+Bug Fix,Analytics,Low,23,0.43,79,0,0.11,26,3.6,6,0,0,0
+Bug Fix,Payments,Medium,4,0.09,142,0,0.28,13,4.5,2,1,1,0
+Feature,Analytics,High,57,0.15,96,0,0.04,14,4.3,14,0,1,1
+Refactor,UI,Medium,49,0.21,85,0,0.12,19,4.1,4,1,0,0
+Bug Fix,Search,High,36,-0.1,119,0,0.16,1,4.0,11,1,0,1
+Feature,Analytics,Medium,2,0.49,149,0,0.16,18,3.8,4,0,0,1
+Bug Fix,Authentication,Medium,28,-0.26,130,1,0.07,17,3.8,14,1,0,1
+Bug Fix,Notifications,Medium,56,0.5,69,1,0.1,17,4.4,9,1,1,1
+Refactor,Notifications,Low,57,0.45,120,1,0.14,17,4.0,3,1,0,0
+Refactor,Performance,Medium,39,0.15,102,0,0.08,13,4.0,12,0,1,0
+Bug Fix,Authentication,Critical,67,0.45,37,0,0.18,19,3.8,4,1,0,1
+Feature,Performance,Medium,41,-0.4,159,0,0.1,2,4.0,14,0,1,0
+Feature,Performance,Medium,46,0.03,42,0,0.12,14,4.5,6,1,0,0
+Feature,Notifications,High,38,-0.05,183,0,0.13,24,4.4,0,1,0,0
+Feature,Authentication,High,67,0.52,80,1,0.1,3,3.8,11,1,1,1
+Feature,UI,Critical,68,0.57,30,0,0.1,3,4.2,13,1,0,1
+Feature,Authentication,High,60,0.2,124,0,0.09,1,4.2,4,0,0,1
+Bug Fix,Search,Critical,54,0.27,163,1,0.22,14,3.5,18,1,1,1
+Feature,Notifications,Medium,20,0.17,133,1,0.06,10,4.4,4,1,0,1
+Bug Fix,UI,High,0,0.08,115,1,0.23,20,4.4,7,1,1,1
+Feature,Authentication,High,72,0.36,107,0,0.23,2,4.1,5,0,0,1
+Refactor,Notifications,Low,36,0.4,110,0,0.03,18,4.1,12,1,0,0
+Feature,Authentication,High,45,0.32,84,0,0.1,1,3.7,13,0,0,0
+Feature,Authentication,Medium,19,0.15,75,0,0.1,18,4.3,9,0,0,0
+Feature,Onboarding,Low,49,0.02,97,0,0.22,5,4.2,11,0,0,0
+Refactor,Performance,Medium,42,0.03,32,0,0.13,1,4.3,10,0,0,0
+Feature,Onboarding,Low,42,0.18,137,0,0.1,14,4.3,7,0,0,0
+Refactor,Authentication,Medium,25,0.35,100,1,0.26,12,3.9,17,0,0,0
+Feature,UI,Medium,59,-0.09,78,0,0.15,24,4.3,3,0,1,1
+Bug Fix,Search,Low,2,0.19,79,0,0.19,14,3.9,9,0,0,0
+Bug Fix,UI,High,56,-0.33,100,0,0.19,14,4.0,14,1,1,1
+Feature,Payments,Low,45,0.11,70,0,0.15,13,3.9,11,0,0,0
+Refactor,Search,Low,27,-0.13,190,0,0.12,17,3.9,4,1,0,0
+Feature,Onboarding,Medium,5,0.32,89,0,0.18,23,3.8,8,1,0,0
+Feature,Notifications,High,22,-0.19,130,0,0.18,19,3.7,14,0,1,0
+Feature,UI,High,57,0.35,92,0,0.11,11,3.6,3,0,0,1
+Bug Fix,Notifications,High,38,0.37,79,0,0.16,21,3.7,9,1,0,1
+Bug Fix,Search,Medium,49,0.46,136,0,0.2,1,4.0,15,0,0,1
+Feature,Analytics,High,68,-0.44,94,0,0.18,14,3.5,18,1,0,1
+Bug Fix,Analytics,Low,2,-0.24,74,0,0.22,23,3.9,17,0,0,0
+Feature,Analytics,Medium,53,-0.05,55,0,0.06,17,4.1,6,1,1,1
+Refactor,Onboarding,High,25,0.55,77,0,0.16,8,3.6,12,1,0,0
+Refactor,Search,Low,30,0.22,94,0,0.22,8,4.0,10,1,0,0
+Feature,Notifications,Medium,27,0.21,90,0,0.13,18,4.2,2,1,0,0
+Feature,Search,Medium,63,0.32,56,0,0.2,17,4.2,7,1,0,1
+Feature,Authentication,Medium,24,0.0,90,0,0.12,13,3.9,10,1,0,0
+Feature,UI,Medium,31,-0.17,69,0,0.19,9,3.6,11,0,1,0
+Refactor,Notifications,Medium,21,0.44,119,0,0.08,23,4.2,15,0,1,0
+Bug Fix,Performance,High,60,0.46,133,0,0.1,4,4.1,4,0,0,1
+Feature,Authentication,High,68,-0.01,87,0,0.1,2,3.9,8,0,0,1
+Refactor,Analytics,Low,17,0.09,112,0,0.19,15,4.3,14,1,0,0
+Bug Fix,Notifications,High,45,0.13,161,1,0.13,11,4.1,2,1,0,1
+Feature,Analytics,Medium,66,-0.3,55,1,0.18,10,4.1,9,1,0,1
+Bug Fix,Notifications,Medium,54,0.44,101,0,0.16,17,4.0,15,1,0,1
+Refactor,Analytics,High,63,0.53,100,0,0.06,6,4.4,10,0,0,0
+Feature,Payments,Medium,35,-0.2,31,0,0.19,5,4.4,10,0,1,1
+Refactor,Notifications,Low,35,0.43,150,0,0.07,6,4.2,7,0,1,0
+Bug Fix,Search,Medium,33,0.33,87,1,0.17,17,4.1,6,1,0,1
+Feature,Notifications,High,32,-0.23,86,0,0.07,16,3.8,6,0,0,0
+Feature,Search,Medium,45,-0.13,116,1,0.18,8,3.7,17,1,1,1
+Bug Fix,Search,Critical,71,-0.06,63,1,0.21,16,4.0,8,1,0,1
+Bug Fix,Payments,Medium,63,0.05,84,0,0.05,12,3.7,7,1,0,1
+Bug Fix,Search,Critical,63,0.01,113,0,0.1,11,3.9,8,0,1,1
+Feature,Onboarding,High,37,0.49,47,1,0.07,5,4.5,17,1,0,1
+Refactor,Authentication,High,38,0.15,79,0,0.22,5,4.1,9,1,1,1
+Refactor,Performance,Low,41,0.01,137,0,0.03,26,4.4,0,1,0,1
+Refactor,Performance,Low,48,0.72,83,1,0.13,12,4.2,7,0,1,0
+Feature,Search,Critical,20,-0.03,81,0,0.11,22,4.0,8,1,0,0
+Feature,Payments,Medium,18,0.03,111,0,0.12,12,4.3,5,0,0,0
+Refactor,Analytics,Low,31,0.67,100,0,0.07,18,4.2,3,0,0,0
+Bug Fix,Onboarding,Low,18,-0.15,58,0,0.12,12,4.0,8,1,0,0
+Bug Fix,UI,Critical,30,0.32,112,0,0.18,16,4.0,12,1,0,1
+Refactor,UI,High,27,0.61,150,1,0.11,12,4.4,12,0,0,0
+Bug Fix,Search,High,0,0.31,111,0,0.11,1,3.7,8,1,0,1
+Feature,Performance,High,34,0.25,106,0,0.12,16,4.3,9,0,0,0
+Feature,Analytics,Low,19,0.35,30,0,0.24,1,3.9,3,1,0,0
+Feature,Onboarding,High,21,0.23,114,0,0.12,27,4.1,8,1,0,0
+Bug Fix,Performance,Medium,11,0.27,75,0,0.34,14,4.7,10,0,1,0
+Feature,Analytics,Medium,27,0.85,119,0,0.21,4,4.0,17,0,1,1
+Bug Fix,Onboarding,Medium,34,0.89,63,0,0.03,18,4.1,7,1,0,1
+Feature,Authentication,High,72,0.27,112,0,0.16,11,4.3,10,1,0,1
+Feature,Onboarding,Medium,54,0.56,110,0,0.08,9,3.7,3,1,0,1
+Refactor,Performance,Medium,32,-0.11,106,0,0.16,3,3.8,10,1,0,1
+Bug Fix,Notifications,Medium,51,0.48,89,0,0.07,8,3.8,0,0,0,1
+Refactor,Search,Low,38,0.62,127,0,0.14,7,3.7,13,1,0,0
+Feature,Onboarding,High,60,-0.04,73,0,0.2,12,4.1,13,1,1,1
+Feature,Notifications,High,35,0.17,58,1,0.09,5,4.0,13,1,0,1
+Feature,Notifications,Medium,62,0.12,112,0,0.03,12,3.9,8,1,0,1
+Feature,Analytics,High,67,0.16,40,0,0.08,4,4.2,2,0,0,1
+Bug Fix,Authentication,Critical,49,-0.14,145,0,0.11,16,3.7,14,0,1,1
+Bug Fix,Authentication,High,37,0.19,41,0,0.08,11,3.9,5,0,1,1
+Bug Fix,Analytics,Medium,65,0.66,75,0,0.17,14,4.2,20,1,1,1
+Bug Fix,Notifications,High,59,0.78,89,0,0.23,28,3.9,12,1,1,1
+Bug Fix,Search,High,46,0.32,56,0,0.12,23,4.6,6,0,0,1
+Bug Fix,Onboarding,Medium,27,-0.03,51,0,0.21,21,3.7,11,1,0,1
+Feature,UI,Critical,6,-0.19,58,1,0.16,7,4.0,9,1,0,1
+Bug Fix,Notifications,Low,39,0.13,86,0,0.03,20,3.9,8,1,1,0
+Bug Fix,Analytics,High,35,-0.23,130,0,0.16,7,4.1,10,0,0,1
+Bug Fix,Analytics,Medium,32,-0.06,76,0,0.2,14,3.9,19,0,0,1
+Feature,Search,High,26,0.41,59,1,0.08,16,3.9,13,1,0,1
+Feature,Onboarding,High,40,0.1,81,0,0.03,19,4.6,8,0,0,0
+Bug Fix,Analytics,Critical,0,-0.07,111,0,0.15,24,4.1,15,1,0,1
+Feature,Performance,Medium,57,-0.33,100,0,0.1,13,3.9,18,1,0,1
+Refactor,Payments,Low,55,0.47,53,0,0.23,12,4.0,7,1,1,0
+Feature,Notifications,Medium,20,0.42,83,0,0.08,2,4.2,17,0,0,1
+Feature,Onboarding,High,39,0.2,107,0,0.12,5,3.9,0,0,0,0
+Bug Fix,UI,Medium,65,0.25,81,0,0.11,1,3.9,9,0,0,1
+Feature,Search,Medium,41,0.28,124,0,0.21,7,4.1,16,1,1,0
+Bug Fix,Performance,Low,5,0.14,84,0,0.13,23,4.0,0,1,0,0
+Feature,Notifications,High,22,-0.09,117,0,0.25,7,4.0,12,0,0,0
+Refactor,Search,Low,69,0.36,105,1,0.08,9,4.3,6,1,0,0
+Refactor,Onboarding,Low,52,0.04,77,0,0.11,13,4.2,6,0,1,0
+Feature,Performance,High,64,-0.07,59,1,0.04,14,4.5,6,0,0,1
+Refactor,Authentication,Low,41,0.13,139,0,0.13,22,3.9,5,0,1,0
+Bug Fix,Notifications,Medium,47,-0.26,106,0,0.08,15,4.4,4,0,1,1
+Bug Fix,Authentication,Critical,17,0.34,154,0,0.21,1,4.0,12,0,1,1
+Bug Fix,Onboarding,High,14,0.56,123,1,0.13,14,4.5,14,1,1,1
+Feature,Authentication,Low,58,0.34,75,0,0.15,19,4.1,12,1,0,1
+Feature,Performance,Medium,16,0.6,85,0,0.18,4,4.0,7,1,0,1
+Feature,Analytics,Medium,16,0.37,131,1,0.2,23,4.4,15,1,0,1
+Bug Fix,Onboarding,Critical,50,0.19,30,0,0.14,3,3.6,18,1,1,1
+Bug Fix,Notifications,Medium,43,0.25,151,0,0.13,19,4.1,12,1,0,1
+Feature,Authentication,Medium,67,0.06,146,0,0.22,26,4.2,9,0,0,1
+Bug Fix,Payments,High,37,0.25,47,0,0.21,12,4.3,11,1,1,1
+Feature,Payments,Medium,46,-0.08,95,0,0.14,22,4.2,12,1,0,0
+Feature,Authentication,Medium,27,0.42,110,1,0.22,18,4.0,3,0,1,1
+Feature,Search,Medium,61,0.57,93,0,0.21,19,3.7,13,0,0,1
+Bug Fix,Search,High,31,0.4,90,1,0.09,20,3.9,12,0,0,1
+Refactor,Search,High,29,-0.11,81,0,0.14,18,4.1,16,0,0,0
+Refactor,Payments,Medium,55,0.1,123,1,0.15,5,4.2,10,1,0,0
+Refactor,Analytics,Low,30,-0.01,132,1,0.27,12,3.6,14,0,0,1
+Bug Fix,Payments,Critical,38,0.11,122,0,0.15,3,3.9,14,1,0,1
+Feature,Onboarding,Low,33,0.11,99,0,0.16,17,3.6,9,1,0,0
+Bug Fix,Onboarding,High,26,0.22,139,1,0.11,7,3.6,14,1,1,1
+Refactor,Notifications,Low,48,0.2,57,0,0.14,16,4.2,8,1,0,0
+Bug Fix,Payments,Critical,24,0.33,188,0,0.07,25,3.7,9,1,1,1
+Bug Fix,Analytics,High,40,0.13,112,1,0.19,6,4.1,0,1,0,1
+Refactor,Search,Low,6,0.57,103,0,0.14,11,4.1,12,0,0,0
+Bug Fix,Search,High,30,-0.38,124,1,0.15,15,3.8,3,1,1,1
+Feature,Analytics,Low,59,-0.15,107,0,0.08,7,4.2,9,1,0,1
+Refactor,Authentication,Low,24,0.18,71,1,0.13,12,4.3,10,1,0,0
+Refactor,Performance,Low,35,0.23,133,0,0.14,21,3.9,7,1,0,1
+Refactor,Notifications,Medium,45,0.21,142,1,0.03,14,4.5,16,1,0,0
+Feature,Performance,High,36,0.34,88,0,0.13,11,4.1,11,0,0,0
+Refactor,UI,High,44,-0.15,162,1,0.12,7,3.6,13,0,1,0
+Bug Fix,Payments,High,67,0.17,59,0,0.18,8,4.0,2,1,1,1
+Bug Fix,Search,Critical,0,-0.33,102,0,0.13,8,3.8,14,1,0,1
+Feature,Authentication,Critical,34,-0.02,102,0,0.11,4,4.0,14,0,1,1
+Bug Fix,UI,Medium,74,0.18,121,0,0.14,9,4.7,16,0,0,1
+Refactor,UI,Low,18,-0.17,65,0,0.13,1,3.8,8,0,0,0
+Refactor,Authentication,Low,60,0.51,69,1,0.13,3,3.8,3,0,1,0
+Feature,UI,Medium,88,0.69,83,0,0.07,1,3.7,8,0,0,1
+Feature,Notifications,Low,21,0.37,60,1,0.18,8,4.0,5,1,0,1
+Refactor,Payments,Medium,33,0.49,83,0,0.14,10,3.5,10,0,0,0
+Refactor,Onboarding,High,29,0.02,87,0,0.17,11,3.9,11,1,0,0
+Feature,Notifications,High,0,0.15,94,0,0.07,11,4.5,14,1,0,0
+Refactor,Payments,Low,6,0.18,140,0,0.13,21,4.2,3,1,0,0
+Bug Fix,Analytics,Medium,27,0.64,99,0,0.19,1,3.9,7,1,0,1
+Feature,Performance,Medium,36,0.15,75,0,0.13,24,4.2,9,1,0,0
+Feature,Analytics,High,58,-0.27,143,0,0.06,3,4.1,15,0,0,1
+Feature,Notifications,Critical,59,0.03,106,1,0.13,2,4.2,16,1,0,1
+Bug Fix,Performance,High,11,0.17,161,0,0.08,29,4.3,13,1,0,1
+Feature,Performance,High,34,0.51,117,0,0.13,8,3.7,8,1,0,1
+Feature,Onboarding,Low,86,0.45,96,1,0.24,6,3.7,6,1,0,1
+Bug Fix,Notifications,Medium,49,-0.02,104,0,0.15,8,4.3,6,1,0,1
+Feature,UI,Medium,18,0.82,94,0,0.1,12,3.6,11,1,0,1
+Bug Fix,UI,Critical,56,-0.26,88,0,0.15,11,4.0,0,1,1,1
+Feature,Analytics,High,53,0.45,123,0,0.03,7,4.5,19,1,0,1
+Feature,Payments,High,27,0.21,119,0,0.13,14,3.6,8,0,1,1
+Bug Fix,Authentication,Critical,44,0.14,94,0,0.18,20,4.0,15,0,0,1
+Feature,Authentication,Medium,41,0.9,58,0,0.25,3,4.1,12,0,0,1
+Bug Fix,Authentication,Critical,36,0.09,160,1,0.23,12,3.8,5,0,0,1
+Feature,Analytics,Medium,39,0.57,155,1,0.17,16,4.0,16,0,0,1
+Feature,Onboarding,Medium,19,0.48,154,0,0.1,18,4.1,12,0,0,1
+Bug Fix,Notifications,Medium,62,-0.23,130,1,0.12,1,4.2,9,1,0,1
+Feature,Performance,Critical,41,0.54,74,0,0.08,13,3.7,22,1,0,1
+Feature,Onboarding,Low,42,-0.01,37,0,0.15,14,4.1,8,1,0,0
+Feature,Performance,High,62,0.53,97,0,0.14,14,4.2,12,1,1,1
+Feature,UI,Medium,17,0.59,108,1,0.19,12,4.3,0,1,1,1
+Feature,Payments,Medium,42,0.27,44,0,0.14,21,4.2,13,0,0,0
+Feature,Search,Medium,27,-0.07,156,0,0.14,14,4.2,3,1,1,0
+Bug Fix,Payments,Medium,68,-0.32,74,0,0.31,14,4.4,3,0,0,1
+Bug Fix,Performance,Medium,64,0.18,60,0,0.22,18,4.5,9,1,1,1
+Refactor,Onboarding,Medium,22,0.04,76,0,0.09,1,3.9,5,1,1,0
+Bug Fix,Authentication,Low,40,-0.01,163,0,0.15,10,3.9,0,0,0,0
+Feature,Performance,Medium,39,0.39,95,0,0.26,11,3.6,15,0,0,0
+Bug Fix,Authentication,Low,28,0.26,116,0,0.12,10,4.0,8,1,1,0
+Refactor,UI,Medium,38,0.5,63,0,0.34,10,4.0,7,0,0,0
+Feature,Notifications,Low,16,0.26,99,0,0.17,15,4.2,7,1,1,0
+Feature,Payments,Low,60,0.48,91,0,0.15,4,4.0,3,1,0,1
+Feature,Onboarding,Low,58,0.09,168,0,0.16,14,3.8,14,0,0,1
+Feature,UI,High,43,-0.12,108,0,0.06,15,3.7,11,1,0,0
+Bug Fix,UI,Medium,9,0.52,77,0,0.14,18,3.9,12,1,1,0
+Bug Fix,Search,High,41,0.07,103,0,0.17,4,4.4,6,0,0,1
+Feature,Onboarding,Medium,28,0.06,64,1,0.17,27,4.3,9,1,1,1
+Bug Fix,Authentication,Medium,60,-0.13,127,0,0.1,1,4.5,11,1,1,1
+Feature,Authentication,Medium,25,0.13,100,0,0.14,4,4.0,13,1,1,1
+Feature,Onboarding,Medium,48,0.28,89,0,0.08,16,3.9,9,1,0,0
+Bug Fix,Onboarding,Medium,69,0.13,58,0,0.21,11,4.3,12,1,0,1
+Bug Fix,Onboarding,Critical,50,0.45,45,1,0.28,16,3.9,6,0,0,1
+Feature,Performance,Critical,46,0.47,87,1,0.2,13,4.3,7,1,1,1
+Feature,Payments,High,48,0.19,112,1,0.03,5,3.8,11,1,0,1
+Refactor,Analytics,Low,38,-0.36,196,0,0.21,2,4.1,6,1,0,1
+Feature,Search,Medium,27,0.44,96,0,0.23,1,3.8,5,1,0,1
+Feature,Notifications,Critical,50,0.52,127,0,0.11,15,4.1,4,1,1,1
+Refactor,Onboarding,Medium,30,0.03,131,1,0.28,2,3.9,14,1,0,0
+Refactor,Authentication,Low,73,0.03,98,1,0.09,15,4.5,10,0,0,0
+Feature,Search,Medium,56,0.82,78,0,0.22,3,4.3,4,0,0,1
+Feature,Authentication,Medium,45,0.06,46,0,0.18,5,4.3,6,1,0,0
+Bug Fix,Analytics,High,67,0.09,102,0,0.13,26,4.1,6,1,0,1
+Feature,Performance,Medium,32,0.22,144,0,0.04,9,4.0,19,1,0,0
+Bug Fix,Onboarding,Medium,69,0.18,90,1,0.13,4,3.9,0,0,0,1
+Feature,UI,High,47,0.4,86,0,0.1,10,4.0,5,1,1,1
+Feature,Onboarding,Medium,26,0.09,72,0,0.1,19,4.2,8,0,0,0
+Bug Fix,Onboarding,High,48,0.23,33,0,0.17,17,4.2,18,1,0,1
+Refactor,Search,High,0,0.05,159,0,0.14,5,4.1,16,0,0,0
+Refactor,Authentication,Low,52,-0.16,102,0,0.05,9,4.4,16,0,0,0
+Feature,Performance,Low,53,0.03,105,1,0.13,9,4.2,5,0,0,1
+Feature,Performance,Medium,49,0.03,85,0,0.13,20,4.3,13,1,0,0
+Feature,Onboarding,Medium,37,-0.03,73,0,0.24,11,4.0,6,0,0,0
+Bug Fix,Authentication,Low,52,0.28,128,0,0.2,17,4.2,10,1,1,0
